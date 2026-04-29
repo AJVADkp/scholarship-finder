@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /admin/scholarships
+Disallow: /admin/users
+Disallow: /admin/settings
+Disallow: /api/admin/
+
+Sitemap: https://your-domain.com/sitemap.xml
