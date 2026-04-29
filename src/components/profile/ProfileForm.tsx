@@ -518,7 +518,7 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
             </label>
             <div className="flex flex-col gap-2">
               <select 
-                value={INCOME_BRACKETS.includes(formData.annual_income || '') ? formData.annual_income : (formData.annual_income !== null && formData.annual_income !== undefined ? 'Custom' : '')}
+                value={INCOME_BRACKETS.includes(formData.annual_income || '') ? (formData.annual_income || '') : (formData.annual_income !== null && formData.annual_income !== undefined ? 'Custom' : '')}
                 onChange={(e) => {
                   if (e.target.value === 'Custom') {
                     setField('annual_income', '0') // Set a default numeric string to trigger custom input
