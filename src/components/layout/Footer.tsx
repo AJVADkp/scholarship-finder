@@ -72,8 +72,8 @@ export function Footer() {
             <h4 className="font-bold text-gray-800 text-sm mb-4 uppercase tracking-wide">Support</h4>
             <ul className="space-y-2">
               {[
-                { label: 'About Us', href: '#' },
-                { label: 'Contact', href: '#' },
+                { label: 'About Us', href: '/about' },
+                { label: 'Contact', href: '/contact' },
                 { label: 'Privacy Policy', href: '#' },
                 { label: 'Terms of Service', href: '#' },
               ].map((link) => (

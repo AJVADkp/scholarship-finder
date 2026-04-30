@@ -112,10 +112,7 @@ export function AboutClientContent() {
               >
                 {member.in}
               </div>
-              <h3 className="text-[15px] font-medium text-[#1a1a2e]">{member.name}</h3>
-              <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#4F8EF7]/10 text-[#185FA5] mt-1 mb-1.5 font-medium">
-                {member.role}
-              </span>
+              <h3 className="text-[15px] font-medium text-[#1a1a2e] mb-1">{member.name}</h3>
               <p className="text-[12px] text-[#6b7280]">Christ College of Engineering</p>
             </motion.div>
           ))}

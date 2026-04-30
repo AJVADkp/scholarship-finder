@@ -58,8 +58,8 @@ export function Navbar() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/about', label: 'About Us' },
     { href: '/scholarships', label: 'Scholarships' },
+    { href: '/about', label: 'About Us' },
   ]
   
   if (user) {
