@@ -1,0 +1,199 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { Search, SlidersHorizontal, Heart } from 'lucide-react'
+import { useState } from 'react'
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+}
+
+export function AboutClientContent() {
+  return (
+    <div className="space-y-16 lg:space-y-32 md:space-y-24">
+      {/* 02. HERO SECTION */}
+      <section className="text-center flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className="inline-block px-4 py-1.5 mb-6 rounded-full border border-white/60 bg-white/45 backdrop-blur-md text-[12px] font-medium text-[#185FA5]"
+        >
+          SDG Project · Christ College of Engineering, Irinjalakuda
+        </motion.div>
+        
+        <motion.h1 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+          className="font-extrabold text-[#1a1a2e] leading-[1.2] mb-6"
+          style={{ fontSize: 'clamp(2rem, 5vw, 2.75rem)' }}
+        >
+          We built this so no student misses out.
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+          className="text-[1.1rem] text-[#4a5568] max-w-[580px] mx-auto leading-relaxed"
+        >
+          ScholarSearch started as an SDG project — and turned into something we genuinely care about.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="h-[1px] w-[80px] bg-[#4F8EF7]/20 mt-8"
+        />
+      </section>
+
+      {/* 03. OUR STORY */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        variants={fadeInUp}
+        className="flex flex-col items-center text-center sm:text-left sm:items-start"
+      >
+        <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Our story</div>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-6">What started as an SDG project became a mission</h2>
+        
+        <div className="space-y-5 text-[1rem] leading-[1.85] text-[#374151]">
+          <p>
+            Welcome to ScholarSearch. What started as an SDG (Sustainable Development Goals) project quickly turned into a mission to help our peers. As students ourselves, we know firsthand how overwhelming it can be to hunt for financial aid. Scrolling through endless pages, missing deadlines, and confusing eligibility criteria can make the scholarship search exhausting.
+          </p>
+          <p>
+            We built this platform to change that. ScholarSearch is designed to simplify the process, bringing the best and most relevant scholarship opportunities into one easy-to-use directory.
+          </p>
+        </div>
+
+        <blockquote className="mt-6 border-l-[3px] border-[#4F8EF7] pl-5 text-[1.1rem] italic text-[#185FA5]">
+          "Financial constraints should never stand in the way of a deserving student's academic dreams."
+        </blockquote>
+      </motion.section>
+
+      {/* 04. TEAM SECTION */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        variants={fadeInUp}
+      >
+        <div className="text-center sm:text-left mb-8">
+          <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Who we are</div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-3">Five first-years with one goal</h2>
+          <p className="text-[#4a5568] max-w-2xl">
+            A team of first-year engineering students from Christ College of Engineering, Irinjalakuda — passionate about using technology to solve real-world problems.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center sm:justify-items-stretch">
+          {[
+            { name: "Ajvad K P", role: "Project Lead", bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", in: "AK" },
+            { name: "Angel Rose", role: "UI Designer", bg: "linear-gradient(135deg,#fce7f3,#fbcfe8)", in: "AR" },
+            { name: "Akshay Jayesh", role: "Frontend Dev", bg: "linear-gradient(135deg,#d1fae5,#a7f3d0)", in: "AJ" },
+            { name: "Abhinav", role: "Backend Dev", bg: "linear-gradient(135deg,#ede9fe,#ddd6fe)", in: "AB" },
+            { name: "Adarsh Parakkal", role: "Database & Research", bg: "linear-gradient(135deg,#fef3c7,#fde68a)", in: "AP", full: true }
+          ].map((member, i) => (
+            <motion.div
+              key={member.name}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }
+              }}
+              className={`glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group ${member.full ? 'md:col-span-1 md:col-start-2 sm:col-span-2 sm:w-1/2 sm:mx-auto md:w-auto w-full' : 'w-full'}`}
+            >
+              <div 
+                className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-[18px] font-medium text-gray-800 transition-transform duration-200 group-hover:scale-110 mb-3"
+                style={{ background: member.bg }}
+              >
+                {member.in}
+              </div>
+              <h3 className="text-[15px] font-medium text-[#1a1a2e]">{member.name}</h3>
+              <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#4F8EF7]/10 text-[#185FA5] mt-1 mb-1.5 font-medium">
+                {member.role}
+              </span>
+              <p className="text-[12px] text-[#6b7280]">Christ College of Engineering</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* 05. MISSION SECTION */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        variants={fadeInUp}
+      >
+        <div className="bg-[#dbeafe]/45 backdrop-blur-[16px] border border-white/65 rounded-[20px] p-6 sm:p-10 text-center sm:text-left">
+          <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Our mission</div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-4">Democratize access to education</h2>
+          <p className="text-[#374151] leading-relaxed mb-10 max-w-3xl">
+            Our mission is simple: every deserving student deserves a fair shot at their academic dreams. Financial constraints should never be a barrier. By centralizing scholarship information and making it searchable, filterable, and personalized, ScholarSearch ensures that the right opportunities find the right students.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            {[
+              { icon: Search, label: "Centralized search", sub: "One place for all scholarships", color: "#4F8EF7" },
+              { icon: SlidersHorizontal, label: "Smart filtering", sub: "Find what matches you", color: "#34C48B" },
+              { icon: Heart, label: "Student-first", sub: "Built by students, for students", color: "#8B5CF6" }
+            ].map((pillar) => (
+              <div key={pillar.label} className="flex flex-col items-center text-center">
+                <motion.div
+                  whileInView={{ scale: [1, 1.15, 1] }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4 }}
+                  className="mb-2"
+                >
+                  <pillar.icon size={22} style={{ color: pillar.color }} />
+                </motion.div>
+                <h4 className="font-medium text-[14px] text-[#1a1a2e] mb-1">{pillar.label}</h4>
+                <p className="text-[12px] text-[#6b7280]">{pillar.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* 06. SDG BADGE */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        variants={fadeInUp}
+        className="flex justify-center"
+      >
+        <div className="inline-flex flex-col sm:flex-row items-center sm:items-center gap-3 max-w-[480px] bg-white/60 border border-[#4F8EF7]/25 rounded-3xl sm:rounded-full px-6 py-3 text-center sm:text-left">
+          <div className="w-[28px] h-[28px] bg-[#E5243B] rounded-[4px] text-white flex items-center justify-center text-[9px] font-bold shrink-0">
+            SDG
+          </div>
+          <span className="text-[13px] text-[#374151] font-medium">
+            This project supports UN SDG Goal 4 — Quality Education
+          </span>
+        </div>
+      </motion.section>
+
+      {/* 07. CONTACT SECTION */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        variants={fadeInUp}
+        className="pb-8 text-center"
+      >
+        <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Get in touch</div>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-4">Have a question?</h2>
+        <p className="text-[#4a5568] max-w-xl mx-auto mb-6">
+          Found a bug, have a suggestion, or know of a scholarship we should add to our database? We'd love to hear from you.
+        </p>
+        <a href="/contact" className="inline-flex items-center justify-center bg-[#4F8EF7] hover:bg-[#3B7DE8] text-white rounded-xl px-8 py-3.5 font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+          Go to Contact Page →
+        </a>
+      </motion.section>
+    </div>
+  )
+}

@@ -573,16 +573,45 @@ function ScholarshipsContent() {
                     >
                       <ChevronLeft size={18} />
                     </button>
-                    {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                      const p = i + 1
-                      return (
-                        <button key={p} onClick={() => setPage(p)}
-                          className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all ${
-                            page === p ? 'bg-primary text-white shadow-sm' : 'glass-card text-gray-600 hover:bg-white/70'
-                          }`}
-                        >{p}</button>
-                      )
-                    })}
+                    {(() => {
+                      const maxVisible = 5;
+                      let start = Math.max(1, page - Math.floor(maxVisible / 2));
+                      let end = Math.min(totalPages, start + maxVisible - 1);
+                      if (end - start + 1 < maxVisible) {
+                        start = Math.max(1, end - maxVisible + 1);
+                      }
+                      
+                      const pages = [];
+                      // First page
+                      if (start > 1) {
+                        pages.push(
+                          <button key={1} onClick={() => setPage(1)} className="w-10 h-10 rounded-xl text-sm font-semibold transition-all glass-card text-gray-600 hover:bg-white/70">1</button>
+                        );
+                        if (start > 2) pages.push(<span key="dots1" className="text-gray-400 px-1">...</span>);
+                      }
+
+                      // Sliding window
+                      for (let p = start; p <= end; p++) {
+                        pages.push(
+                          <button key={p} onClick={() => setPage(p)}
+                            className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all ${
+                              page === p 
+                                ? 'bg-gray-200 text-gray-900 border-transparent shadow-sm' 
+                                : 'glass-card text-gray-600 hover:bg-white/70'
+                            }`}
+                          >{p}</button>
+                        );
+                      }
+
+                      // Last page
+                      if (end < totalPages) {
+                        if (end < totalPages - 1) pages.push(<span key="dots2" className="text-gray-400 px-1">...</span>);
+                        pages.push(
+                          <button key={totalPages} onClick={() => setPage(totalPages)} className="w-10 h-10 rounded-xl text-sm font-semibold transition-all glass-card text-gray-600 hover:bg-white/70">{totalPages}</button>
+                        );
+                      }
+                      return pages;
+                    })()}
                     <button
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}

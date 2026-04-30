@@ -18,21 +18,17 @@ export const metadata: Metadata = {
 async function StatsRow() {
   const supabase = await createClient()
 
-  const [{ count: totalCount }, { data: categories }, { data: countries }] = await Promise.all([
+  const [{ count: totalCount }, { count: totalUsers }] = await Promise.all([
     supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('scholarships').select('category').eq('is_active', true),
-    supabase.from('scholarships').select('country').eq('is_active', true),
+    supabase.from('users').select('*', { count: 'exact', head: true }),
   ])
-
-  const uniqueCategories = new Set(categories?.map((s) => s.category)).size
-  const uniqueCountries = new Set(countries?.map((s) => s.country)).size
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
       {[
         { icon: BookOpen, value: totalCount || '20+', label: 'Active Scholarships', color: '#4F8EF7' },
-        { icon: Sparkles, value: uniqueCategories || 6, label: 'Categories', color: '#34C48B' },
-        { icon: Globe, value: uniqueCountries || 5, label: 'Countries', color: '#8B5CF6' },
+        { icon: Sparkles, value: '15+', label: 'Smart Filters', color: '#34C48B' },
+        { icon: Users, value: totalUsers || '10+', label: 'Registered Students', color: '#8B5CF6' },
       ].map((stat) => (
         <div key={stat.label} className="stat-card">
           <div
