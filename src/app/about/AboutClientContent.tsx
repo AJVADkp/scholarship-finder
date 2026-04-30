@@ -104,7 +104,7 @@ export function AboutClientContent() {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }
               } as Variants}
-              className={`glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group ${member.full ? 'md:col-span-1 md:col-start-2 sm:col-span-2 sm:w-1/2 sm:mx-auto md:w-auto w-full' : 'w-full'}`}
+              className="glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group w-full"
             >
               <div 
                 className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-[18px] font-medium text-gray-800 transition-transform duration-200 group-hover:scale-110 mb-3"

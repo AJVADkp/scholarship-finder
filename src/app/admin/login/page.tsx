@@ -69,7 +69,8 @@ export default function AdminLoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="input-glass pl-10"
+              className="input-glass"
+              style={{ paddingLeft: '40px' }}
               placeholder="admin"
               required
               id="admin-username"
@@ -88,7 +89,8 @@ export default function AdminLoginPage() {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input-glass pl-10 pr-12"
+              className="input-glass pr-12"
+              style={{ paddingLeft: '40px' }}
               placeholder="••••••••"
               required
               id="admin-password"
