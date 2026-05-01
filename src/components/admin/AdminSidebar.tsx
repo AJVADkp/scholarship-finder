@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare } from 'lucide-react'
+import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal'
 
 const navItems = [
   { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -17,6 +18,7 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
   if (pathname === '/admin/login') {
     return null
@@ -60,13 +62,23 @@ export function AdminSidebar() {
       {/* Logout */}
       <div className="p-3 border-t border-white/10">
         <button
-          onClick={handleLogout}
+          onClick={() => setShowLogoutConfirm(true)}
           className="admin-nav-item w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"
         >
           <LogOut size={16} />
           Sign Out
         </button>
       </div>
+
+      <ConfirmationModal
+        isOpen={showLogoutConfirm}
+        title="Sign Out?"
+        message="Are you sure you want to sign out of the admin panel?"
+        confirmText="Sign Out"
+        onConfirm={handleLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+        icon={LogOut}
+      />
     </div>
   )
 

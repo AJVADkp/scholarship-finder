@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Save, Lock, User, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Toaster } from 'react-hot-toast'
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal'
 
 export default function AdminSettingsPage() {
   const [username, setUsername] = useState('')
@@ -16,8 +17,10 @@ export default function AdminSettingsPage() {
   const [showCurrent, setShowCurrent] = useState(false)
   const [showNew, setShowNew] = useState(false)
 
-  const handleSaveUsername = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const [showUserConfirm, setShowUserConfirm] = useState(false)
+  const [showPassConfirm, setShowPassConfirm] = useState(false)
+
+  const handleSaveUsername = async () => {
     if (!username.trim()) { toast.error('Username cannot be empty'); return }
     setSavingUsername(true)
     try {
@@ -33,11 +36,11 @@ export default function AdminSettingsPage() {
       toast.error(err.message || 'Failed to update username')
     } finally {
       setSavingUsername(false)
+      setShowUserConfirm(false)
     }
   }
 
-  const handleSavePassword = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSavePassword = async () => {
     if (newPassword !== confirmPassword) { toast.error('New passwords do not match'); return }
     if (newPassword.length < 6) { toast.error('Password must be at least 6 characters'); return }
     setSavingPassword(true)
@@ -56,6 +59,7 @@ export default function AdminSettingsPage() {
       toast.error(err.message || 'Failed to update password')
     } finally {
       setSavingPassword(false)
+      setShowPassConfirm(false)
     }
   }
 
@@ -75,7 +79,7 @@ export default function AdminSettingsPage() {
           </h2>
           <p className="text-sm text-gray-400 mb-5">Update the admin login username</p>
 
-          <form onSubmit={handleSaveUsername} className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); setShowUserConfirm(true) }} className="space-y-4">
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">New Username</label>
               <input
@@ -100,7 +104,7 @@ export default function AdminSettingsPage() {
           </h2>
           <p className="text-sm text-gray-400 mb-5">Update the admin login password</p>
 
-          <form onSubmit={handleSavePassword} className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); setShowPassConfirm(true) }} className="space-y-4">
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Current Password</label>
               <div className="relative">
@@ -161,6 +165,29 @@ export default function AdminSettingsPage() {
             </button>
           </form>
         </div>
+        </div>
+
+        <ConfirmationModal
+          isOpen={showUserConfirm}
+          title="Update Username?"
+          message="Are you sure you want to change your admin username? You will need to use the new username for future logins."
+          confirmText="Update Username"
+          onConfirm={handleSaveUsername}
+          onCancel={() => setShowUserConfirm(false)}
+          icon={User}
+          danger={false}
+        />
+
+        <ConfirmationModal
+          isOpen={showPassConfirm}
+          title="Change Password?"
+          message="Are you sure you want to update your admin password?"
+          confirmText="Update Password"
+          onConfirm={handleSavePassword}
+          onCancel={() => setShowPassConfirm(false)}
+          icon={Lock}
+          danger={true}
+        />
       </div>
     </>
   )

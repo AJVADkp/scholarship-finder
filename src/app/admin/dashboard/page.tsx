@@ -12,14 +12,14 @@ export default async function AdminDashboardPage() {
     { count: totalScholarships },
     { count: activeScholarships },
     { count: totalUsers },
-    { count: usersWithMarks },
+    { count: completedProfiles },
     { data: recentUsers },
     { data: recentScholarships },
   ] = await Promise.all([
     supabase.from('scholarships').select('*', { count: 'exact', head: true }),
     supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('users').select('*', { count: 'exact', head: true }),
-    supabase.from('users').select('*', { count: 'exact', head: true }).not('marks_percentage', 'is', null),
+    supabase.from('users').select('*', { count: 'exact', head: true }).not('academic_level', 'is', null),
     supabase.from('users').select('full_name, email, created_at, avatar_url').order('created_at', { ascending: false }).limit(5),
     supabase.from('scholarships').select('id, title, category, created_at').order('created_at', { ascending: false }).limit(5),
   ])
@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
     { label: 'Total Scholarships', value: totalScholarships || 0, icon: BookOpen, color: '#4F8EF7', href: '/admin/scholarships' },
     { label: 'Active Scholarships', value: activeScholarships || 0, icon: CheckCircle, color: '#34C48B', href: '/admin/scholarships' },
     { label: 'Total Users', value: totalUsers || 0, icon: Users, color: '#8B5CF6', href: '/admin/users' },
-    { label: 'Users with Marks', value: usersWithMarks || 0, icon: BarChart3, color: '#F59E0B', href: '/admin/users' },
+    { label: 'Completed Profiles', value: completedProfiles || 0, icon: BarChart3, color: '#F59E0B', href: '/admin/users' },
   ]
 
   return (
