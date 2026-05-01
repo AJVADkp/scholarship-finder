@@ -353,8 +353,8 @@ export default function AdminScholarshipsPage() {
 
             {/* SECTION 2: Student Eligibility */}
             <FormSection title="🎓 Student Eligibility Filters">
-              <MultiCheckbox label="Academic Levels" options={ACADEMIC_LEVELS} selected={arr(form.academic_levels)} onChange={v => setField('academic_levels', v)} />
-              <MultiCheckbox label="Course / Streams" options={STREAMS} selected={arr(form.streams)} onChange={v => setField('streams', v)} />
+              <SingleDropdown label="Academic Level" options={ACADEMIC_LEVELS} value={arr(form.academic_levels)[0] || ''} onChange={v => setField('academic_levels', [v])} placeholder="Select level..." />
+              <SingleDropdown label="Course / Stream" options={STREAMS} value={arr(form.streams)[0] || ''} onChange={v => setField('streams', [v])} placeholder="Select stream..." />
               <SingleDropdown label="Gender Eligibility" options={['All', ...GENDERS]} value={form.gender_eligibility || 'All'} onChange={v => setField('gender_eligibility', v)} />
               <SingleDropdown label="Annual Income Range" options={INCOME_BRACKETS} value={form.income_range || ''} onChange={v => setField('income_range', v)} placeholder="Any income" />
               <SingleDropdown label="Scholarship Type" options={SCHOLARSHIP_TYPES} value={form.scholarship_type || ''} onChange={v => setField('scholarship_type', v)} placeholder="Select type..." />
@@ -385,8 +385,8 @@ export default function AdminScholarshipsPage() {
             {/* SECTION 5: Study Details */}
             <FormSection title="🏫 Study & Institution Details">
               <MultiCheckbox label="Portal / Source" options={PORTAL_SOURCES} selected={arr(form.portal_source)} onChange={v => setField('portal_source', v)} />
-              <MultiCheckbox label="Course Specializations" options={Object.values(COURSE_SPECIALIZATIONS).flat()} selected={arr(form.course_specializations)} onChange={v => setField('course_specializations', v)} />
-              <MultiCheckbox label="Institution Types" options={INSTITUTION_TYPES} selected={arr(form.institution_types)} onChange={v => setField('institution_types', v)} />
+              <SingleDropdown label="Course Specialization" options={Object.values(COURSE_SPECIALIZATIONS).flat()} value={arr(form.course_specializations)[0] || ''} onChange={v => setField('course_specializations', [v])} placeholder="Select specialization..." />
+              <SingleDropdown label="Institution Type" options={INSTITUTION_TYPES} value={arr(form.institution_types)[0] || ''} onChange={v => setField('institution_types', [v])} placeholder="Select institution..." />
               <SingleDropdown label="Study Mode" options={STUDY_MODES.map(m => m.value)} value={form.study_mode || 'Any'} onChange={v => setField('study_mode', v)} />
               <SingleDropdown label="Geographic Focus" options={GEOGRAPHIC_FOCUSES} value={form.geographic_focus || 'Both'} onChange={v => setField('geographic_focus', v)} />
             </FormSection>

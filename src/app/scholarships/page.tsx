@@ -20,8 +20,8 @@ const ITEMS_PER_PAGE = 12
 
 function countActiveBasicFilters(f: BasicFilterState) {
   return (
-    f.academicLevels.length +
-    f.streams.length +
+    (f.academicLevel ? 1 : 0) +
+    (f.stream ? 1 : 0) +
     (f.gender ? 1 : 0) +
     (f.state ? 1 : 0) +
     (f.incomeRange ? 1 : 0) +
@@ -40,10 +40,10 @@ function countActiveAdvancedFilters(f: AdvancedFilterState) {
     (f.awardAmountRange ? 1 : 0) +
     (f.applicationStatus ? 1 : 0) +
     f.portalSources.length +
-    f.courseSpecializations.length +
+    (f.courseSpecialization ? 1 : 0) +
     (f.studyMode ? 1 : 0) +
     (f.geographicFocus ? 1 : 0) +
-    f.institutionTypes.length +
+    (f.institutionType ? 1 : 0) +
     (f.yearOfStudy ? 1 : 0) +
     (f.minCollegePerformance ? 1 : 0) +
     (f.applicationType ? 1 : 0)
@@ -123,8 +123,8 @@ function ScholarshipsContent() {
     const params = new URLSearchParams()
     if (debouncedQuery) params.set('q', debouncedQuery)
     if (sortBy !== 'deadline') params.set('sort', sortBy)
-    if (basicFilters.academicLevels.length) params.set('levels', basicFilters.academicLevels.join(','))
-    if (basicFilters.streams.length) params.set('streams', basicFilters.streams.join(','))
+    if (basicFilters.academicLevel) params.set('levels', basicFilters.academicLevel)
+    if (basicFilters.stream) params.set('streams', basicFilters.stream)
     if (basicFilters.gender) params.set('gender', basicFilters.gender)
     if (basicFilters.state) params.set('state', basicFilters.state)
     if (basicFilters.incomeRange) params.set('income', basicFilters.incomeRange)
@@ -167,19 +167,13 @@ function ScholarshipsContent() {
       // ============================================
 
       // Academic Levels: Show matching + scholarships open to ALL levels (null)
-      if (basicFilters.academicLevels.length > 0) {
-        const levelsFilter = basicFilters.academicLevels
-          .map(l => `academic_levels.cs.{${l}}`)
-          .join(',')
-        query = query.or(`academic_levels.is.null,${levelsFilter}`)
+      if (basicFilters.academicLevel) {
+        query = query.or(`academic_levels.is.null,academic_levels.cs.{"${basicFilters.academicLevel}"}`)
       }
 
       // Streams: Show matching + "All" streams + null (open to all)
-      if (basicFilters.streams.length > 0) {
-        const streamsFilter = basicFilters.streams
-          .map(s => `streams.cs.{${s}}`)
-          .join(',')
-        query = query.or(`streams.is.null,streams.cs.{All},${streamsFilter}`)
+      if (basicFilters.stream) {
+        query = query.or(`streams.is.null,streams.cs.{"All"},streams.cs.{"${basicFilters.stream}"}`)
       }
 
       // Gender — Smart Exclusion
@@ -220,7 +214,7 @@ function ScholarshipsContent() {
         // Caste — Show matching + null (no caste restriction) + General always eligible
         if (advancedFilters.casteCategory) {
           query = query.or(
-            `caste_categories.is.null,caste_categories.cs.{${advancedFilters.casteCategory}},caste_categories.cs.{General}`
+            `caste_categories.is.null,caste_categories.cs.{"${advancedFilters.casteCategory}"},caste_categories.cs.{"General"}`
           )
         }
 
@@ -248,7 +242,7 @@ function ScholarshipsContent() {
         // Special Backgrounds — Show matching + null (open to all)
         if (advancedFilters.specialBackgrounds.length > 0) {
           query = query.or(
-            `special_backgrounds.is.null,${advancedFilters.specialBackgrounds.map(b => `special_backgrounds.cs.{${b}}`).join(',')}`
+            `special_backgrounds.is.null,${advancedFilters.specialBackgrounds.map(b => `special_backgrounds.cs.{"${b}"}`).join(',')}`
           )
         }
 
@@ -268,10 +262,8 @@ function ScholarshipsContent() {
         }
 
         // Course Specializations — Show matching + null
-        if (advancedFilters.courseSpecializations.length > 0) {
-          query = query.or(
-            `course_specializations.is.null,${advancedFilters.courseSpecializations.map(c => `course_specializations.cs.{${c}}`).join(',')}`
-          )
+        if (advancedFilters.courseSpecialization) {
+          query = query.or(`course_specializations.is.null,course_specializations.cs.{"${advancedFilters.courseSpecialization}"}`)
         }
 
         // Study Mode — Show matching + "Any" + null
@@ -285,10 +277,8 @@ function ScholarshipsContent() {
         }
 
         // Institution Types — Show matching + null
-        if (advancedFilters.institutionTypes.length > 0) {
-          query = query.or(
-            `institution_types.is.null,${advancedFilters.institutionTypes.map(i => `institution_types.cs.{${i}}`).join(',')}`
-          )
+        if (advancedFilters.institutionType) {
+          query = query.or(`institution_types.is.null,institution_types.cs.{"${advancedFilters.institutionType}"}`)
         }
 
         // Application Type — Show matching + "Both" + null
@@ -340,7 +330,7 @@ function ScholarshipsContent() {
   const zeroResultSuggestion = () => {
     if (activeAdvancedCount > 3) return 'Try clearing some Advanced Filters like caste, religion, or disability status.'
     if (activeBasicCount > 3) return 'Try removing a few filters — for example try clearing the Income Range or Gender filter.'
-    if (basicFilters.streams.length > 0) return 'Try selecting fewer streams or removing the stream filter entirely.'
+    if (basicFilters.stream) return 'Try clearing the Course / Stream filter.'
     if (basicFilters.state) return 'Try removing the State filter to see Pan-India scholarships.'
     return 'Try clearing all filters to see all available scholarships.'
   }

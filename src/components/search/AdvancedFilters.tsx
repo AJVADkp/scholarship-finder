@@ -20,10 +20,10 @@ export interface AdvancedFilterState {
   awardAmountRange: string
   applicationStatus: string
   portalSources: string[]
-  courseSpecializations: string[]
+  courseSpecialization: string
   studyMode: string
   geographicFocus: string
-  institutionTypes: string[]
+  institutionType: string
   yearOfStudy: string
   minCollegePerformance: string
   applicationType: string
@@ -39,10 +39,10 @@ export const EMPTY_ADVANCED_FILTERS: AdvancedFilterState = {
   awardAmountRange: '',
   applicationStatus: '',
   portalSources: [],
-  courseSpecializations: [],
+  courseSpecialization: '',
   studyMode: '',
   geographicFocus: '',
-  institutionTypes: [],
+  institutionType: '',
   yearOfStudy: '',
   minCollegePerformance: '',
   applicationType: '',
@@ -179,13 +179,12 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
     onChange({ ...filters, [key]: value })
 
   const isMale = basicFilters.gender === 'Male'
-  const isSchoolOnly = basicFilters.academicLevels.length > 0 &&
-    basicFilters.academicLevels.every(l => SCHOOL_LEVELS.includes(l))
+  const isSchoolOnly = !!basicFilters.academicLevel && SCHOOL_LEVELS.includes(basicFilters.academicLevel)
   const showCollegePerf = !isSchoolOnly && !FIRST_YEAR_ONLY.includes(filters.yearOfStudy)
 
   // Dynamic course specializations based on selected streams
-  const availableSpecializations = basicFilters.streams.length > 0
-    ? basicFilters.streams.flatMap(s => COURSE_SPECIALIZATIONS[s] || [])
+  const availableSpecializations = basicFilters.stream
+    ? (COURSE_SPECIALIZATIONS[basicFilters.stream as keyof typeof COURSE_SPECIALIZATIONS] || [])
     : []
 
   return (
@@ -303,10 +302,10 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         {availableSpecializations.length === 0 ? (
           <p className="text-xs text-gray-400 italic">Please select a stream first in Basic Filters ↑</p>
         ) : (
-          <ChipMultiSelect
+          <SingleSelect
             options={availableSpecializations}
-            selected={filters.courseSpecializations}
-            onChange={v => set('courseSpecializations', v)}
+            selected={filters.courseSpecialization}
+            onChange={v => set('courseSpecialization', v)}
           />
         )}
       </FilterGroup>
@@ -342,10 +341,10 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
 
       {/* 19. Institution Type */}
       <FilterGroup title="Institution Type">
-        <ChipMultiSelect
+        <SingleSelect
           options={INSTITUTION_TYPES}
-          selected={filters.institutionTypes}
-          onChange={v => set('institutionTypes', v)}
+          selected={filters.institutionType}
+          onChange={v => set('institutionType', v)}
         />
       </FilterGroup>
 

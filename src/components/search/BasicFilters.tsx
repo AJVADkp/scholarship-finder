@@ -8,8 +8,8 @@ import {
 } from '@/lib/search-constants'
 
 export interface BasicFilterState {
-  academicLevels: string[]
-  streams: string[]
+  academicLevel: string
+  stream: string
   gender: string
   state: string
   incomeRange: string
@@ -17,8 +17,8 @@ export interface BasicFilterState {
 }
 
 export const EMPTY_BASIC_FILTERS: BasicFilterState = {
-  academicLevels: [],
-  streams: [],
+  academicLevel: '',
+  stream: '',
   gender: '',
   state: '',
   incomeRange: '',
@@ -145,19 +145,19 @@ export function BasicFilters({ filters, onChange, matchCount, loading }: BasicFi
 
       {/* 1. Academic Level */}
       <FilterGroup title="Academic Level">
-        <ChipMultiSelect
+        <SingleSelect
           options={ACADEMIC_LEVELS}
-          selected={filters.academicLevels}
-          onChange={v => set('academicLevels', v)}
+          selected={filters.academicLevel}
+          onChange={v => set('academicLevel', v)}
         />
       </FilterGroup>
 
       {/* 2. Course / Stream */}
       <FilterGroup title="Course / Stream">
-        <ChipMultiSelect
+        <SingleSelect
           options={STREAMS}
-          selected={filters.streams}
-          onChange={v => set('streams', v)}
+          selected={filters.stream}
+          onChange={v => set('stream', v)}
         />
       </FilterGroup>
 
