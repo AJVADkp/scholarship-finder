@@ -165,7 +165,6 @@ export default function AdminSettingsPage() {
             </button>
           </form>
         </div>
-        </div>
 
         <ConfirmationModal
           isOpen={showUserConfirm}
