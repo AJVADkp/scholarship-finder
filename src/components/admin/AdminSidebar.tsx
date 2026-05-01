@@ -18,6 +18,10 @@ export function AdminSidebar() {
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  if (pathname === '/admin/login') {
+    return null
+  }
+
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
     router.push('/admin/login')
@@ -69,7 +73,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="admin-sidebar w-56 flex-shrink-0 hidden lg:block">
+      <aside className="admin-sidebar w-56 flex-shrink-0 hidden lg:block sticky top-0 h-screen overflow-y-auto">
         <SidebarContent />
       </aside>
 
