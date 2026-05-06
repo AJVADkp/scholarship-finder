@@ -58,15 +58,25 @@ async function FeaturedScholarships({ category }: { category?: string }) {
     .from('scholarships')
     .select('*')
     .eq('is_active', true)
-    .gte('deadline', today) // Only show scholarships with future deadlines
     .order('deadline', { ascending: true })
-    .limit(6)
+    .limit(12)
 
   if (category && category !== 'All') {
     query = query.eq('category', category)
   }
 
-  const { data: scholarships, error } = await query
+  const { data: rawScholarships, error } = await query
+
+  // Sort: active (future deadline) first, expired last
+  const scholarships = rawScholarships
+    ? [...rawScholarships].sort((a, b) => {
+        const aExpired = a.deadline && a.deadline < today
+        const bExpired = b.deadline && b.deadline < today
+        if (aExpired && !bExpired) return 1
+        if (!aExpired && bExpired) return -1
+        return 0
+      }).slice(0, 6)
+    : null
 
   if (error || !scholarships) {
     return (

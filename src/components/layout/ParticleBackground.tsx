@@ -29,7 +29,7 @@ export function ParticleBackground() {
               value: "transparent",
             },
           },
-          fpsLimit: 120,
+          fpsLimit: 60,
           interactivity: {
             events: {
               onHover: {
@@ -73,7 +73,7 @@ export function ParticleBackground() {
                 width: 800,
                 height: 800
               },
-              value: 60,
+              value: 35,
             },
             opacity: {
               value: 0.3,
