@@ -52,10 +52,13 @@ async function StatsRow() {
 async function FeaturedScholarships({ category }: { category?: string }) {
   const supabase = await createClient()
 
+  const today = new Date().toISOString().split('T')[0]
+
   let query = supabase
     .from('scholarships')
     .select('*')
     .eq('is_active', true)
+    .gte('deadline', today) // Only show scholarships with future deadlines
     .order('deadline', { ascending: true })
     .limit(6)
 

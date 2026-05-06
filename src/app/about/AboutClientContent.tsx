@@ -84,19 +84,15 @@ export function AboutClientContent() {
       >
         <div className="text-center sm:text-left mb-8">
           <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Who we are</div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-3">Five first-years with one goal</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-3">The developer behind ScholarSearch</h2>
           <p className="text-[#4a5568] max-w-2xl">
-            A team of first-year engineering students from Christ College of Engineering, Irinjalakuda — passionate about using technology to solve real-world problems.
+            A first-year engineering student from Christ College of Engineering, Irinjalakuda — passionate about using technology to solve real-world problems.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center sm:justify-items-stretch">
+        <div className="flex justify-center">
           {[
-            { name: "Ajvad K P", role: "Project Lead", bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", in: "AK" },
-            { name: "Angel Rose", role: "UI Designer", bg: "linear-gradient(135deg,#fce7f3,#fbcfe8)", in: "AR" },
-            { name: "Akshay Jayesh", role: "Frontend Dev", bg: "linear-gradient(135deg,#d1fae5,#a7f3d0)", in: "AJ" },
-            { name: "Abhinav", role: "Backend Dev", bg: "linear-gradient(135deg,#ede9fe,#ddd6fe)", in: "AB" },
-            { name: "Adarsh Parakkal", role: "Database & Research", bg: "linear-gradient(135deg,#fef3c7,#fde68a)", in: "AP", full: true }
+            { name: "Ajvad K P", bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", in: "AK" },
           ].map((member, i) => (
             <motion.div
               key={member.name}
@@ -104,7 +100,7 @@ export function AboutClientContent() {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }
               } as Variants}
-              className="glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group w-full"
+              className="glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group w-full max-w-[280px]"
             >
               <div 
                 className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-[18px] font-medium text-gray-800 transition-transform duration-200 group-hover:scale-110 mb-3"

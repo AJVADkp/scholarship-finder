@@ -10,8 +10,10 @@ import {
   COLLEGE_PERFORMANCE_OPTIONS, APPLICATION_TYPES, INDIAN_STATES_UTS,
 } from '@/lib/search-constants'
 import { formatAmount, formatDeadline } from '@/lib/utils'
-import { Plus, Edit2, Trash2, Search, ToggleLeft, ToggleRight, X, Save, CheckSquare, Square, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Plus, Edit2, Trash2, Search, ToggleLeft, ToggleRight, X, Save, CheckSquare, Square, AlertTriangle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
+
+const ADMIN_ITEMS_PER_PAGE = 50
 
 const EMPTY_FORM: Partial<Scholarship> = {
   title: '', provider: '', category: 'Merit', country: 'India', state: '',
@@ -110,6 +112,7 @@ export default function AdminScholarshipsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkDeleting, setBulkDeleting] = useState(false)
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false)
+  const [adminPage, setAdminPage] = useState(1)
 
   const loadScholarships = useCallback(async () => {
     setLoading(true)
@@ -129,6 +132,17 @@ export default function AdminScholarshipsPage() {
     const matchStatus = !statusFilter || (statusFilter === 'active' ? s.is_active : !s.is_active)
     return matchSearch && matchCat && matchStatus
   })
+
+  // Sort: active first, then by title
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.is_active && !b.is_active) return -1
+    if (!a.is_active && b.is_active) return 1
+    return a.title.localeCompare(b.title)
+  })
+
+  // Pagination
+  const totalAdminPages = Math.ceil(sorted.length / ADMIN_ITEMS_PER_PAGE)
+  const paginatedScholarships = sorted.slice((adminPage - 1) * ADMIN_ITEMS_PER_PAGE, adminPage * ADMIN_ITEMS_PER_PAGE)
 
   const openAdd = () => { setEditingId(null); setForm(EMPTY_FORM); setModalOpen(true) }
   const openEdit = (s: Scholarship) => { setEditingId(s.id); setForm({ ...s, tags: s.tags || [] }); setModalOpen(true) }
@@ -202,7 +216,7 @@ export default function AdminScholarshipsPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900">Scholarships</h1>
-            <p className="text-sm text-gray-500">{scholarships.length} total scholarships</p>
+            <p className="text-sm text-gray-500">{filtered.length} scholarships found (Page {adminPage} of {totalAdminPages || 1})</p>
           </div>
           <button onClick={openAdd} className="btn-primary gap-2" id="add-scholarship-btn">
             <Plus size={16} /> Add Scholarship
@@ -251,9 +265,9 @@ export default function AdminScholarshipsPage() {
               <tbody className="divide-y divide-gray-50">
                 {loading ? (
                   <tr><td colSpan={8} className="text-center py-12 text-gray-400">Loading...</td></tr>
-                ) : filtered.length === 0 ? (
+                ) : paginatedScholarships.length === 0 ? (
                   <tr><td colSpan={8} className="text-center py-12 text-gray-400">No scholarships found</td></tr>
-                ) : filtered.map(s => (
+                ) : paginatedScholarships.map(s => (
                   <tr key={s.id} className={`hover:bg-white/40 transition-colors ${selectedIds.has(s.id) ? 'bg-blue-50/40' : ''}`}>
                     <td className="px-4 py-3">
                       <button onClick={() => toggleSelect(s.id)} className="text-gray-400">
@@ -291,6 +305,50 @@ export default function AdminScholarshipsPage() {
             </table>
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalAdminPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <button
+              onClick={() => setAdminPage(p => Math.max(1, p - 1))}
+              disabled={adminPage === 1}
+              className="p-2 rounded-xl border border-gray-200 bg-white/60 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {Array.from({ length: totalAdminPages }, (_, i) => i + 1)
+              .filter(p => p === 1 || p === totalAdminPages || Math.abs(p - adminPage) <= 2)
+              .reduce<(number | string)[]>((acc, p, i, arr) => {
+                if (i > 0 && (arr[i - 1] as number) < p - 1) acc.push('...')
+                acc.push(p)
+                return acc
+              }, [])
+              .map((p, i) =>
+                p === '...' ? (
+                  <span key={`dots-${i}`} className="px-2 text-gray-400">...</span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setAdminPage(p as number)}
+                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
+                      adminPage === p
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-white/60 text-gray-600 border border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            <button
+              onClick={() => setAdminPage(p => Math.min(totalAdminPages, p + 1))}
+              disabled={adminPage === totalAdminPages}
+              className="p-2 rounded-xl border border-gray-200 bg-white/60 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Modal */}

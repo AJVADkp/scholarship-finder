@@ -74,9 +74,13 @@ export default async function AdminDashboardPage() {
           <div className="space-y-3">
             {recentUsers && recentUsers.length > 0 ? recentUsers.map((u: any) => (
               <div key={u.email} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  {(u.full_name || u.email || 'U')[0].toUpperCase()}
-                </div>
+                {u.avatar_url ? (
+                  <img src={u.avatar_url} alt={u.full_name || 'User'} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    {(u.full_name || u.email || 'U')[0].toUpperCase()}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 truncate">{u.full_name || 'N/A'}</p>
                   <p className="text-xs text-gray-400 truncate">{u.email}</p>
