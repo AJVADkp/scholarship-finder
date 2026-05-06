@@ -289,8 +289,11 @@ function ScholarshipsContent() {
 
 
       // Sort
-      if (sortBy === 'deadline') query = query.order('deadline', { ascending: true, nullsFirst: false })
-      else if (sortBy === 'amount_desc') query = query.order('amount', { ascending: false })
+      if (sortBy === 'deadline') {
+        // We fetch all sorted by deadline ascending from DB, then re-sort client-side
+        // so expired scholarships appear at the end
+        query = query.order('deadline', { ascending: true, nullsFirst: false })
+      } else if (sortBy === 'amount_desc') query = query.order('amount', { ascending: false })
       else if (sortBy === 'amount_asc') query = query.order('amount', { ascending: true })
       else if (sortBy === 'newest') query = query.order('created_at', { ascending: false })
 
@@ -300,7 +303,16 @@ function ScholarshipsContent() {
 
       const { data, count, error } = await query
       if (error) throw error
-      setScholarships(data as Scholarship[])
+
+      // When sorting by deadline, push expired scholarships to the end
+      let results = data as Scholarship[]
+      if (sortBy === 'deadline') {
+        const now = new Date().toISOString().split('T')[0]
+        const active = results.filter(s => !s.deadline || s.deadline >= now)
+        const expired = results.filter(s => s.deadline && s.deadline < now)
+        results = [...active, ...expired]
+      }
+      setScholarships(results)
       setTotalCount(count || 0)
     } catch (err: any) {
       setError(err?.message || 'Failed to load scholarships.')

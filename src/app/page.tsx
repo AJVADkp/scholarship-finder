@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { Footer } from '@/components/layout/Footer'
 import { SkeletonStatCard } from '@/components/ui/SkeletonCard'
@@ -15,12 +16,15 @@ export const metadata: Metadata = {
   description: 'Discover thousands of scholarships tailored to your academic profile. Search and filter by category, marks, deadline, and country.',
 }
 
+export const revalidate = 60 // Refresh stats every 60 seconds
+
 async function StatsRow() {
   const supabase = await createClient()
+  const adminSupabase = createAdminClient()
 
   const [{ count: totalCount }, { count: totalUsers }] = await Promise.all([
     supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('users').select('*', { count: 'exact', head: true }),
+    adminSupabase.from('users').select('*', { count: 'exact', head: true }),
   ])
 
   return (

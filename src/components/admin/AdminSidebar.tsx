@@ -26,7 +26,8 @@ export function AdminSidebar() {
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
-    router.push('/admin/login')
+    // Force full page refresh to clear all cached admin data
+    window.location.href = '/admin/login'
   }
 
   const SidebarContent = () => (

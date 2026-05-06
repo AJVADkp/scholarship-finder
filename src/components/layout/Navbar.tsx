@@ -54,6 +54,8 @@ export function Navbar() {
     setDropdownOpen(false)
     setSignOutConfirmOpen(false)
     toast.success('Signed out successfully')
+    // Force full page refresh to clear all cached user data
+    window.location.href = '/'
   }
 
   const navLinks = [
