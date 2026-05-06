@@ -288,32 +288,43 @@ function ScholarshipsContent() {
       }
 
 
-      // Sort
-      if (sortBy === 'deadline') {
-        // We fetch all sorted by deadline ascending from DB, then re-sort client-side
-        // so expired scholarships appear at the end
-        query = query.order('deadline', { ascending: true, nullsFirst: false })
-      } else if (sortBy === 'amount_desc') query = query.order('amount', { ascending: false })
-      else if (sortBy === 'amount_asc') query = query.order('amount', { ascending: true })
-      else if (sortBy === 'newest') query = query.order('created_at', { ascending: false })
-
-      // Pagination
-      const from = (page - 1) * ITEMS_PER_PAGE
-      query = query.range(from, from + ITEMS_PER_PAGE - 1)
-
+      // Fetch ALL matching items to sort them correctly globally
       const { data, count, error } = await query
       if (error) throw error
 
-      // When sorting by deadline, push expired scholarships to the end
       let results = data as Scholarship[]
+
+      // Global Client-Side Sorting
       if (sortBy === 'deadline') {
         const now = new Date().toISOString().split('T')[0]
         const active = results.filter(s => !s.deadline || s.deadline >= now)
         const expired = results.filter(s => s.deadline && s.deadline < now)
+
+        // Sort active deadlines ascending
+        active.sort((a, b) => {
+          if (!a.deadline) return 1
+          if (!b.deadline) return -1
+          return a.deadline.localeCompare(b.deadline)
+        })
+
+        // Sort expired deadlines descending (most recently expired first)
+        expired.sort((a, b) => b.deadline!.localeCompare(a.deadline!))
+
         results = [...active, ...expired]
+      } else if (sortBy === 'amount_desc') {
+        results.sort((a, b) => (b.amount || 0) - (a.amount || 0))
+      } else if (sortBy === 'amount_asc') {
+        results.sort((a, b) => (a.amount || 0) - (b.amount || 0))
+      } else if (sortBy === 'newest') {
+        results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       }
-      setScholarships(results)
-      setTotalCount(count || 0)
+
+      // Client-Side Pagination
+      const from = (page - 1) * ITEMS_PER_PAGE
+      const paginatedResults = results.slice(from, from + ITEMS_PER_PAGE)
+
+      setScholarships(paginatedResults)
+      setTotalCount(results.length)
     } catch (err: any) {
       setError(err?.message || 'Failed to load scholarships.')
     } finally {
