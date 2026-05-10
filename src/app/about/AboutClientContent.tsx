@@ -84,44 +84,50 @@ export function AboutClientContent() {
       >
         <div className="text-center sm:text-left mb-8">
           <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Who we are</div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-3">The developer behind ScholarSearch</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-3">Five first-years with one goal</h2>
           <p className="text-[#4a5568] max-w-2xl">
-            A first-year engineering student from Christ College of Engineering, Irinjalakuda — passionate about using technology to solve real-world problems.
+            A team of first-year engineering students from Christ College of Engineering, Irinjalakuda — passionate about using technology to solve real-world problems.
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center sm:justify-items-stretch">
           {[
             { name: "Ajvad K P", bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", in: "AK", linkedin: "https://www.linkedin.com/in/ajvad-kp-a1259a384" },
-          ].map((member, i) => (
-            <motion.a
-              key={member.name}
-              href={member.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }
-              } as Variants}
-              whileHover={{ y: -6, scale: 1.03, boxShadow: '0 20px 40px rgba(79,142,247,0.15)' }}
-              whileTap={{ scale: 0.97 }}
-              className="glass-card p-6 flex flex-col items-center text-center cursor-pointer group w-full max-w-[280px] no-underline"
-              style={{ transition: 'box-shadow 0.3s ease' }}
-            >
-              <div 
-                className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-[18px] font-medium text-gray-800 transition-transform duration-300 group-hover:scale-110 group-hover:ring-4 group-hover:ring-[#4F8EF7]/20 mb-3"
-                style={{ background: member.bg }}
+            { name: "Angel Rose", bg: "linear-gradient(135deg,#fce7f3,#fbcfe8)", in: "AR" },
+            { name: "Akshay Jayesh", bg: "linear-gradient(135deg,#d1fae5,#a7f3d0)", in: "AJ" },
+            { name: "Abhinav", bg: "linear-gradient(135deg,#ede9fe,#ddd6fe)", in: "AB" },
+            { name: "Adarsh Parakkal", bg: "linear-gradient(135deg,#fef3c7,#fde68a)", in: "AP", full: true }
+          ].map((member, i) => {
+            const Comp = member.linkedin ? motion.a : motion.div;
+            const props = member.linkedin ? { href: member.linkedin, target: "_blank", rel: "noopener noreferrer" } : {};
+            return (
+              <Comp
+                key={member.name}
+                {...props}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }
+                } as Variants}
+                className={`glass-card p-6 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-[3px] group ${member.full ? 'md:col-span-1 md:col-start-2 sm:col-span-2 sm:w-1/2 sm:mx-auto md:w-auto w-full' : 'w-full'}`}
+                style={{ textDecoration: 'none' }}
               >
-                {member.in}
-              </div>
-              <h3 className="text-[15px] font-medium text-[#1a1a2e] mb-1">{member.name}</h3>
-              <p className="text-[12px] text-[#6b7280] mb-3">Christ College of Engineering</p>
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#0A66C2] opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                Connect on LinkedIn
-              </span>
-            </motion.a>
-          ))}
+                <div 
+                  className="w-[56px] h-[56px] rounded-full flex items-center justify-center text-[18px] font-medium text-gray-800 transition-transform duration-200 group-hover:scale-110 mb-3"
+                  style={{ background: member.bg }}
+                >
+                  {member.in}
+                </div>
+                <h3 className="text-[15px] font-medium text-[#1a1a2e] mb-1">{member.name}</h3>
+                <p className="text-[12px] text-[#6b7280] mb-2">Christ College of Engineering</p>
+                {member.linkedin && (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#0A66C2] opacity-60 group-hover:opacity-100 transition-opacity duration-300 mt-1">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    Connect on LinkedIn
+                  </span>
+                )}
+              </Comp>
+            )
+          })}
         </div>
       </motion.section>
 
