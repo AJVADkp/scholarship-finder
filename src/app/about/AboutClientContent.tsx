@@ -95,7 +95,6 @@ export function AboutClientContent() {
             { name: "Ajvad K P", bg: "linear-gradient(135deg,#dbeafe,#bfdbfe)", in: "AK", linkedin: "https://www.linkedin.com/in/ajvad-kp-a1259a384" },
             { name: "Angel Rose", bg: "linear-gradient(135deg,#fce7f3,#fbcfe8)", in: "AR" },
             { name: "Akshay Jayesh", bg: "linear-gradient(135deg,#d1fae5,#a7f3d0)", in: "AJ" },
-            { name: "Abhinav", bg: "linear-gradient(135deg,#ede9fe,#ddd6fe)", in: "AB" },
             { name: "Adarsh Parakkal", bg: "linear-gradient(135deg,#fef3c7,#fde68a)", in: "AP", full: true }
           ].map((member, i) => {
             const Comp = member.linkedin ? motion.a : motion.div;
