@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   BarChart3, Globe, Monitor, Smartphone, Tablet, Users, Eye,
   MapPin, Compass, RefreshCw, TrendingUp,
-  ChevronLeft, ChevronRight, ChevronDown, ChevronUp
+  ChevronLeft, ChevronRight, ChevronDown, ChevronUp, X, User
 } from 'lucide-react'
 
 type Visit = {
@@ -22,10 +22,12 @@ type Visit = {
   user_agent: string | null
   referrer: string | null
   user_name: string | null
+  user_id: string | null
   created_at: string
 }
 
 type GroupedUser = {
+  key: string
   ip: string
   country: string | null
   city: string | null
@@ -34,9 +36,22 @@ type GroupedUser = {
   browser: string | null
   referrer: string | null
   user_name: string | null
+  user_id: string | null
   firstVisit: string
   lastVisit: string
   pages: { page: string; time: string }[]
+}
+
+type UserProfileData = {
+  full_name: string | null
+  email: string | null
+  phone: string | null
+  avatar_url: string | null
+  dob: string | null
+  academic_level: string | null
+  gender: string | null
+  state: string | null
+  created_at: string
 }
 
 type TimeRange = '24h' | '7d' | '30d' | 'all'
@@ -100,7 +115,71 @@ function BarList({ title, icon: Icon, items, color }: {
   )
 }
 
-function UserRow({ user }: { user: GroupedUser }) {
+// User profile popup modal
+function UserProfileModal({ userId, onClose }: { userId: string; onClose: () => void }) {
+  const [profile, setProfile] = useState<UserProfileData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`/api/admin/users/${userId}`)
+      .then(r => r.json())
+      .then(data => { setProfile(data.user || null); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [userId])
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="glass-card p-6 w-full max-w-sm animate-scale-in" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-sm font-bold text-gray-700">User Profile</h3>
+          <button onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
+            <X size={16} />
+          </button>
+        </div>
+
+        {loading ? (
+          <p className="text-sm text-gray-400 text-center py-8">Loading...</p>
+        ) : !profile ? (
+          <p className="text-sm text-gray-400 text-center py-8">User not found</p>
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            {/* Avatar */}
+            {profile.avatar_url ? (
+              <img src={profile.avatar_url} alt={profile.full_name || 'User'} className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-white shadow-md" />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-xl font-bold mb-3 ring-2 ring-white shadow-md">
+                {(profile.full_name || profile.email || 'U')[0].toUpperCase()}
+              </div>
+            )}
+
+            {/* Name */}
+            <h4 className="text-base font-bold text-gray-900">{profile.full_name || 'N/A'}</h4>
+
+            {/* Details list */}
+            <div className="mt-4 w-full space-y-2.5 text-left">
+              {[
+                { label: 'Email', value: profile.email },
+                { label: 'Phone', value: profile.phone },
+                { label: 'Date of Birth', value: profile.dob ? new Date(profile.dob).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : null },
+                { label: 'Gender', value: profile.gender },
+                { label: 'Academic Level', value: profile.academic_level },
+                { label: 'State', value: profile.state },
+                { label: 'Joined', value: new Date(profile.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) },
+              ].map(item => (
+                <div key={item.label} className="flex justify-between text-xs border-b border-gray-100 pb-2 last:border-0">
+                  <span className="font-medium text-gray-500">{item.label}</span>
+                  <span className="font-semibold text-gray-800 text-right max-w-[60%] truncate">{item.value || '—'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function UserRow({ user, onUserClick }: { user: GroupedUser; onUserClick: (userId: string) => void }) {
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -113,7 +192,12 @@ function UserRow({ user }: { user: GroupedUser }) {
         </td>
         <td className="px-4 py-3 whitespace-nowrap">
           {user.user_name ? (
-            <span className="text-xs font-semibold text-gray-800 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{user.user_name}</span>
+            <button
+              onClick={(e) => { e.stopPropagation(); if (user.user_id) onUserClick(user.user_id) }}
+              className="text-xs font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full hover:bg-emerald-100 hover:ring-1 hover:ring-emerald-300 transition-all cursor-pointer"
+            >
+              {user.user_name}
+            </button>
           ) : (
             <span className="text-xs text-gray-400 italic">Guest</span>
           )}
@@ -169,6 +253,7 @@ export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState<TimeRange>('7d')
   const [logPage, setLogPage] = useState(1)
+  const [profileUserId, setProfileUserId] = useState<string | null>(null)
 
   const fetchVisits = useCallback(async () => {
     setLoading(true)
@@ -185,16 +270,18 @@ export default function AdminAnalyticsPage() {
 
   useEffect(() => { fetchVisits() }, [fetchVisits])
 
-  // Group visits by unique IP
+  // Group visits by unique IP + user identity
+  // If same IP has different user_ids, they become separate rows
   const groupedUsers: GroupedUser[] = (() => {
     const map = new Map<string, GroupedUser>()
     visits.forEach(v => {
-      const existing = map.get(v.ip_address)
+      // Composite key: IP + user_id (or "guest")
+      const userKey = `${v.ip_address}::${v.user_id || 'guest'}`
+      const existing = map.get(userKey)
       if (existing) {
         existing.pages.push({ page: v.page, time: v.created_at })
         if (v.created_at > existing.lastVisit) {
           existing.lastVisit = v.created_at
-          // Update device info with latest visit
           existing.country = v.country || existing.country
           existing.city = v.city || existing.city
           existing.device = v.device || existing.device
@@ -202,8 +289,12 @@ export default function AdminAnalyticsPage() {
           existing.browser = v.browser || existing.browser
         }
         if (v.created_at < existing.firstVisit) existing.firstVisit = v.created_at
+        // Update user_name if we get one
+        if (v.user_name) existing.user_name = v.user_name
+        if (v.user_id) existing.user_id = v.user_id
       } else {
-        map.set(v.ip_address, {
+        map.set(userKey, {
+          key: userKey,
           ip: v.ip_address,
           country: v.country,
           city: v.city,
@@ -212,14 +303,11 @@ export default function AdminAnalyticsPage() {
           browser: v.browser,
           referrer: v.referrer,
           user_name: v.user_name,
+          user_id: v.user_id,
           firstVisit: v.created_at,
           lastVisit: v.created_at,
           pages: [{ page: v.page, time: v.created_at }],
         })
-      }
-      // Update user_name if we get one from a later visit
-      if (v.user_name && !map.get(v.ip_address)!.user_name) {
-        map.get(v.ip_address)!.user_name = v.user_name
       }
     })
     // Sort pages within each user by time descending
@@ -228,8 +316,6 @@ export default function AdminAnalyticsPage() {
   })()
 
   const uniqueVisitors = groupedUsers.length
-
-  // Count by unique users (1 per IP)
   const countries = countBy(groupedUsers, u => u.country)
   const cities = countBy(groupedUsers, u => u.city)
   const devices = countBy(groupedUsers, u => u.device)
@@ -290,7 +376,7 @@ export default function AdminAnalyticsPage() {
       <div className="glass-card overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100">
           <h3 className="text-sm font-bold text-gray-700">Visitor Log</h3>
-          <p className="text-xs text-gray-400 mt-0.5">Click a row to see pages visited</p>
+          <p className="text-xs text-gray-400 mt-0.5">Click a row to see pages visited · Click a username for profile details</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -307,7 +393,7 @@ export default function AdminAnalyticsPage() {
               ) : paginatedUsers.length === 0 ? (
                 <tr><td colSpan={9} className="text-center py-12 text-gray-400">No visitors recorded yet</td></tr>
               ) : paginatedUsers.map(u => (
-                <UserRow key={u.ip} user={u} />
+                <UserRow key={u.key} user={u} onUserClick={(id) => setProfileUserId(id)} />
               ))}
             </tbody>
           </table>
@@ -335,6 +421,11 @@ export default function AdminAnalyticsPage() {
           </div>
         )}
       </div>
+
+      {/* User Profile Popup */}
+      {profileUserId && (
+        <UserProfileModal userId={profileUserId} onClose={() => setProfileUserId(null)} />
+      )}
     </div>
   )
 }

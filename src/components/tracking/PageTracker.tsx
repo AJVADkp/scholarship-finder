@@ -33,7 +33,7 @@ function getBrowser(): string {
   return 'Unknown'
 }
 
-function sendTrack(page: string, userName: string | null) {
+function sendTrack(page: string, userName: string | null, userId: string | null) {
   const payload = {
     page,
     referrer: document.referrer || null,
@@ -43,6 +43,7 @@ function sendTrack(page: string, userName: string | null) {
     screen_width: window.screen.width,
     screen_height: window.screen.height,
     user_name: userName,
+    user_id: userId,
   }
   const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
   if (navigator.sendBeacon) {
@@ -56,6 +57,7 @@ export function PageTracker() {
   const pathname = usePathname()
   const lastTracked = useRef('')
   const [userName, setUserName] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
   const [userReady, setUserReady] = useState(false)
 
   // Fetch logged-in user's name once on mount
@@ -70,6 +72,7 @@ export function PageTracker() {
           .single()
           .then(({ data }) => {
             setUserName(data?.full_name || user.email || null)
+            setUserId(user.id)
             setUserReady(true)
           })
       } else {
@@ -87,9 +90,9 @@ export function PageTracker() {
     if (pathname === lastTracked.current) return
     lastTracked.current = pathname
 
-    const timer = setTimeout(() => sendTrack(pathname, userName), 300)
+    const timer = setTimeout(() => sendTrack(pathname, userName, userId), 300)
     return () => clearTimeout(timer)
-  }, [pathname, userReady, userName])
+  }, [pathname, userReady, userName, userId])
 
   return null
 }
