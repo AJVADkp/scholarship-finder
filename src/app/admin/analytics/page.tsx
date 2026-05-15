@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { createAdminClient } from '@/lib/supabase/admin'
 import {
   BarChart3, Globe, Monitor, Smartphone, Tablet, Users, Eye,
   MapPin, Compass, RefreshCw, TrendingUp,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, ChevronDown, ChevronUp
 } from 'lucide-react'
 
 type Visit = {
@@ -23,6 +22,19 @@ type Visit = {
   user_agent: string | null
   referrer: string | null
   created_at: string
+}
+
+type GroupedUser = {
+  ip: string
+  country: string | null
+  city: string | null
+  device: string | null
+  os: string | null
+  browser: string | null
+  referrer: string | null
+  firstVisit: string
+  lastVisit: string
+  pages: { page: string; time: string }[]
 }
 
 type TimeRange = '24h' | '7d' | '30d' | 'all'
@@ -86,7 +98,62 @@ function BarList({ title, icon: Icon, items, color }: {
   )
 }
 
-const VISITS_PER_PAGE = 25
+function UserRow({ user }: { user: GroupedUser }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <tr
+        className="hover:bg-white/40 transition-colors cursor-pointer"
+        onClick={() => setOpen(!open)}
+      >
+        <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">
+          {new Date(user.lastVisit).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
+        </td>
+        <td className="px-4 py-3 text-gray-500 text-xs font-mono">{user.ip}</td>
+        <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{user.country || '—'}</td>
+        <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{user.city || '—'}</td>
+        <td className="px-4 py-3 whitespace-nowrap">
+          <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
+            user.device === 'Mobile' ? 'bg-purple-50 text-purple-600' :
+            user.device === 'Tablet' ? 'bg-amber-50 text-amber-600' :
+            'bg-blue-50 text-blue-600'
+          }`}>
+            {user.device || '—'}
+          </span>
+        </td>
+        <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">{user.os || '—'}</td>
+        <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">{user.browser || '—'}</td>
+        <td className="px-4 py-3 text-center">
+          <div className="flex items-center gap-1.5 text-xs text-gray-400">
+            <span className="font-bold text-gray-600">{user.pages.length}</span> pages
+            {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </div>
+        </td>
+      </tr>
+      {open && (
+        <tr>
+          <td colSpan={8} className="px-4 py-0">
+            <div className="bg-gray-50/80 rounded-xl my-1.5 p-3 border border-gray-100">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Pages Visited</p>
+              <div className="space-y-1.5">
+                {user.pages.map((p, i) => (
+                  <div key={i} className="flex items-center justify-between text-xs">
+                    <span className="font-medium text-gray-700">{p.page}</span>
+                    <span className="text-gray-400 text-[11px]">
+                      {new Date(p.time).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  )
+}
+
+const USERS_PER_PAGE = 25
 
 export default function AdminAnalyticsPage() {
   const [visits, setVisits] = useState<Visit[]>([])
@@ -109,28 +176,56 @@ export default function AdminAnalyticsPage() {
 
   useEffect(() => { fetchVisits() }, [fetchVisits])
 
-  // Stats
-  const totalViews = visits.length
-  const uniqueIPs = new Set(visits.map(v => v.ip_address)).size
-  const topPage = countBy(visits, v => v.page)[0]
-  const countries = countBy(visits, v => v.country)
-  const cities = countBy(visits, v => v.city)
-  const devices = countBy(visits, v => v.device)
-  const osList = countBy(visits, v => v.os)
-  const browsers = countBy(visits, v => v.browser)
-  const pages = countBy(visits, v => v.page)
-  const referrers = countBy(visits, v => v.referrer || 'Direct')
+  // Group visits by unique IP
+  const groupedUsers: GroupedUser[] = (() => {
+    const map = new Map<string, GroupedUser>()
+    visits.forEach(v => {
+      const existing = map.get(v.ip_address)
+      if (existing) {
+        existing.pages.push({ page: v.page, time: v.created_at })
+        if (v.created_at > existing.lastVisit) {
+          existing.lastVisit = v.created_at
+          // Update device info with latest visit
+          existing.country = v.country || existing.country
+          existing.city = v.city || existing.city
+          existing.device = v.device || existing.device
+          existing.os = v.os || existing.os
+          existing.browser = v.browser || existing.browser
+        }
+        if (v.created_at < existing.firstVisit) existing.firstVisit = v.created_at
+      } else {
+        map.set(v.ip_address, {
+          ip: v.ip_address,
+          country: v.country,
+          city: v.city,
+          device: v.device,
+          os: v.os,
+          browser: v.browser,
+          referrer: v.referrer,
+          firstVisit: v.created_at,
+          lastVisit: v.created_at,
+          pages: [{ page: v.page, time: v.created_at }],
+        })
+      }
+    })
+    // Sort pages within each user by time descending
+    map.forEach(u => u.pages.sort((a, b) => b.time.localeCompare(a.time)))
+    return Array.from(map.values()).sort((a, b) => b.lastVisit.localeCompare(a.lastVisit))
+  })()
 
-  // Device icons
-  const deviceIcon = (d: string) => {
-    if (d === 'Mobile') return Smartphone
-    if (d === 'Tablet') return Tablet
-    return Monitor
-  }
+  const uniqueVisitors = groupedUsers.length
 
-  // Paginated visit log
-  const totalLogPages = Math.ceil(visits.length / VISITS_PER_PAGE)
-  const paginatedVisits = visits.slice((logPage - 1) * VISITS_PER_PAGE, logPage * VISITS_PER_PAGE)
+  // Count by unique users (1 per IP)
+  const countries = countBy(groupedUsers, u => u.country)
+  const cities = countBy(groupedUsers, u => u.city)
+  const devices = countBy(groupedUsers, u => u.device)
+  const osList = countBy(groupedUsers, u => u.os)
+  const browsers = countBy(groupedUsers, u => u.browser)
+  const referrers = countBy(groupedUsers, u => u.referrer || 'Direct')
+
+  // Pagination
+  const totalLogPages = Math.ceil(groupedUsers.length / USERS_PER_PAGE)
+  const paginatedUsers = groupedUsers.slice((logPage - 1) * USERS_PER_PAGE, logPage * USERS_PER_PAGE)
 
   return (
     <div className="p-6 lg:p-8">
@@ -138,9 +233,7 @@ export default function AdminAnalyticsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-extrabold text-gray-900">Analytics</h1>
-          <p className="text-sm text-gray-500">
-            {totalViews} page views · {uniqueIPs} unique visitors
-          </p>
+          <p className="text-sm text-gray-500">{uniqueVisitors} unique visitors</p>
         </div>
         <div className="flex items-center gap-2">
           {(['24h', '7d', '30d', 'all'] as TimeRange[]).map(range => (
@@ -163,40 +256,33 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Eye} label="Page Views" value={totalViews} color="#4F8EF7" />
-        <StatCard icon={Users} label="Unique Visitors" value={uniqueIPs} color="#8B5CF6" />
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <StatCard icon={Users} label="Unique Visitors" value={uniqueVisitors} color="#8B5CF6" />
         <StatCard icon={Globe} label="Countries" value={countries.length} sub={countries[0]?.label || '—'} color="#34C48B" />
-        <StatCard icon={TrendingUp} label="Top Page" value={topPage?.label || '—'} sub={`${topPage?.count || 0} views`} color="#F59E0B" />
+        <StatCard icon={Monitor} label="Top Device" value={devices[0]?.label || '—'} sub={`${devices[0]?.count || 0} visitors`} color="#4F8EF7" />
       </div>
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <BarList title="Top Pages" icon={BarChart3} items={pages} color="#4F8EF7" />
         <BarList title="Countries" icon={Globe} items={countries} color="#34C48B" />
         <BarList title="Cities" icon={MapPin} items={cities} color="#06B6D4" />
         <BarList title="Devices" icon={Monitor} items={devices} color="#8B5CF6" />
         <BarList title="Operating Systems" icon={Monitor} items={osList} color="#F59E0B" />
         <BarList title="Browsers" icon={Compass} items={browsers} color="#EF4444" />
+        <BarList title="Traffic Sources" icon={TrendingUp} items={referrers} color="#8B5CF6" />
       </div>
 
-      {/* Referrers */}
-      {referrers.length > 0 && (
-        <div className="mb-6">
-          <BarList title="Traffic Sources (Referrers)" icon={TrendingUp} items={referrers} color="#8B5CF6" />
-        </div>
-      )}
-
-      {/* Recent Visit Log */}
+      {/* Visitor Log */}
       <div className="glass-card overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100">
-          <h3 className="text-sm font-bold text-gray-700">Recent Visit Log</h3>
+          <h3 className="text-sm font-bold text-gray-700">Visitor Log</h3>
+          <p className="text-xs text-gray-400 mt-0.5">Click a row to see pages visited</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50/60 border-b border-gray-100">
               <tr>
-                {['Time', 'Page', 'IP', 'Country', 'City', 'Device', 'OS', 'Browser'].map(h => (
+                {['Last Seen', 'IP Address', 'Country', 'City', 'Device', 'OS', 'Browser', 'Pages'].map(h => (
                   <th key={h} className="px-4 py-3 text-left font-bold text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -204,29 +290,10 @@ export default function AdminAnalyticsPage() {
             <tbody className="divide-y divide-gray-50">
               {loading ? (
                 <tr><td colSpan={8} className="text-center py-12 text-gray-400">Loading...</td></tr>
-              ) : paginatedVisits.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-12 text-gray-400">No visits recorded yet</td></tr>
-              ) : paginatedVisits.map(v => (
-                <tr key={v.id} className="hover:bg-white/40 transition-colors">
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">
-                    {new Date(v.created_at).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
-                  </td>
-                  <td className="px-4 py-3 font-medium text-gray-800 max-w-40 truncate">{v.page}</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs font-mono">{v.ip_address}</td>
-                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{v.country || '—'}</td>
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{v.city || '—'}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      v.device === 'Mobile' ? 'bg-purple-50 text-purple-600' :
-                      v.device === 'Tablet' ? 'bg-amber-50 text-amber-600' :
-                      'bg-blue-50 text-blue-600'
-                    }`}>
-                      {v.device || '—'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">{v.os || '—'}</td>
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">{v.browser || '—'}</td>
-                </tr>
+              ) : paginatedUsers.length === 0 ? (
+                <tr><td colSpan={8} className="text-center py-12 text-gray-400">No visitors recorded yet</td></tr>
+              ) : paginatedUsers.map(u => (
+                <UserRow key={u.ip} user={u} />
               ))}
             </tbody>
           </table>
