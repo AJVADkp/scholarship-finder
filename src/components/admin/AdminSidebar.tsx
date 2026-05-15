@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, AlertCircle } from 'lucide-react'
+import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, AlertCircle, BarChart3 } from 'lucide-react'
 import { useState } from 'react'
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal'
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/scholarships', icon: BookOpen, label: 'Scholarships' },
   { href: '/admin/users', icon: Users, label: 'Users' },
   { href: '/admin/messages', icon: MessageSquare, label: 'Messages' },
+  { href: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ]
 

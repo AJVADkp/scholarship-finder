@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { ConditionalNavbar } from '@/components/layout/ConditionalNavbar'
 import { ParticleBackground } from '@/components/layout/ParticleBackground'
 import { Analytics } from '@vercel/analytics/react'
+import { PageTracker } from '@/components/tracking/PageTracker'
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,7 @@ export default function RootLayout({
         <main className="min-h-[calc(100vh-64px)] relative z-10">{children}</main>
         <Toaster />
         <Analytics />
+        <PageTracker />
       </body>
     </html>
   )
