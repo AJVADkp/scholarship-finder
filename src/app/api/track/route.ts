@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient()
 
-    await supabase.from('page_visits').insert({
+    const { error } = await supabase.from('page_visits').insert({
       page,
       referrer: referrer || null,
       ip_address: ip,
@@ -34,8 +34,14 @@ export async function POST(request: NextRequest) {
       user_id: user_id || null,
     })
 
+    if (error) {
+      console.error('[Track] Insert failed:', error.message)
+      return NextResponse.json({ ok: false, error: error.message }, { status: 500 })
+    }
+
     return NextResponse.json({ ok: true })
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 500 })
+  } catch (err: any) {
+    console.error('[Track] Error:', err?.message)
+    return NextResponse.json({ ok: false, error: err?.message }, { status: 500 })
   }
 }
