@@ -21,6 +21,7 @@ type Visit = {
   screen_height: number | null
   user_agent: string | null
   referrer: string | null
+  user_name: string | null
   created_at: string
 }
 
@@ -32,6 +33,7 @@ type GroupedUser = {
   os: string | null
   browser: string | null
   referrer: string | null
+  user_name: string | null
   firstVisit: string
   lastVisit: string
   pages: { page: string; time: string }[]
@@ -109,6 +111,13 @@ function UserRow({ user }: { user: GroupedUser }) {
         <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">
           {new Date(user.lastVisit).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
         </td>
+        <td className="px-4 py-3 whitespace-nowrap">
+          {user.user_name ? (
+            <span className="text-xs font-semibold text-gray-800 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{user.user_name}</span>
+          ) : (
+            <span className="text-xs text-gray-400 italic">Guest</span>
+          )}
+        </td>
         <td className="px-4 py-3 text-gray-500 text-xs font-mono">{user.ip}</td>
         <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{user.country || '—'}</td>
         <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{user.city || '—'}</td>
@@ -132,7 +141,7 @@ function UserRow({ user }: { user: GroupedUser }) {
       </tr>
       {open && (
         <tr>
-          <td colSpan={8} className="px-4 py-0">
+          <td colSpan={9} className="px-4 py-0">
             <div className="bg-gray-50/80 rounded-xl my-1.5 p-3 border border-gray-100">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Pages Visited</p>
               <div className="space-y-1.5">
@@ -202,10 +211,15 @@ export default function AdminAnalyticsPage() {
           os: v.os,
           browser: v.browser,
           referrer: v.referrer,
+          user_name: v.user_name,
           firstVisit: v.created_at,
           lastVisit: v.created_at,
           pages: [{ page: v.page, time: v.created_at }],
         })
+      }
+      // Update user_name if we get one from a later visit
+      if (v.user_name && !map.get(v.ip_address)!.user_name) {
+        map.get(v.ip_address)!.user_name = v.user_name
       }
     })
     // Sort pages within each user by time descending
@@ -282,16 +296,16 @@ export default function AdminAnalyticsPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50/60 border-b border-gray-100">
               <tr>
-                {['Last Seen', 'IP Address', 'Country', 'City', 'Device', 'OS', 'Browser', 'Pages'].map(h => (
+                {['Last Seen', 'User', 'IP Address', 'Country', 'City', 'Device', 'OS', 'Browser', 'Pages'].map(h => (
                   <th key={h} className="px-4 py-3 text-left font-bold text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {loading ? (
-                <tr><td colSpan={8} className="text-center py-12 text-gray-400">Loading...</td></tr>
+                <tr><td colSpan={9} className="text-center py-12 text-gray-400">Loading...</td></tr>
               ) : paginatedUsers.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-12 text-gray-400">No visitors recorded yet</td></tr>
+                <tr><td colSpan={9} className="text-center py-12 text-gray-400">No visitors recorded yet</td></tr>
               ) : paginatedUsers.map(u => (
                 <UserRow key={u.ip} user={u} />
               ))}

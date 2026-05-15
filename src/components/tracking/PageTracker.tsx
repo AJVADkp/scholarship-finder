@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 function getDeviceType(): string {
   const ua = navigator.userAgent
@@ -35,6 +36,27 @@ function getBrowser(): string {
 export function PageTracker() {
   const pathname = usePathname()
   const lastTracked = useRef('')
+  const userName = useRef<string | null>(null)
+  const userFetched = useRef(false)
+
+  // Fetch logged-in user's name once
+  useEffect(() => {
+    if (userFetched.current) return
+    userFetched.current = true
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', user.id)
+          .single()
+          .then(({ data }) => {
+            userName.current = data?.full_name || user.email || null
+          })
+      }
+    })
+  }, [])
 
   useEffect(() => {
     // Don't track admin pages or the same page twice in a row
@@ -52,6 +74,7 @@ export function PageTracker() {
         browser: getBrowser(),
         screen_width: window.screen.width,
         screen_height: window.screen.height,
+        user_name: userName.current,
       }
 
       // Use sendBeacon for reliability, fall back to fetch
