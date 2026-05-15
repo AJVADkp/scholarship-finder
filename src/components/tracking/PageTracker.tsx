@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -33,16 +33,33 @@ function getBrowser(): string {
   return 'Unknown'
 }
 
+function sendTrack(page: string, userName: string | null) {
+  const payload = {
+    page,
+    referrer: document.referrer || null,
+    device: getDeviceType(),
+    os: getOS(),
+    browser: getBrowser(),
+    screen_width: window.screen.width,
+    screen_height: window.screen.height,
+    user_name: userName,
+  }
+  const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/track', blob)
+  } else {
+    fetch('/api/track', { method: 'POST', body: blob, keepalive: true }).catch(() => {})
+  }
+}
+
 export function PageTracker() {
   const pathname = usePathname()
   const lastTracked = useRef('')
-  const userName = useRef<string | null>(null)
-  const userFetched = useRef(false)
+  const [userName, setUserName] = useState<string | null>(null)
+  const [userReady, setUserReady] = useState(false)
 
-  // Fetch logged-in user's name once
+  // Fetch logged-in user's name once on mount
   useEffect(() => {
-    if (userFetched.current) return
-    userFetched.current = true
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
@@ -52,42 +69,27 @@ export function PageTracker() {
           .eq('id', user.id)
           .single()
           .then(({ data }) => {
-            userName.current = data?.full_name || user.email || null
+            setUserName(data?.full_name || user.email || null)
+            setUserReady(true)
           })
+      } else {
+        setUserReady(true)
       }
+    }).catch(() => {
+      setUserReady(true)
     })
   }, [])
 
+  // Track page visits — waits for user check to finish first
   useEffect(() => {
-    // Don't track admin pages or the same page twice in a row
+    if (!userReady) return
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return
     if (pathname === lastTracked.current) return
     lastTracked.current = pathname
 
-    // Small delay to avoid tracking instant redirects
-    const timer = setTimeout(() => {
-      const payload = {
-        page: pathname,
-        referrer: document.referrer || null,
-        device: getDeviceType(),
-        os: getOS(),
-        browser: getBrowser(),
-        screen_width: window.screen.width,
-        screen_height: window.screen.height,
-        user_name: userName.current,
-      }
-
-      // Use sendBeacon for reliability, fall back to fetch
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/track', blob)
-      } else {
-        fetch('/api/track', { method: 'POST', body: blob, keepalive: true }).catch(() => {})
-      }
-    }, 300)
-
+    const timer = setTimeout(() => sendTrack(pathname, userName), 300)
     return () => clearTimeout(timer)
-  }, [pathname])
+  }, [pathname, userReady, userName])
 
   return null
 }
