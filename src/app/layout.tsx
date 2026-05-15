@@ -3,6 +3,7 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { ConditionalNavbar } from '@/components/layout/ConditionalNavbar'
 import { ParticleBackground } from '@/components/layout/ParticleBackground'
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata: Metadata = {
   title: {
@@ -43,6 +44,7 @@ export default function RootLayout({
         <ConditionalNavbar />
         <main className="min-h-[calc(100vh-64px)] relative z-10">{children}</main>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   )
