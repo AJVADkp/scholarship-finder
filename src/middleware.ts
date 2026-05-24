@@ -16,9 +16,12 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const secret = new TextEncoder().encode(
-        process.env.ADMIN_JWT_SECRET || 'fallback-secret-key-change-in-production'
-      )
+      const jwtSecret = process.env.ADMIN_JWT_SECRET
+      if (!jwtSecret) {
+        console.error('[Middleware] ADMIN_JWT_SECRET is not set')
+        return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
+      const secret = new TextEncoder().encode(jwtSecret)
       await jwtVerify(adminSession, secret)
       return NextResponse.next()
     } catch {

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { verifyAdminToken } from '@/lib/admin-auth'
 
 export async function GET(request: NextRequest) {
+  const admin = await verifyAdminToken()
+  if (!admin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const range = request.nextUrl.searchParams.get('range') || '7d'
 
   const supabase = createAdminClient()

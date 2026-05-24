@@ -1,18 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { verifyAdminToken } from '@/lib/admin-auth'
 import bcrypt from 'bcryptjs'
 
 export async function PUT(request: NextRequest) {
-  const body = await request.json()
+  const admin = await verifyAdminToken()
+  if (!admin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let body: Record<string, string>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
+
   const supabase = createAdminClient()
 
   if (body.type === 'username') {
     const { username } = body
-    if (!username) return NextResponse.json({ error: 'Username is required' }, { status: 400 })
+    if (!username || username.trim().length < 3) {
+      return NextResponse.json({ error: 'Username must be at least 3 characters' }, { status: 400 })
+    }
 
     const { error } = await supabase
       .from('admin_credentials')
-      .update({ username })
+      .update({ username: username.trim() })
       .eq('id', 1)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -21,6 +35,14 @@ export async function PUT(request: NextRequest) {
 
   if (body.type === 'password') {
     const { current_password, new_password } = body
+
+    if (!current_password || !new_password) {
+      return NextResponse.json({ error: 'Current and new password are required' }, { status: 400 })
+    }
+
+    if (new_password.length < 8) {
+      return NextResponse.json({ error: 'New password must be at least 8 characters' }, { status: 400 })
+    }
 
     // Verify current password
     const { data: creds } = await supabase

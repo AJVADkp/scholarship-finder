@@ -31,7 +31,14 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { username, password } = await request.json()
+  let username: string, password: string
+  try {
+    const body = await request.json()
+    username = body.username
+    password = body.password
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
   if (!username || !password) {
     return NextResponse.json({ error: 'Username and password are required' }, { status: 400 })
@@ -48,12 +55,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Authentication service unavailable' }, { status: 500 })
   }
 
-  if (creds.username !== username) {
-    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-  }
-
+  // Always compare password to prevent timing-based username enumeration
   const passwordMatch = await bcrypt.compare(password, creds.password_hash)
-  if (!passwordMatch) {
+  if (creds.username !== username || !passwordMatch) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
   }
 
@@ -61,9 +65,11 @@ export async function POST(request: NextRequest) {
   attempts.delete(ip)
 
   // Sign JWT
-  const secret = new TextEncoder().encode(
-    process.env.ADMIN_JWT_SECRET || 'fallback-secret-key-change-in-production'
-  )
+  const jwtSecret = process.env.ADMIN_JWT_SECRET
+  if (!jwtSecret) {
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+  }
+  const secret = new TextEncoder().encode(jwtSecret)
   const token = await new SignJWT({ role: 'admin', username })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()

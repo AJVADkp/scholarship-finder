@@ -56,6 +56,7 @@ export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRan
   if (isNaN(userIncomeNum)) return false;
 
   const rangeStr = scholarshipIncomeRange.toLowerCase();
+  const hasLakh = /\b(lakhs?)\b/i.test(rangeStr) || /\b\d+(\.\d+)?\s*l\b/i.test(rangeStr);
   let max = Infinity;
   let min = 0;
 
@@ -63,14 +64,14 @@ export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRan
     const match = rangeStr.match(/(\d+(\.\d+)?)/);
     if (match) {
       let val = parseFloat(match[1]);
-      if (rangeStr.includes('lakh') || rangeStr.includes('l')) val *= 100000;
+      if (hasLakh) val *= 100000;
       max = val;
     }
   } else if (rangeStr.includes('above') || rangeStr.includes('more than')) {
     const match = rangeStr.match(/(\d+(\.\d+)?)/);
     if (match) {
       let val = parseFloat(match[1]);
-      if (rangeStr.includes('lakh') || rangeStr.includes('l')) val *= 100000;
+      if (hasLakh) val *= 100000;
       min = val;
     }
   } else if (rangeStr.includes('to') || rangeStr.includes('-')) {
@@ -78,7 +79,7 @@ export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRan
     if (matches.length >= 2) {
       let val1 = parseFloat(matches[0][1]);
       let val2 = parseFloat(matches[1][1]);
-      if (rangeStr.includes('lakh') || rangeStr.includes('l')) {
+      if (hasLakh) {
         if (val1 < 100) val1 *= 100000;
         if (val2 < 100) val2 *= 100000;
       }
@@ -90,7 +91,7 @@ export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRan
     const match = rangeStr.match(/(\d+(\.\d+)?)/);
     if (match) {
       let val = parseFloat(match[1]);
-      if (rangeStr.includes('lakh') || rangeStr.includes('l')) val *= 100000;
+      if (hasLakh) val *= 100000;
       max = val;
     }
   }

@@ -1,17 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { verifyAdminToken } from '@/lib/admin-auth'
 
 interface Params { params: Promise<{ id: string }> }
 
 // PUT update scholarship
 export async function PUT(request: NextRequest, { params }: Params) {
+  const admin = await verifyAdminToken()
+  if (!admin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { id } = await params
-  const body = await request.json()
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
+
+  // Only allow known scholarship fields
+  const allowedFields = [
+    'name', 'description', 'provider', 'amount', 'currency', 'deadline',
+    'eligibility', 'category', 'url', 'state', 'academic_level',
+    'income_limit', 'gender', 'is_active'
+  ]
+  const sanitized: Record<string, unknown> = {}
+  for (const key of allowedFields) {
+    if (key in body) sanitized[key] = body[key]
+  }
+
   const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('scholarships')
-    .update(body)
+    .update(sanitized)
     .eq('id', id)
     .select()
     .single()
@@ -22,6 +46,11 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
 // DELETE scholarship
 export async function DELETE(_: NextRequest, { params }: Params) {
+  const admin = await verifyAdminToken()
+  if (!admin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { id } = await params
   const supabase = createAdminClient()
 

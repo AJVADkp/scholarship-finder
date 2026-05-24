@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ ok: true })
-  } catch (err: any) {
-    console.error('[Track] Error:', err?.message)
-    return NextResponse.json({ ok: false, error: err?.message }, { status: 500 })
+  } catch (err: unknown) {
+    console.error('[Track] Error:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ ok: false, error: 'Internal server error' }, { status: 500 })
   }
 }
