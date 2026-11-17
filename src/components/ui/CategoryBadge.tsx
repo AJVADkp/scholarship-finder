@@ -1,5 +1,3 @@
-'use client'
-
 import { type Category, CATEGORY_CONFIG } from '@/lib/types'
 
 interface BadgeProps {

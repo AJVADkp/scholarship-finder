@@ -1,5 +1,3 @@
-'use client'
-
 import { getDaysUntilDeadline, getDeadlineStatus } from '@/lib/utils'
 import { Clock } from 'lucide-react'
 
