@@ -6,13 +6,14 @@ import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { SkeletonCard } from '@/components/ui/SkeletonCard'
 import type { Scholarship, UserProfile } from '@/lib/types'
 import {
-  User, Phone, Mail, Calendar, CheckCircle, Edit2, X, Save,
+  User, Phone, Mail, Calendar, CheckCircle, Edit2,
   GraduationCap, Sparkles, AlertCircle
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
 import type { User as AuthUser } from '@supabase/supabase-js'
 import { ProfileForm } from '@/components/profile/ProfileForm'
+import { EditBasicInfoModal } from '@/components/profile/EditBasicInfoModal'
 import { rankScholarshipsForUser } from '@/lib/scoring'
 
 export default function DashboardPage() {
@@ -151,101 +152,27 @@ export default function DashboardPage() {
       </div>
 
       {/* Edit Basic Info Modal */}
-      {editOpen && (
-        <div className="modal-overlay" onClick={() => setEditOpen(false)}>
-          <div
-            className="glass-card p-8 w-full max-w-md animate-scale-in relative overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Background Accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16" />
-
-            <div className="flex items-center justify-between mb-6 relative">
-              <div>
-                <h2 className="font-black text-gray-900 text-xl">Basic Information</h2>
-                <p className="text-xs text-gray-500 font-medium">Keep your contact details up to date.</p>
-              </div>
-              <button onClick={() => setEditOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
-                <X size={20} className="text-gray-400" />
-              </button>
-            </div>
-
-            <div className="space-y-5 relative">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="input-glass py-3 focus:border-primary/50 transition-colors"
-                  placeholder="e.g. Rahul Sharma"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  value={editPhone}
-                  onChange={(e) => setEditPhone(e.target.value)}
-                  className="input-glass py-3 focus:border-primary/50 transition-colors"
-                  placeholder="+91 98765 43210"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  value={editDob}
-                  onChange={(e) => setEditDob(e.target.value)}
-                  className="input-glass py-3 focus:border-primary/50 transition-colors"
-                />
-              </div>
-
-              {/* Link to Full Profile */}
-              <button
-                onClick={() => {
-                  setEditOpen(false)
-                  setActiveTab('profile')
-                }}
-                className="w-full py-4 px-4 rounded-xl border border-dashed border-primary/40 text-primary text-sm font-black bg-primary/[0.02] hover:bg-gray-100 hover:text-gray-900 hover:scale-[1.02] hover:border-gray-400 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-3 active:scale-95 group"
-              >
-                <GraduationCap size={18} className="group-hover:rotate-12 transition-transform" />
-                Edit / View Academic Profile
-              </button>
-            </div>
-
-            <div className="flex gap-3 mt-8 relative">
-              <button
-                onClick={() => {
-                  // Reset states to current profile data on cancel
-                  setEditName(profile?.full_name || '')
-                  setEditPhone(profile?.phone || '+91 ')
-                  setEditDob(profile?.dob || '')
-                  setEditOpen(false)
-                }}
-                className="btn-ghost flex-1 justify-center py-3 font-bold hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveBasicInfo}
-                disabled={savingProfile}
-                className="btn-primary flex-1 justify-center py-3 font-black shadow-lg shadow-primary/20"
-              >
-                {savingProfile ? 'Saving...' : <><Save size={18} /> Save Info</>}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <EditBasicInfoModal
+        isOpen={editOpen}
+        onClose={() => {
+          setEditName(profile?.full_name || '')
+          setEditPhone(profile?.phone || '+91 ')
+          setEditDob(profile?.dob || '')
+          setEditOpen(false)
+        }}
+        name={editName}
+        setName={setEditName}
+        phone={editPhone}
+        setPhone={setEditPhone}
+        dob={editDob}
+        setDob={setEditDob}
+        onSave={saveBasicInfo}
+        saving={savingProfile}
+        onViewAcademicProfile={() => {
+          setEditOpen(false)
+          setActiveTab('profile')
+        }}
+      />
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8 bg-gray-100/50 p-1.5 rounded-2xl w-fit mx-auto sm:mx-0">
