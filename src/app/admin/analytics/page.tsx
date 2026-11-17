@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import {
-  BarChart3, Globe, Monitor, Smartphone, Tablet, Users, Eye,
+  Globe, Monitor, Users,
   MapPin, Compass, RefreshCw, TrendingUp,
-  ChevronLeft, ChevronRight, ChevronDown, ChevronUp, X, User
+  ChevronLeft, ChevronRight, ChevronDown, ChevronUp, X
 } from 'lucide-react'
 
 type Visit = {
@@ -68,7 +68,7 @@ function countBy<T>(arr: T[], key: (item: T) => string | null): { label: string;
 }
 
 function StatCard({ icon: Icon, label, value, sub, color }: {
-  icon: any; label: string; value: string | number; sub?: string; color: string
+  icon: React.ElementType; label: string; value: string | number; sub?: string; color: string
 }) {
   return (
     <div className="glass-card p-5">
@@ -85,7 +85,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
 }
 
 function BarList({ title, icon: Icon, items, color }: {
-  title: string; icon: any; items: { label: string; count: number }[]; color: string
+  title: string; icon: React.ElementType; items: { label: string; count: number }[]; color: string
 }) {
   const max = items[0]?.count || 1
   return (
@@ -145,6 +145,7 @@ function UserProfileModal({ userId, onClose }: { userId: string; onClose: () => 
           <div className="flex flex-col items-center text-center">
             {/* Avatar */}
             {profile.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={profile.avatar_url} alt={profile.full_name || 'User'} className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-white shadow-md" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-xl font-bold mb-3 ring-2 ring-white shadow-md">
@@ -256,7 +257,6 @@ export default function AdminAnalyticsPage() {
   const [profileUserId, setProfileUserId] = useState<string | null>(null)
 
   const fetchVisits = useCallback(async () => {
-    setLoading(true)
     try {
       const res = await fetch(`/api/admin/analytics?range=${timeRange}`)
       const data = await res.json()

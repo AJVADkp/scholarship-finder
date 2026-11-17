@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { SkeletonCard } from '@/components/ui/SkeletonCard'
-import { Footer } from '@/components/layout/Footer'
 import type { Scholarship } from '@/lib/types'
 import { Heart, GraduationCap } from 'lucide-react'
 import Link from 'next/link'
@@ -16,26 +15,29 @@ export default function SavedScholarshipsPage() {
 
   const supabase = createClient()
 
+  const load = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      setUserId(user.id)
+
+      const { data } = await supabase
+        .from('saved_scholarships')
+        .select('scholarship_id, scholarships(*)')
+        .eq('user_id', user.id)
+        .order('saved_at', { ascending: false })
+
+      const savedList = data?.map((d: { scholarships: unknown }) => d.scholarships).filter(Boolean) as Scholarship[]
+      setScholarships(savedList || [])
+    } finally {
+      setLoading(false)
+    }
+  }, [supabase])
+
   useEffect(() => {
     load()
-  }, [])
-
-  const load = async () => {
-    setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    setUserId(user.id)
-
-    const { data } = await supabase
-      .from('saved_scholarships')
-      .select('scholarship_id, scholarships(*)')
-      .eq('user_id', user.id)
-      .order('saved_at', { ascending: false })
-
-    const savedList = data?.map((d: any) => d.scholarships).filter(Boolean) as Scholarship[]
-    setScholarships(savedList || [])
-    setLoading(false)
-  }
+  }, [load])
 
   const handleUnsave = (scholarshipId: string) => {
     setScholarships((prev) => prev.filter((s) => s.id !== scholarshipId))

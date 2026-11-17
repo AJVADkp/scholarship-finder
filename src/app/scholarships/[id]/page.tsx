@@ -19,22 +19,31 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-// Generate static pages at build time for instantaneous loading
+export const dynamicParams = true
+
+// Generate static pages at build time when Supabase credentials are present
 export async function generateStaticParams() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-  
-  // Fetch all active scholarship IDs
-  const { data } = await supabase
-    .from('scholarships')
-    .select('id')
-    .eq('is_active', true)
-    
-  return (data || []).map((scholarship) => ({
-    id: scholarship.id,
-  }))
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
+    return []
+  }
+
+  try {
+    const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+    const { data } = await supabase
+      .from('scholarships')
+      .select('id')
+      .eq('is_active', true)
+
+    return (data || []).map((scholarship) => ({
+      id: scholarship.id,
+    }))
+  } catch (err) {
+    console.warn('[StaticParams] Pre-rendering scholarship routes skipped:', err)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -1,6 +1,6 @@
 'use client'
 
-import { getDaysUntilDeadline, getDeadlineStatus, formatDeadline } from '@/lib/utils'
+import { getDaysUntilDeadline, getDeadlineStatus } from '@/lib/utils'
 import { Clock } from 'lucide-react'
 
 interface DeadlineBadgeProps {

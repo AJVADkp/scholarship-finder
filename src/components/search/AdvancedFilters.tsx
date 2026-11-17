@@ -84,17 +84,6 @@ const CHIP_UNSELECTED = {
   color: '#4b5563',
   borderColor: '#e5e7eb',
 }
-const ROW_SELECTED = {
-  background: 'rgba(79,142,247,0.1)',
-  color: 'var(--color-primary)',
-  borderColor: 'rgba(79,142,247,0.35)',
-}
-const ROW_UNSELECTED = {
-  background: 'rgba(255,255,255,0.65)',
-  backdropFilter: 'blur(12px)',
-  color: '#4b5563',
-  borderColor: '#e5e7eb',
-}
 
 function ChipMultiSelect({
   options, selected, onChange
@@ -134,26 +123,6 @@ function SingleSelect({
   )
 }
 
-// Full-width row style for list options (caste, year of study, study mode)
-function RowSelect({
-  options, selected, onChange, renderLabel
-}: { options: string[]; selected: string; onChange: (v: string) => void; renderLabel?: (opt: string) => React.ReactNode }) {
-  return (
-    <div className="space-y-1.5">
-      {options.map(opt => {
-        const isSelected = selected === opt
-        return (
-          <button key={opt} onClick={() => onChange(isSelected ? '' : opt)}
-            style={isSelected ? ROW_SELECTED : ROW_UNSELECTED}
-            className="w-full text-left px-3 py-1.5 rounded-xl text-xs font-medium border transition-all hover:opacity-90"
-          >
-            {renderLabel ? renderLabel(opt) : opt}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
 
 function Tooltip({ text }: { text: string }) {
   const [show, setShow] = useState(false)

@@ -72,9 +72,10 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/users" className="text-xs text-primary hover:underline font-semibold">View all</Link>
           </div>
           <div className="space-y-3">
-            {recentUsers && recentUsers.length > 0 ? recentUsers.map((u: any) => (
-              <div key={u.email} className="flex items-center gap-3">
+            {recentUsers && recentUsers.length > 0 ? recentUsers.map((u: { email: string | null; full_name: string | null; avatar_url: string | null; created_at: string }) => (
+              <div key={u.email || u.created_at} className="flex items-center gap-3">
                 {u.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={u.avatar_url} alt={u.full_name || 'User'} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
@@ -105,7 +106,7 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/scholarships" className="text-xs text-primary hover:underline font-semibold">View all</Link>
           </div>
           <div className="space-y-3">
-            {recentScholarships && recentScholarships.length > 0 ? recentScholarships.map((s: any) => (
+            {recentScholarships && recentScholarships.length > 0 ? recentScholarships.map((s: { id: string; title: string; category: string | null; created_at: string }) => (
               <div key={s.id} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
                   <BookOpen size={14} className="text-blue-500" />

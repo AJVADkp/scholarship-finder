@@ -1,8 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { formatAmount, formatDeadline, getDaysUntilDeadline } from '@/lib/utils'
+import { formatAmount, formatDeadline } from '@/lib/utils'
 import { type Scholarship, CATEGORY_CONFIG } from '@/lib/types'
 import { DeadlineBadge } from '@/components/ui/DeadlineBadge'
 import { CategoryBadge } from '@/components/ui/CategoryBadge'
@@ -31,14 +30,12 @@ export function ScholarshipCard({
 }: ScholarshipCardProps) {
   const [saved, setSaved] = useState(isSaved)
   const [savingLoading, setSavingLoading] = useState(false)
-  const router = useRouter()
 
   const categoryConfig = scholarship.category
     ? CATEGORY_CONFIG[scholarship.category as keyof typeof CATEGORY_CONFIG]
     : null
 
   const borderColor = categoryConfig?.color || '#4F8EF7'
-  const days = getDaysUntilDeadline(scholarship.deadline)
 
   const handleSaveToggle = async (e: React.MouseEvent) => {
     e.preventDefault()

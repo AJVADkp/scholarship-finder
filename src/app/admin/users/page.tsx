@@ -1,9 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Eye, Edit2, Trash2, X, Save, AlertTriangle, GraduationCap, ExternalLink } from 'lucide-react'
+import { Search, Eye, Trash2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { Toaster } from 'react-hot-toast'
 import type { UserProfile } from '@/lib/types'
 import { format } from 'date-fns'
 
@@ -13,20 +12,43 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('')
 
   const [viewUser, setViewUser] = useState<UserProfile | null>(null)
-  const [saving, setSaving] = useState(false)
 
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
-  useEffect(() => { loadUsers() }, [])
-
-  const loadUsers = async () => {
+  const refreshUsers = async () => {
     setLoading(true)
-    const res = await fetch('/api/admin/users')
-    const data = await res.json()
-    setUsers(data.users || [])
-    setLoading(false)
+    try {
+      const res = await fetch('/api/admin/users')
+      const data = await res.json()
+      setUsers(data.users || [])
+    } catch (err) {
+      console.error('[AdminUsers] Load failed:', err)
+    } finally {
+      setLoading(false)
+    }
   }
+
+  useEffect(() => {
+    let ignore = false
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/admin/users')
+        const data = await res.json()
+        if (!ignore) {
+          setUsers(data.users || [])
+        }
+      } catch (err) {
+        console.error('[AdminUsers] Load failed:', err)
+      } finally {
+        if (!ignore) setLoading(false)
+      }
+    }
+    fetchUsers()
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   const filtered = users.filter((u) => {
     if (!search) return true
@@ -45,7 +67,7 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error()
       toast.success('User deleted')
       setDeleteId(null)
-      loadUsers()
+      await refreshUsers()
     } catch {
       toast.error('Failed to delete user')
     } finally {
@@ -55,7 +77,6 @@ export default function AdminUsersPage() {
 
   return (
     <>
-      <Toaster position="top-right" />
       <div className="p-6 lg:p-8">
         <div className="mb-6">
           <h1 className="text-2xl font-extrabold text-gray-900">Students</h1>
@@ -96,6 +117,7 @@ export default function AdminUsersPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {u.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
                         ) : (
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-xs font-bold">
@@ -143,6 +165,7 @@ export default function AdminUsersPage() {
             <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 {viewUser.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={viewUser.avatar_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-sm" />
                 ) : (
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-xl font-bold border-2 border-white shadow-sm">

@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { Mail, Clock, User, Trash2 } from 'lucide-react'
+import { Mail, Clock, User } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Messages | Admin' }

@@ -32,8 +32,8 @@ export default function AdminSettingsPage() {
       if (!res.ok) { const d = await res.json(); throw new Error(d.error) }
       toast.success('Username updated successfully!')
       setUsername('')
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update username')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update username')
     } finally {
       setSavingUsername(false)
       setShowUserConfirm(false)
@@ -55,8 +55,8 @@ export default function AdminSettingsPage() {
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update password')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update password')
     } finally {
       setSavingPassword(false)
       setShowPassConfirm(false)

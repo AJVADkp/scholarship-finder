@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { SkeletonCard } from '@/components/ui/SkeletonCard'
 import type { Scholarship, UserProfile } from '@/lib/types'
 import {
-  User, Phone, Mail, Calendar, Upload, CheckCircle, Edit2, X, Save,
+  User, Phone, Mail, Calendar, CheckCircle, Edit2, X, Save,
   GraduationCap, Sparkles, AlertCircle
 } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -32,29 +32,7 @@ export default function DashboardPage() {
 
   const supabase = createClient()
 
-  useEffect(() => {
-    init()
-  }, [])
-
-  const init = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    setAuthUser(user)
-
-    const { data: profileData } = await supabase.from('users').select('*').eq('id', user.id).single()
-    if (profileData) {
-      setProfile(profileData as UserProfile)
-      setEditName(profileData.full_name || '')
-      setEditPhone(profileData.phone || '+91 ')
-      setEditDob(profileData.dob || '')
-      loadEligibleScholarships(profileData as UserProfile, user.id)
-    }
-
-    const { data: savedData } = await supabase.from('saved_scholarships').select('scholarship_id').eq('user_id', user.id)
-    if (savedData) setSavedIds(new Set(savedData.map((d: any) => d.scholarship_id)))
-  }
-
-  const loadEligibleScholarships = async (u: UserProfile, userId: string) => {
+  const loadEligibleScholarships = useCallback(async (u: UserProfile) => {
     setLoadingScholarships(true)
     try {
       const { data: allScholarships, error } = await supabase
@@ -248,12 +226,34 @@ export default function DashboardPage() {
         : sorted.slice(0, Math.max(10, perfectMatches.length))
 
       setEligibleScholarships(finalSelection)
-    } catch (err: any) {
+    } catch {
       toast.error('Unable to load recommendations')
     } finally {
       setLoadingScholarships(false)
     }
-  }
+  }, [supabase])
+
+  const init = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setAuthUser(user)
+
+    const { data: profileData } = await supabase.from('users').select('*').eq('id', user.id).single()
+    if (profileData) {
+      setProfile(profileData as UserProfile)
+      setEditName(profileData.full_name || '')
+      setEditPhone(profileData.phone || '+91 ')
+      setEditDob(profileData.dob || '')
+      loadEligibleScholarships(profileData as UserProfile)
+    }
+
+    const { data: savedData } = await supabase.from('saved_scholarships').select('scholarship_id').eq('user_id', user.id)
+    if (savedData) setSavedIds(new Set(savedData.map((d: { scholarship_id: string }) => d.scholarship_id)))
+  }, [supabase, loadEligibleScholarships])
+
+  useEffect(() => {
+    init()
+  }, [init])
 
   const saveBasicInfo = async () => {
     if (!authUser) return
@@ -273,8 +273,8 @@ export default function DashboardPage() {
       toast.success('Basic info updated!')
       setProfile((p) => p ? { ...p, full_name: editName, phone: editPhone, dob: editDob } : p)
       setEditOpen(false)
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save info')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save info')
     } finally {
       setSavingProfile(false)
     }
@@ -291,6 +291,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="relative flex-shrink-0">
             {profile?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatar_url}
                 alt="Avatar"
@@ -501,7 +502,7 @@ export default function DashboardPage() {
                   isSaved={savedIds.has(s.id)}
                   showSaveButton
                   userId={authUser?.id || null}
-                  qualifyBadge={(s as any)._isPerfect}
+                  qualifyBadge={(s as Scholarship & { _isPerfect?: boolean })._isPerfect}
                 />
               ))}
             </div>

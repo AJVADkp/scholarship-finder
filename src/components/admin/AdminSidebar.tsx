@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, AlertCircle, BarChart3 } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, BarChart3 } from 'lucide-react'
 import { useState } from 'react'
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal'
 
@@ -15,23 +15,14 @@ const navItems = [
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ]
 
-export function AdminSidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+interface SidebarContentProps {
+  pathname: string
+  onCloseMobile?: () => void
+  onRequestLogout: () => void
+}
 
-  if (pathname === '/admin/login') {
-    return null
-  }
-
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' })
-    // Force full page refresh to clear all cached admin data
-    window.location.href = '/admin/login'
-  }
-
-  const SidebarContent = () => (
+function SidebarContent({ pathname, onCloseMobile, onRequestLogout }: SidebarContentProps) {
+  return (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="p-5 border-b border-white/10">
@@ -52,7 +43,7 @@ export function AdminSidebar() {
           <Link
             key={item.href}
             href={item.href}
-            onClick={() => setMobileOpen(false)}
+            onClick={onCloseMobile}
             className={`admin-nav-item ${pathname === item.href ? 'active' : ''}`}
           >
             <item.icon size={16} />
@@ -64,13 +55,64 @@ export function AdminSidebar() {
       {/* Logout */}
       <div className="p-3 border-t border-white/10">
         <button
-          onClick={() => setShowLogoutConfirm(true)}
+          onClick={onRequestLogout}
           className="admin-nav-item w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"
         >
           <LogOut size={16} />
           Sign Out
         </button>
       </div>
+    </div>
+  )
+}
+
+export function AdminSidebar() {
+  const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+
+  if (pathname === '/admin/login') {
+    return null
+  }
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' })
+    // Force full page refresh to clear all cached admin data
+    window.location.href = '/admin/login'
+  }
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="admin-sidebar w-56 flex-shrink-0 hidden lg:block sticky top-0 h-screen overflow-y-auto">
+        <SidebarContent
+          pathname={pathname}
+          onRequestLogout={() => setShowLogoutConfirm(true)}
+        />
+      </aside>
+
+      {/* Mobile toggle */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-white shadow-lg"
+        onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label="Toggle admin sidebar"
+      >
+        {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+      </button>
+
+      {/* Mobile sidebar */}
+      {mobileOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setMobileOpen(false)} />
+          <aside className="admin-sidebar fixed top-0 left-0 w-64 h-full z-50 animate-slide-up">
+            <SidebarContent
+              pathname={pathname}
+              onCloseMobile={() => setMobileOpen(false)}
+              onRequestLogout={() => setShowLogoutConfirm(true)}
+            />
+          </aside>
+        </>
+      )}
 
       <ConfirmationModal
         isOpen={showLogoutConfirm}
@@ -81,33 +123,6 @@ export function AdminSidebar() {
         onCancel={() => setShowLogoutConfirm(false)}
         icon={LogOut}
       />
-    </div>
-  )
-
-  return (
-    <>
-      {/* Desktop sidebar */}
-      <aside className="admin-sidebar w-56 flex-shrink-0 hidden lg:block sticky top-0 h-screen overflow-y-auto">
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile toggle */}
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-white shadow-lg"
-        onClick={() => setMobileOpen(!mobileOpen)}
-      >
-        {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-      </button>
-
-      {/* Mobile sidebar */}
-      {mobileOpen && (
-        <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setMobileOpen(false)} />
-          <aside className="admin-sidebar fixed top-0 left-0 w-64 h-full z-50 animate-slide-up">
-            <SidebarContent />
-          </aside>
-        </>
-      )}
     </>
   )
 }

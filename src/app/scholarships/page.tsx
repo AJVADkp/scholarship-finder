@@ -325,12 +325,12 @@ function ScholarshipsContent() {
 
       setScholarships(paginatedResults)
       setTotalCount(results.length)
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load scholarships.')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to load scholarships.')
     } finally {
       setLoading(false)
     }
-  }, [debouncedQuery, basicFilters, advancedFilters, activeTab, user, sortBy, page])
+  }, [debouncedQuery, basicFilters, advancedFilters, activeTab, user, sortBy, page, supabase])
 
   useEffect(() => { fetchScholarships() }, [fetchScholarships])
 
@@ -589,7 +589,7 @@ function ScholarshipsContent() {
                     {(() => {
                       const maxVisible = 5;
                       let start = Math.max(1, page - Math.floor(maxVisible / 2));
-                      let end = Math.min(totalPages, start + maxVisible - 1);
+                      const end = Math.min(totalPages, start + maxVisible - 1);
                       if (end - start + 1 < maxVisible) {
                         start = Math.max(1, end - maxVisible + 1);
                       }

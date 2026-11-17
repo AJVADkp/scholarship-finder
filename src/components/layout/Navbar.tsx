@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { GraduationCap, Search, BookOpen, LayoutDashboard, LogOut, ChevronDown, Menu, X, Heart } from 'lucide-react'
-import toast, { Toaster } from 'react-hot-toast'
+import { GraduationCap, LayoutDashboard, LogOut, ChevronDown, Menu, X, Heart } from 'lucide-react'
+import toast from 'react-hot-toast'
 import type { User } from '@supabase/supabase-js'
 
 export function Navbar() {
@@ -35,7 +35,7 @@ export function Navbar() {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [supabase])
 
   const handleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -112,6 +112,7 @@ export function Navbar() {
                   id="user-menu-button"
                 >
                   {userProfile?.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={userProfile.avatar_url}
                       alt="Avatar"

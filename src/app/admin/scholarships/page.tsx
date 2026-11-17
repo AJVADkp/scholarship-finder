@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { type Scholarship, ALL_CATEGORIES, CATEGORY_CONFIG } from '@/lib/types'
+import { type Scholarship, ALL_CATEGORIES } from '@/lib/types'
 import {
   ACADEMIC_LEVELS, STREAMS, GENDERS, INCOME_BRACKETS, SCHOLARSHIP_TYPES,
   CASTE_CATEGORIES, RELIGIONS, SPECIAL_BACKGROUNDS, ACADEMIC_PERFORMANCE_OPTIONS,
@@ -10,7 +10,7 @@ import {
   COLLEGE_PERFORMANCE_OPTIONS, APPLICATION_TYPES, INDIAN_STATES_UTS,
 } from '@/lib/search-constants'
 import { formatAmount, formatDeadline } from '@/lib/utils'
-import { Plus, Edit2, Trash2, Search, ToggleLeft, ToggleRight, X, Save, CheckSquare, Square, AlertTriangle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, Edit2, Trash2, Search, ToggleLeft, ToggleRight, X, Save, CheckSquare, Square, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 
 const ADMIN_ITEMS_PER_PAGE = 50
@@ -115,11 +115,15 @@ export default function AdminScholarshipsPage() {
   const [adminPage, setAdminPage] = useState(1)
 
   const loadScholarships = useCallback(async () => {
-    setLoading(true)
-    const res = await fetch('/api/admin/scholarships')
-    const data = await res.json()
-    setScholarships(data.scholarships || [])
-    setLoading(false)
+    try {
+      const res = await fetch('/api/admin/scholarships')
+      const data = await res.json()
+      setScholarships(data.scholarships || [])
+    } catch (err) {
+      console.error('[AdminScholarships] Error loading:', err)
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => { loadScholarships() }, [loadScholarships])

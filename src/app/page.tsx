@@ -4,10 +4,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { Footer } from '@/components/layout/Footer'
 import { SkeletonStatCard } from '@/components/ui/SkeletonCard'
-import { ALL_CATEGORIES, CATEGORY_CONFIG, type Category } from '@/lib/types'
+import { ALL_CATEGORIES, CATEGORY_CONFIG, type Category, type Scholarship } from '@/lib/types'
 import Link from 'next/link'
-import Script from 'next/script'
-import { Search, ArrowRight, Sparkles, Globe, Users, BookOpen, GraduationCap } from 'lucide-react'
+import { Search, ArrowRight, Sparkles, Users, BookOpen, GraduationCap } from 'lucide-react'
 import { HeroSearchInput } from '@/components/ui/HeroSearchInput'
 import { Suspense } from 'react'
 
@@ -19,13 +18,27 @@ export const metadata: Metadata = {
 export const revalidate = 60 // Refresh stats every 60 seconds
 
 async function StatsRow() {
-  const supabase = await createClient()
-  const adminSupabase = createAdminClient()
+  let totalCount: number | null = null
+  let totalUsers: number | null = null
 
-  const [{ count: totalCount }, { count: totalUsers }] = await Promise.all([
-    supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    adminSupabase.from('users').select('*', { count: 'exact', head: true }),
-  ])
+  try {
+    const supabase = await createClient()
+    const adminSupabase = createAdminClient()
+
+    const [scholarshipsRes, usersRes] = await Promise.allSettled([
+      supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
+      adminSupabase.from('users').select('*', { count: 'exact', head: true }),
+    ])
+
+    if (scholarshipsRes.status === 'fulfilled' && scholarshipsRes.value.count !== null) {
+      totalCount = scholarshipsRes.value.count
+    }
+    if (usersRes.status === 'fulfilled' && usersRes.value.count !== null) {
+      totalUsers = usersRes.value.count
+    }
+  } catch (err) {
+    console.warn('[StatsRow] Fallback to default metrics:', err)
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
@@ -98,7 +111,7 @@ async function FeaturedScholarships({ category }: { category?: string }) {
   return (
     <>
       {scholarships.map((scholarship) => (
-        <ScholarshipCard key={scholarship.id} scholarship={scholarship as any} />
+        <ScholarshipCard key={scholarship.id} scholarship={scholarship as Scholarship} />
       ))}
     </>
   )

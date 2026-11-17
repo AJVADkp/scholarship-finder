@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { UserProfile } from '@/lib/types'
 import {
@@ -8,11 +8,11 @@ import {
   CASTE_CATEGORIES, RELIGIONS, SPECIAL_BACKGROUNDS,
   INDIAN_STATES_UTS, COURSE_SPECIALIZATIONS,
   YEARS_OF_STUDY, INSTITUTION_TYPES, STUDY_MODES,
-  SCHOOL_LEVELS, COLLEGE_LEVELS
+  COLLEGE_LEVELS
 } from '@/lib/search-constants'
 import { 
-  CheckCircle, Info, ChevronDown, ChevronUp, Save, 
-  GraduationCap, User, BookOpen, IndianRupee, AlertCircle
+  Info, ChevronDown, ChevronUp, Save, 
+  GraduationCap, User, BookOpen, IndianRupee
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
@@ -62,7 +62,7 @@ function Tooltip({ text }: { text: string }) {
   )
 }
 
-function Section({ title, icon: Icon, children, defaultOpen = true }: { title: string; icon: any; children: React.ReactNode; defaultOpen?: boolean }) {
+function Section({ title, icon: Icon, children, defaultOpen = true }: { title: string; icon: React.ElementType; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div className="glass-card mb-6 overflow-hidden">
@@ -122,7 +122,7 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
     return Math.round((completed / fields.length) * 100)
   }, [formData])
 
-  const setField = (key: keyof UserProfile, value: any) => {
+  const setField = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }))
   }
 
@@ -146,7 +146,9 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
       }
 
       // Sanitize data: Remove internal state fields that aren't in the database
-      const { class_10_type, class_12_type, ...dbData } = formData
+      const dbData = { ...formData }
+      delete (dbData as Record<string, unknown>).class_10_type
+      delete (dbData as Record<string, unknown>).class_12_type
 
       const { error } = await supabase
         .from('users')
@@ -157,8 +159,8 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
       
       toast.success('Profile updated successfully! ❤️')
       router.push('/dashboard')
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save profile')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save profile')
     } finally {
       setSaving(false)
     }
@@ -167,7 +169,6 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
   // Master Conditional Logic
   const level = formData.academic_level || ''
   const isSchoolUnder10 = ['Class 8', 'Class 9', 'Class 10'].includes(level)
-  const isClass11 = level === 'Class 11'
   const isClass12 = level === 'Class 12'
   const isCollege = COLLEGE_LEVELS.includes(level)
   const is12Plus = isClass12 || isCollege

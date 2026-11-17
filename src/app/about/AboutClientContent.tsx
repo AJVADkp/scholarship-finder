@@ -2,7 +2,6 @@
 
 import { motion, Variants } from 'framer-motion'
 import { Search, SlidersHorizontal, Heart } from 'lucide-react'
-import { useState } from 'react'
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -71,7 +70,7 @@ export function AboutClientContent() {
         </div>
 
         <blockquote className="mt-6 border-l-[3px] border-[#4F8EF7] pl-5 text-[1.1rem] italic text-[#185FA5]">
-          "Financial constraints should never stand in the way of a deserving student's academic dreams."
+          &ldquo;Financial constraints should never stand in the way of a deserving student&apos;s academic dreams.&rdquo;
         </blockquote>
       </motion.section>
 
@@ -184,7 +183,7 @@ export function AboutClientContent() {
         <div className="text-[11px] tracking-[0.12em] text-[#4F8EF7] font-medium uppercase mb-3">Get in touch</div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a2e] mb-4">Have a question?</h2>
         <p className="text-[#4a5568] max-w-xl mx-auto mb-6">
-          Found a bug, have a suggestion, or know of a scholarship we should add to our database? We'd love to hear from you.
+          Found a bug, have a suggestion, or know of a scholarship we should add to our database? We&apos;d love to hear from you.
         </p>
         <a href="/contact" className="inline-flex items-center justify-center bg-[#4F8EF7] hover:bg-[#3B7DE8] text-white rounded-xl px-8 py-3.5 font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
           Go to Contact Page →
