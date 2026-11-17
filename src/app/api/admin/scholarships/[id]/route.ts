@@ -1,60 +1,98 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { verifyAdminToken } from '@/lib/admin-auth'
+import { scholarshipUpdateSchema } from '@/lib/validations/scholarship'
+import { logAdminAudit } from '@/lib/audit'
+import { getClientIp } from '@/lib/request-utils'
 
-interface Params { params: Promise<{ id: string }> }
+interface RouteParams {
+  params: Promise<{ id: string }>
+}
 
 // PUT update scholarship
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   const admin = await verifyAdminToken()
   if (!admin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { id } = await params
+  if (!id) {
+    return NextResponse.json({ error: 'Missing scholarship ID' }, { status: 400 })
+  }
 
-  let body: Record<string, unknown>
+  let body: unknown
   try {
     body = await request.json()
   } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  // Only allow known scholarship fields
-  const allowedFields = [
-    'name', 'description', 'provider', 'amount', 'currency', 'deadline',
-    'eligibility', 'category', 'url', 'state', 'academic_level',
-    'income_limit', 'gender', 'is_active'
-  ]
-  const sanitized: Record<string, unknown> = {}
-  for (const key of allowedFields) {
-    if (key in body) sanitized[key] = body[key]
+  const validation = scholarshipUpdateSchema.safeParse(body)
+  if (!validation.success) {
+    return NextResponse.json(
+      {
+        error: 'Validation failed',
+        details: validation.error.flatten().fieldErrors,
+      },
+      { status: 400 }
+    )
   }
 
   const supabase = createAdminClient()
-
   const { data, error } = await supabase
     .from('scholarships')
-    .update(sanitized)
+    .update(validation.data)
     .eq('id', id)
     .select()
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[Admin Scholarships PUT] Database update error:', error.message)
+    return NextResponse.json({ error: 'Failed to update scholarship' }, { status: 500 })
+  }
+
+  const clientIp = getClientIp(request)
+  await logAdminAudit({
+    adminUsername: admin.username,
+    action: 'scholarship_update',
+    targetType: 'scholarship',
+    targetId: id,
+    details: validation.data as Record<string, unknown>,
+    ipAddress: clientIp,
+  })
+
   return NextResponse.json({ scholarship: data })
 }
 
 // DELETE scholarship
-export async function DELETE(_: NextRequest, { params }: Params) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const admin = await verifyAdminToken()
   if (!admin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { id } = await params
-  const supabase = createAdminClient()
+  if (!id) {
+    return NextResponse.json({ error: 'Missing scholarship ID' }, { status: 400 })
+  }
 
+  const supabase = createAdminClient()
   const { error } = await supabase.from('scholarships').delete().eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  if (error) {
+    console.error('[Admin Scholarships DELETE] Database error:', error.message)
+    return NextResponse.json({ error: 'Failed to delete scholarship' }, { status: 500 })
+  }
+
+  const clientIp = getClientIp(request)
+  await logAdminAudit({
+    adminUsername: admin.username,
+    action: 'scholarship_delete',
+    targetType: 'scholarship',
+    targetId: id,
+    ipAddress: clientIp,
+  })
+
   return NextResponse.json({ success: true })
 }
