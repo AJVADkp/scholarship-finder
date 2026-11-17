@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * ScholarSearch — Deterministic Database Seeding Utility
- * 
+ *
  * Generates and seeds 120 curated Indian scholarships into Supabase
  * using a deterministic seeded Pseudo-Random Number Generator (PRNG).
  * All generated entries are explicitly tagged with `is_sample: true`.
- * 
+ *
  * Usage:
  *   node scripts/seed-scholarships.mjs
  * Or via npm:
@@ -65,33 +65,79 @@ const getDeterministicDeadline = (offsetDays) => {
 }
 
 const UG_SCHOLARSHIPS = [
-  'Reliance Foundation Undergraduate Scholarships', 'SBI Platinum Jubilee Asha Scholarship', "HDFC Bank Parivartan's ECSS Programme",
-  'Keep India Smiling Foundational Scholarship', 'Kotak Kanya Scholarship', "L'Oréal India For Young Women In Science Scholarship",
-  'LIC Golden Jubilee Scholarship', 'ONGC Foundation Scholarship', 'Central Sector Scheme of Scholarship',
-  "Prime Minister's Special Scholarship Scheme (PMSSS)", 'Post Matric Scholarship for SC/ST/OBC (UG)', 'Ishan Uday Special Scholarship for NER',
-  'AICTE Pragati Scholarship for Girls (UG)', 'AICTE Saksham Scholarship (UG)', 'AICTE Swanath Scholarship (UG)',
-  'Tata Trust Medical and Healthcare Scholarship', "Dr. Reddy's Foundation Sashakt Scholarship", "Santoor Women's Scholarship",
-  'Vidyadhan Scholarship (UG)', 'Fair and Lovely Foundation Scholarship', 'Panasonic Ratti Chhatr Scholarship',
-  'Legrand Scholarship (UG)', 'Rolls-Royce Unnati Scholarship', 'Siemens Scholarship (UG)',
-  'G.P. Birla Educational Foundation Scholarship', 'Sitaram Jindal Foundation Scholarship (UG)', 'Nirankari Rajmata Scholarship',
-  'Yashad-Sumedha Scholarship', 'Sensodyne IDA Shining Star Scholarship', 'Buddy4Study UG Scholarship',
-  'M-Scholarship by Magma Fincorp', 'Malabar Charitable Trust Scholarship', 'NSDL Shiksha Sahyog Scholarship (UG)',
-  'Federal Bank Harmis Memorial Foundation Scholarship', 'South Indian Bank Scholarship Scheme', 'Muthoot M George Higher Education Scholarship',
-  'Kind Circle Scholarship for Meritorious Students', 'Colgate Keep India Smiling Foundational Scholarship (UG)', 'Medhavi National Scholarship Scheme (UG)',
-  'NTPC Scholarship Scheme for Scheduled Castes/Tribes (UG)'
+  'Reliance Foundation Undergraduate Scholarships',
+  'SBI Platinum Jubilee Asha Scholarship',
+  "HDFC Bank Parivartan's ECSS Programme",
+  'Keep India Smiling Foundational Scholarship',
+  'Kotak Kanya Scholarship',
+  "L'Oréal India For Young Women In Science Scholarship",
+  'LIC Golden Jubilee Scholarship',
+  'ONGC Foundation Scholarship',
+  'Central Sector Scheme of Scholarship',
+  "Prime Minister's Special Scholarship Scheme (PMSSS)",
+  'Post Matric Scholarship for SC/ST/OBC (UG)',
+  'Ishan Uday Special Scholarship for NER',
+  'AICTE Pragati Scholarship for Girls (UG)',
+  'AICTE Saksham Scholarship (UG)',
+  'AICTE Swanath Scholarship (UG)',
+  'Tata Trust Medical and Healthcare Scholarship',
+  "Dr. Reddy's Foundation Sashakt Scholarship",
+  "Santoor Women's Scholarship",
+  'Vidyadhan Scholarship (UG)',
+  'Fair and Lovely Foundation Scholarship',
+  'Panasonic Ratti Chhatr Scholarship',
+  'Legrand Scholarship (UG)',
+  'Rolls-Royce Unnati Scholarship',
+  'Siemens Scholarship (UG)',
+  'G.P. Birla Educational Foundation Scholarship',
+  'Sitaram Jindal Foundation Scholarship (UG)',
+  'Nirankari Rajmata Scholarship',
+  'Yashad-Sumedha Scholarship',
+  'Sensodyne IDA Shining Star Scholarship',
+  'Buddy4Study UG Scholarship',
+  'M-Scholarship by Magma Fincorp',
+  'Malabar Charitable Trust Scholarship',
+  'NSDL Shiksha Sahyog Scholarship (UG)',
+  'Federal Bank Harmis Memorial Foundation Scholarship',
+  'South Indian Bank Scholarship Scheme',
+  'Muthoot M George Higher Education Scholarship',
+  'Kind Circle Scholarship for Meritorious Students',
+  'Colgate Keep India Smiling Foundational Scholarship (UG)',
+  'Medhavi National Scholarship Scheme (UG)',
+  'NTPC Scholarship Scheme for Scheduled Castes/Tribes (UG)',
 ]
 
 const PG_SCHOLARSHIPS = [
-  'Tata Trusts Postgraduate Scholarship', 'ONGC Postgraduate Scholarship for SC/ST/OBC', 'Indira Gandhi Single Girl Child Scholarship for PG',
-  'AICTE PG Scholarship for GATE/CEED Qualified', 'ICMR Post Graduate Biomedical Fellowship', 'UGC Post-Graduate Merit Scholarship for University Rank Holders',
-  'DBT Post Graduate Biotechnology Fellowship', 'CSIR UGC NET Junior Research Fellowship (PG)', 'SBI Youth for India Fellowship Grant',
-  'Narotam Sekhsaria PG Scholarship', 'K.C. Mahindra Scholarships for Post-Graduate Studies', 'J.N. Tata Endowment for Higher Education of Indians',
-  'Aga Khan Foundation International Scholarship (PG)', 'Inlaks Shivdasani Foundation Scholarship', 'Ratan Tata Trust PG Medical Fellowship',
-  'Lady Meherbai D. Tata Education Trust Scholarship', 'Marubeni India Meritorious Scholarship (PG)', 'Infosys Foundation STEM PG Scholarship',
-  'Wipro Earthian PG Sustainability Grant', 'Aditya Birla Group Scholarship (PG Management/Law/Engineering)', 'Kishore Vaigyanik Protsahan Yojana (KVPY - PG)',
-  'National Fellowship for OBC Students (NFOBC - PG)', 'Maulana Azad National Fellowship for Minorities (MANF)', 'National Overseas Scholarship for SC Candidates',
-  'Fulbright-Nehru Master’s Fellowships (India-US)', 'Commonwealth Scholarship for Master’s Studies', 'DAAD Master Studies Scholarship for Indians',
-  'Chevening India Master’s Scholarship', 'Erasmus Mundus Joint Master Degree Scholarship', 'Rhodes Scholarship for India (PG Oxford)'
+  'Tata Trusts Postgraduate Scholarship',
+  'ONGC Postgraduate Scholarship for SC/ST/OBC',
+  'Indira Gandhi Single Girl Child Scholarship for PG',
+  'AICTE PG Scholarship for GATE/CEED Qualified',
+  'ICMR Post Graduate Biomedical Fellowship',
+  'UGC Post-Graduate Merit Scholarship for University Rank Holders',
+  'DBT Post Graduate Biotechnology Fellowship',
+  'CSIR UGC NET Junior Research Fellowship (PG)',
+  'SBI Youth for India Fellowship Grant',
+  'Narotam Sekhsaria PG Scholarship',
+  'K.C. Mahindra Scholarships for Post-Graduate Studies',
+  'J.N. Tata Endowment for Higher Education of Indians',
+  'Aga Khan Foundation International Scholarship (PG)',
+  'Inlaks Shivdasani Foundation Scholarship',
+  'Ratan Tata Trust PG Medical Fellowship',
+  'Lady Meherbai D. Tata Education Trust Scholarship',
+  'Marubeni India Meritorious Scholarship (PG)',
+  'Infosys Foundation STEM PG Scholarship',
+  'Wipro Earthian PG Sustainability Grant',
+  'Aditya Birla Group Scholarship (PG Management/Law/Engineering)',
+  'Kishore Vaigyanik Protsahan Yojana (KVPY - PG)',
+  'National Fellowship for OBC Students (NFOBC - PG)',
+  'Maulana Azad National Fellowship for Minorities (MANF)',
+  'National Overseas Scholarship for SC Candidates',
+  'Fulbright-Nehru Master’s Fellowships (India-US)',
+  'Commonwealth Scholarship for Master’s Studies',
+  'DAAD Master Studies Scholarship for Indians',
+  'Chevening India Master’s Scholarship',
+  'Erasmus Mundus Joint Master Degree Scholarship',
+  'Rhodes Scholarship for India (PG Oxford)',
 ]
 
 const ALL_ITEMS = [...UG_SCHOLARSHIPS, ...PG_SCHOLARSHIPS]
@@ -106,7 +152,7 @@ export function generateDeterministicScholarships() {
 
     return {
       title,
-      provider: `National Aid Provider ${((idx % 12) + 1)}`,
+      provider: `National Aid Provider ${(idx % 12) + 1}`,
       category,
       country: 'India',
       state: idx % 3 === 0 ? 'National' : 'Karnataka',
@@ -150,7 +196,9 @@ async function run() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !serviceRoleKey) {
-    console.log('[Seed] Notice: Missing live credentials, writing deterministic SQL seed file only.')
+    console.log(
+      '[Seed] Notice: Missing live credentials, writing deterministic SQL seed file only.'
+    )
     writeSqlSeed()
     return
   }
@@ -200,11 +248,11 @@ function writeSqlSeed() {
       `'${s.description.replace(/'/g, "''")}'`,
       `'${s.eligibility_criteria.replace(/'/g, "''")}'`,
       `'${s.application_link}'`,
-      `ARRAY[${s.tags.map(t => `'${t}'`).join(',')}]`,
+      `ARRAY[${s.tags.map((t) => `'${t}'`).join(',')}]`,
       s.is_active ? 'true' : 'false',
       'true', // is_sample
-      `ARRAY[${s.academic_levels.map(a => `'${a}'`).join(',')}]`,
-      `ARRAY[${s.streams.map(a => `'${a}'`).join(',')}]`,
+      `ARRAY[${s.academic_levels.map((a) => `'${a}'`).join(',')}]`,
+      `ARRAY[${s.streams.map((a) => `'${a}'`).join(',')}]`,
       `'${s.gender_eligibility}'`,
       `'${s.income_range}'`,
     ].join(', ')
@@ -220,7 +268,7 @@ function writeSqlSeed() {
 
 // Execute if run directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  run().catch(err => {
+  run().catch((err) => {
     console.error('[Seed] Unhandled error:', err)
     process.exit(1)
   })

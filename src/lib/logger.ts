@@ -8,7 +8,12 @@ class Logger {
   private isProduction = process.env.NODE_ENV === 'production'
   private sentryDsn = process.env.SENTRY_DSN
 
-  private formatMessage(level: LogLevel, message: string, context?: LogContext, error?: unknown): string {
+  private formatMessage(
+    level: LogLevel,
+    message: string,
+    context?: LogContext,
+    error?: unknown
+  ): string {
     const timestamp = new Date().toISOString()
     const logData: Record<string, unknown> = {
       timestamp,
@@ -38,7 +43,12 @@ class Logger {
     return `${prefix} ${message} ${context ? JSON.stringify(context) : ''} ${error instanceof Error ? error.stack || error.message : error || ''}`.trim()
   }
 
-  private dispatchToSentry(level: LogLevel, message: string, error?: unknown, context?: LogContext) {
+  private dispatchToSentry(
+    level: LogLevel,
+    message: string,
+    error?: unknown,
+    context?: LogContext
+  ) {
     if (!this.sentryDsn || (level !== 'error' && level !== 'warn')) return
     // Forward to Sentry if DSN is configured
     try {

@@ -42,7 +42,7 @@ export default function AdminScholarshipsPage() {
     loadScholarships()
   }, [loadScholarships])
 
-  const filtered = scholarships.filter(s => {
+  const filtered = scholarships.filter((s) => {
     const matchSearch =
       !searchQuery ||
       s.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -89,7 +89,9 @@ export default function AdminScholarshipsPage() {
     setBulkDeleting(true)
     try {
       await Promise.all(
-        Array.from(selectedIds).map(id => fetch(`/api/admin/scholarships/${id}`, { method: 'DELETE' }))
+        Array.from(selectedIds).map((id) =>
+          fetch(`/api/admin/scholarships/${id}`, { method: 'DELETE' })
+        )
       )
       toast.success(`${selectedIds.size} scholarships deleted`)
       setSelectedIds(new Set())
@@ -102,7 +104,7 @@ export default function AdminScholarshipsPage() {
   }
 
   const toggleSelect = (id: string) => {
-    setSelectedIds(prev => {
+    setSelectedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
@@ -112,7 +114,7 @@ export default function AdminScholarshipsPage() {
 
   const toggleAll = () => {
     if (selectedIds.size === paginatedScholarships.length) setSelectedIds(new Set())
-    else setSelectedIds(new Set(paginatedScholarships.map(s => s.id)))
+    else setSelectedIds(new Set(paginatedScholarships.map((s) => s.id)))
   }
 
   const handleToggleActive = async (s: Scholarship) => {
@@ -147,7 +149,7 @@ export default function AdminScholarshipsPage() {
             <Search size={15} className="text-gray-400" />
             <input
               value={searchQuery}
-              onChange={e => {
+              onChange={(e) => {
                 setSearchQuery(e.target.value)
                 setAdminPage(1)
               }}
@@ -157,20 +159,22 @@ export default function AdminScholarshipsPage() {
           </div>
           <select
             value={categoryFilter}
-            onChange={e => {
+            onChange={(e) => {
               setCategoryFilter(e.target.value)
               setAdminPage(1)
             }}
             className="input-glass py-2 w-36 text-sm"
           >
             <option value="">All Categories</option>
-            {ALL_CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
+            {ALL_CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
           <select
             value={statusFilter}
-            onChange={e => {
+            onChange={(e) => {
               setStatusFilter(e.target.value)
               setAdminPage(1)
             }}
@@ -215,14 +219,14 @@ export default function AdminScholarshipsPage() {
                 <div className="flex gap-2">
                   <button
                     disabled={adminPage === 1}
-                    onClick={() => setAdminPage(p => p - 1)}
+                    onClick={() => setAdminPage((p) => p - 1)}
                     className="btn-ghost p-2 text-gray-600 disabled:opacity-40"
                   >
                     <ChevronLeft size={16} />
                   </button>
                   <button
                     disabled={adminPage === totalAdminPages}
-                    onClick={() => setAdminPage(p => p + 1)}
+                    onClick={() => setAdminPage((p) => p + 1)}
                     className="btn-ghost p-2 text-gray-600 disabled:opacity-40"
                   >
                     <ChevronRight size={16} />
@@ -255,10 +259,7 @@ export default function AdminScholarshipsPage() {
                 <button onClick={() => setDeleteId(null)} className="btn-ghost text-sm px-4">
                   Cancel
                 </button>
-                <button
-                  onClick={() => handleDelete(deleteId)}
-                  className="btn-danger text-sm px-5"
-                >
+                <button onClick={() => handleDelete(deleteId)} className="btn-danger text-sm px-5">
                   Delete
                 </button>
               </div>

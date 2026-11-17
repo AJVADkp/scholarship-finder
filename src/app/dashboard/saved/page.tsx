@@ -18,7 +18,9 @@ export default function SavedScholarshipsPage() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) return
       setUserId(user.id)
 
@@ -28,7 +30,9 @@ export default function SavedScholarshipsPage() {
         .eq('user_id', user.id)
         .order('saved_at', { ascending: false })
 
-      const savedList = data?.map((d: { scholarships: unknown }) => d.scholarships).filter(Boolean) as Scholarship[]
+      const savedList = data
+        ?.map((d: { scholarships: unknown }) => d.scholarships)
+        .filter(Boolean) as Scholarship[]
       setScholarships(savedList || [])
     } finally {
       setLoading(false)
@@ -58,13 +62,17 @@ export default function SavedScholarshipsPage() {
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
+            {[1, 2, 3, 4].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : scholarships.length === 0 ? (
           <div className="glass-card p-16 text-center">
             <Heart size={64} className="text-gray-200 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-gray-700 mb-2">No saved scholarships</h2>
-            <p className="text-gray-400 mb-6">Browse scholarships and click the heart icon to save them here.</p>
+            <p className="text-gray-400 mb-6">
+              Browse scholarships and click the heart icon to save them here.
+            </p>
             <Link href="/scholarships" className="btn-primary px-6 py-2.5">
               <GraduationCap size={16} /> Browse Scholarships
             </Link>
@@ -78,7 +86,9 @@ export default function SavedScholarshipsPage() {
                 isSaved
                 showSaveButton
                 userId={userId}
-                onSaveToggle={(id, saved) => { if (!saved) handleUnsave(id) }}
+                onSaveToggle={(id, saved) => {
+                  if (!saved) handleUnsave(id)
+                }}
               />
             ))}
           </div>

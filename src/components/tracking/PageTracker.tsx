@@ -63,24 +63,27 @@ export function PageTracker() {
   // Fetch logged-in user's name once on mount
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        supabase
-          .from('users')
-          .select('full_name')
-          .eq('id', user.id)
-          .single()
-          .then(({ data }) => {
-            setUserName(data?.full_name || user.email || null)
-            setUserId(user.id)
-            setUserReady(true)
-          })
-      } else {
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }) => {
+        if (user) {
+          supabase
+            .from('users')
+            .select('full_name')
+            .eq('id', user.id)
+            .single()
+            .then(({ data }) => {
+              setUserName(data?.full_name || user.email || null)
+              setUserId(user.id)
+              setUserReady(true)
+            })
+        } else {
+          setUserReady(true)
+        }
+      })
+      .catch(() => {
         setUserReady(true)
-      }
-    }).catch(() => {
-      setUserReady(true)
-    })
+      })
   }, [])
 
   // Track page visits — waits for user check to finish first

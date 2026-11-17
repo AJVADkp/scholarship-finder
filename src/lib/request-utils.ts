@@ -39,5 +39,9 @@ export function anonymizeIp(ip: string): string {
   }
 
   const salt = process.env.ADMIN_JWT_SECRET || 'scholarsearch-privacy-salt'
-  return crypto.createHash('sha256').update(trimmed + salt).digest('hex').slice(0, 16)
+  return crypto
+    .createHash('sha256')
+    .update(trimmed + salt)
+    .digest('hex')
+    .slice(0, 16)
 }

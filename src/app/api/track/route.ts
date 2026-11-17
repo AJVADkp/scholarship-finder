@@ -50,10 +50,13 @@ export async function POST(request: NextRequest) {
         }
       )
 
-      const { data: { user } } = await supabaseUser.auth.getUser()
+      const {
+        data: { user },
+      } = await supabaseUser.auth.getUser()
       if (user) {
         authenticatedUserId = user.id
-        const metaName = (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string)
+        const metaName =
+          (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string)
         authenticatedUserName = metaName || user.email || 'Authenticated Student'
       }
     } catch (authErr) {

@@ -2,7 +2,18 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, BookOpen, Users, Settings, LogOut, GraduationCap, Menu, X, MessageSquare, BarChart3 } from 'lucide-react'
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Settings,
+  LogOut,
+  GraduationCap,
+  Menu,
+  X,
+  MessageSquare,
+  BarChart3,
+} from 'lucide-react'
 import { useState } from 'react'
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal'
 
@@ -85,10 +96,7 @@ export function AdminSidebar() {
     <>
       {/* Desktop sidebar */}
       <aside className="admin-sidebar w-56 flex-shrink-0 hidden lg:block sticky top-0 h-screen overflow-y-auto">
-        <SidebarContent
-          pathname={pathname}
-          onRequestLogout={() => setShowLogoutConfirm(true)}
-        />
+        <SidebarContent pathname={pathname} onRequestLogout={() => setShowLogoutConfirm(true)} />
       </aside>
 
       {/* Mobile toggle */}

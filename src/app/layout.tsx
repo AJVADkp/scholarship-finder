@@ -20,7 +20,13 @@ export const metadata: Metadata = {
   },
   description:
     'Discover thousands of scholarships tailored to your academic profile. Filter by category, marks, deadline, and country. Find merit, need-based, government, and international scholarships.',
-  keywords: ['scholarships', 'scholarship finder', 'india scholarships', 'merit scholarship', 'student funding'],
+  keywords: [
+    'scholarships',
+    'scholarship finder',
+    'india scholarships',
+    'merit scholarship',
+    'student funding',
+  ],
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   icons: {
     icon: '/logo.webp',
@@ -35,14 +41,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${plusJakartaSans.className} antialiased min-h-screen text-slate-900 bg-transparent`}>
+      <body
+        className={`${plusJakartaSans.className} antialiased min-h-screen text-slate-900 bg-transparent`}
+      >
         <DynamicParticleBackground />
         <ConditionalNavbar />
         <main className="min-h-[calc(100vh-64px)] relative z-10">{children}</main>

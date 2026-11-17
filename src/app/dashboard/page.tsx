@@ -6,8 +6,15 @@ import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { SkeletonCard } from '@/components/ui/SkeletonCard'
 import type { Scholarship, UserProfile } from '@/lib/types'
 import {
-  User, Phone, Mail, Calendar, CheckCircle, Edit2,
-  GraduationCap, Sparkles, AlertCircle
+  User,
+  Phone,
+  Mail,
+  Calendar,
+  CheckCircle,
+  Edit2,
+  GraduationCap,
+  Sparkles,
+  AlertCircle,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
@@ -33,37 +40,47 @@ export default function DashboardPage() {
 
   const supabase = createClient()
 
-  const loadEligibleScholarships = useCallback(async (u: UserProfile) => {
-    setLoadingScholarships(true)
-    try {
-      const { data: allScholarships, error } = await supabase
-        .from('scholarships')
-        .select('*')
-        .eq('is_active', true)
+  const loadEligibleScholarships = useCallback(
+    async (u: UserProfile) => {
+      setLoadingScholarships(true)
+      try {
+        const { data: allScholarships, error } = await supabase
+          .from('scholarships')
+          .select('*')
+          .eq('is_active', true)
 
-      if (error) throw error
+        if (error) throw error
 
-      // Rank scholarships using dimensional scoring and hard eligibility filters
-      const sorted = rankScholarshipsForUser(u, (allScholarships as Scholarship[]) || [])
-      const perfectMatches = sorted.filter(s => s._isPerfect)
-      const finalSelection = perfectMatches.length >= 10
-        ? perfectMatches
-        : sorted.slice(0, Math.max(10, perfectMatches.length))
+        // Rank scholarships using dimensional scoring and hard eligibility filters
+        const sorted = rankScholarshipsForUser(u, (allScholarships as Scholarship[]) || [])
+        const perfectMatches = sorted.filter((s) => s._isPerfect)
+        const finalSelection =
+          perfectMatches.length >= 10
+            ? perfectMatches
+            : sorted.slice(0, Math.max(10, perfectMatches.length))
 
-      setEligibleScholarships(finalSelection)
-    } catch {
-      toast.error('Unable to load recommendations')
-    } finally {
-      setLoadingScholarships(false)
-    }
-  }, [supabase])
+        setEligibleScholarships(finalSelection)
+      } catch {
+        toast.error('Unable to load recommendations')
+      } finally {
+        setLoadingScholarships(false)
+      }
+    },
+    [supabase]
+  )
 
   const init = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) return
     setAuthUser(user)
 
-    const { data: profileData } = await supabase.from('users').select('*').eq('id', user.id).single()
+    const { data: profileData } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single()
     if (profileData) {
       setProfile(profileData as UserProfile)
       setEditName(profileData.full_name || '')
@@ -72,8 +89,12 @@ export default function DashboardPage() {
       loadEligibleScholarships(profileData as UserProfile)
     }
 
-    const { data: savedData } = await supabase.from('saved_scholarships').select('scholarship_id').eq('user_id', user.id)
-    if (savedData) setSavedIds(new Set(savedData.map((d: { scholarship_id: string }) => d.scholarship_id)))
+    const { data: savedData } = await supabase
+      .from('saved_scholarships')
+      .select('scholarship_id')
+      .eq('user_id', user.id)
+    if (savedData)
+      setSavedIds(new Set(savedData.map((d: { scholarship_id: string }) => d.scholarship_id)))
   }, [supabase, loadEligibleScholarships])
 
   useEffect(() => {
@@ -86,17 +107,17 @@ export default function DashboardPage() {
     try {
       const { error } = await supabase
         .from('users')
-        .update({ 
-          full_name: editName || null, 
+        .update({
+          full_name: editName || null,
           phone: editPhone || null,
-          dob: editDob || null
+          dob: editDob || null,
         })
         .eq('id', authUser.id)
 
       if (error) throw error
-      
+
       toast.success('Basic info updated!')
-      setProfile((p) => p ? { ...p, full_name: editName, phone: editPhone, dob: editDob } : p)
+      setProfile((p) => (p ? { ...p, full_name: editName, phone: editPhone, dob: editDob } : p))
       setEditOpen(false)
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to save info')
@@ -105,9 +126,7 @@ export default function DashboardPage() {
     }
   }
 
-  const joinedDate = profile?.created_at
-    ? format(new Date(profile.created_at), 'MMMM yyyy')
-    : 'N/A'
+  const joinedDate = profile?.created_at ? format(new Date(profile.created_at), 'MMMM yyyy') : 'N/A'
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -134,9 +153,17 @@ export default function DashboardPage() {
               Welcome back, {profile?.full_name?.split(' ')[0] || 'Scholar'}!
             </h1>
             <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-gray-500 font-medium">
-              <span className="flex items-center gap-1.5"><Mail size={14} className="text-primary/60" /> {profile?.email}</span>
-              {profile?.phone && <span className="flex items-center gap-1.5"><Phone size={14} className="text-primary/60" /> {profile.phone}</span>}
-              <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary/60" /> Joined {joinedDate}</span>
+              <span className="flex items-center gap-1.5">
+                <Mail size={14} className="text-primary/60" /> {profile?.email}
+              </span>
+              {profile?.phone && (
+                <span className="flex items-center gap-1.5">
+                  <Phone size={14} className="text-primary/60" /> {profile.phone}
+                </span>
+              )}
+              <span className="flex items-center gap-1.5">
+                <Calendar size={14} className="text-primary/60" /> Joined {joinedDate}
+              </span>
             </div>
           </div>
 
@@ -179,8 +206,8 @@ export default function DashboardPage() {
         <button
           onClick={() => setActiveTab('recommendations')}
           className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'recommendations' 
-              ? 'bg-white text-primary shadow-md' 
+            activeTab === 'recommendations'
+              ? 'bg-white text-primary shadow-md'
               : 'text-gray-500 hover:text-gray-700'
           }`}
         >
@@ -190,8 +217,8 @@ export default function DashboardPage() {
         <button
           onClick={() => setActiveTab('profile')}
           className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'profile' 
-              ? 'bg-white text-primary shadow-md' 
+            activeTab === 'profile'
+              ? 'bg-white text-primary shadow-md'
               : 'text-gray-500 hover:text-gray-700'
           }`}
         >
@@ -221,18 +248,18 @@ export default function DashboardPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Complete Your Profile</h3>
               <p className="text-gray-500 text-sm max-w-sm mx-auto mb-6">
-                Tell us about your academic background and personal details to see scholarships you actually qualify for.
+                Tell us about your academic background and personal details to see scholarships you
+                actually qualify for.
               </p>
-              <button 
-                onClick={() => setActiveTab('profile')}
-                className="btn-primary px-8 py-3"
-              >
+              <button onClick={() => setActiveTab('profile')} className="btn-primary px-8 py-3">
                 Start Profile Setup
               </button>
             </div>
           ) : loadingScholarships ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
+              {[1, 2, 3, 4].map((i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
           ) : eligibleScholarships.length === 0 ? (
             <div className="glass-card p-12 text-center">
@@ -241,7 +268,8 @@ export default function DashboardPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">No Matches Found</h3>
               <p className="text-gray-500 text-sm max-w-sm mx-auto">
-                We couldn&apos;t find scholarships matching your current profile. Try broadening your criteria or browsing all scholarships.
+                We couldn&apos;t find scholarships matching your current profile. Try broadening
+                your criteria or browsing all scholarships.
               </p>
             </div>
           ) : (
@@ -264,7 +292,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl font-black text-gray-900">Your Student Profile</h2>
-              <p className="text-gray-500 text-sm font-medium">This information helps us find the best scholarships for you.</p>
+              <p className="text-gray-500 text-sm font-medium">
+                This information helps us find the best scholarships for you.
+              </p>
             </div>
             {profile && (
               <div className="hidden sm:block">
@@ -275,7 +305,7 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
-          
+
           {profile && <ProfileForm initialData={profile} userId={profile.id} />}
         </div>
       )}

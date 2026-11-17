@@ -11,7 +11,10 @@ export default function ScholarshipsLoading() {
       {/* Card grid skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-64 bg-white/80 rounded-2xl border border-gray-100 p-6 flex flex-col justify-between">
+          <div
+            key={i}
+            className="h-64 bg-white/80 rounded-2xl border border-gray-100 p-6 flex flex-col justify-between"
+          >
             <div className="space-y-3">
               <div className="h-6 bg-gray-100 rounded-full w-24" />
               <div className="h-5 bg-gray-200 rounded w-3/4" />

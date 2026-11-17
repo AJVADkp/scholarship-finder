@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
     secret = getAdminJwtSecret()
   } catch (err) {
     console.error('[Admin Login] Configuration error:', err instanceof Error ? err.message : err)
-    return NextResponse.json({ error: 'Authentication service temporarily unavailable' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Authentication service temporarily unavailable' },
+      { status: 500 }
+    )
   }
 
   const supabase = createAdminClient()
@@ -64,7 +67,10 @@ export async function POST(request: NextRequest) {
 
   if (error || !creds) {
     console.error('[Admin Login] Database query error:', error?.message)
-    return NextResponse.json({ error: 'Authentication service temporarily unavailable' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Authentication service temporarily unavailable' },
+      { status: 500 }
+    )
   }
 
   // Constant-time comparison prevents username enumeration

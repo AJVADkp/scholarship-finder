@@ -43,7 +43,9 @@ export function EditBasicInfoModal({
         <div className="flex items-center justify-between mb-6 relative">
           <div>
             <h2 className="font-black text-gray-900 text-xl">Basic Information</h2>
-            <p className="text-xs text-gray-500 font-medium">Keep your contact details up to date.</p>
+            <p className="text-xs text-gray-500 font-medium">
+              Keep your contact details up to date.
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -115,7 +117,13 @@ export function EditBasicInfoModal({
             disabled={saving}
             className="btn-primary flex-1 justify-center py-3 font-black shadow-lg shadow-primary/20"
           >
-            {saving ? 'Saving...' : <><Save size={18} /> Save Info</>}
+            {saving ? (
+              'Saving...'
+            ) : (
+              <>
+                <Save size={18} /> Save Info
+              </>
+            )}
           </button>
         </div>
       </div>

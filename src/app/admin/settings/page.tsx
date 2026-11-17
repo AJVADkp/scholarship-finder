@@ -21,7 +21,10 @@ export default function AdminSettingsPage() {
   const [showPassConfirm, setShowPassConfirm] = useState(false)
 
   const handleSaveUsername = async () => {
-    if (!username.trim()) { toast.error('Username cannot be empty'); return }
+    if (!username.trim()) {
+      toast.error('Username cannot be empty')
+      return
+    }
     setSavingUsername(true)
     try {
       const res = await fetch('/api/admin/settings', {
@@ -29,7 +32,10 @@ export default function AdminSettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'username', username }),
       })
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error) }
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error)
+      }
       toast.success('Username updated successfully!')
       setUsername('')
     } catch (err: unknown) {
@@ -41,16 +47,29 @@ export default function AdminSettingsPage() {
   }
 
   const handleSavePassword = async () => {
-    if (newPassword !== confirmPassword) { toast.error('New passwords do not match'); return }
-    if (newPassword.length < 6) { toast.error('Password must be at least 6 characters'); return }
+    if (newPassword !== confirmPassword) {
+      toast.error('New passwords do not match')
+      return
+    }
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters')
+      return
+    }
     setSavingPassword(true)
     try {
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'password', current_password: currentPassword, new_password: newPassword }),
+        body: JSON.stringify({
+          type: 'password',
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
       })
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error) }
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error)
+      }
       toast.success('Password updated successfully!')
       setCurrentPassword('')
       setNewPassword('')
@@ -79,9 +98,17 @@ export default function AdminSettingsPage() {
           </h2>
           <p className="text-sm text-gray-400 mb-5">Update the admin login username</p>
 
-          <form onSubmit={(e) => { e.preventDefault(); setShowUserConfirm(true) }} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              setShowUserConfirm(true)
+            }}
+            className="space-y-4"
+          >
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">New Username</label>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                New Username
+              </label>
               <input
                 type="text"
                 value={username}
@@ -91,8 +118,18 @@ export default function AdminSettingsPage() {
                 id="new-username"
               />
             </div>
-            <button type="submit" disabled={savingUsername || !username} className="btn-primary gap-2 px-6 py-2.5">
-              {savingUsername ? 'Saving...' : <><Save size={15} /> Update Username</>}
+            <button
+              type="submit"
+              disabled={savingUsername || !username}
+              className="btn-primary gap-2 px-6 py-2.5"
+            >
+              {savingUsername ? (
+                'Saving...'
+              ) : (
+                <>
+                  <Save size={15} /> Update Username
+                </>
+              )}
             </button>
           </form>
         </div>
@@ -104,9 +141,17 @@ export default function AdminSettingsPage() {
           </h2>
           <p className="text-sm text-gray-400 mb-5">Update the admin login password</p>
 
-          <form onSubmit={(e) => { e.preventDefault(); setShowPassConfirm(true) }} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              setShowPassConfirm(true)
+            }}
+            className="space-y-4"
+          >
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Current Password</label>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                Current Password
+              </label>
               <div className="relative">
                 <input
                   type={showCurrent ? 'text' : 'password'}
@@ -117,13 +162,19 @@ export default function AdminSettingsPage() {
                   id="current-password"
                   required
                 />
-                <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <button
+                  type="button"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                >
                   {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">New Password</label>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                New Password
+              </label>
               <div className="relative">
                 <input
                   type={showNew ? 'text' : 'password'}
@@ -134,13 +185,19 @@ export default function AdminSettingsPage() {
                   id="new-password"
                   required
                 />
-                <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <button
+                  type="button"
+                  onClick={() => setShowNew(!showNew)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                >
                   {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Confirm New Password</label>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                Confirm New Password
+              </label>
               <div className="relative">
                 <input
                   type="password"
@@ -152,7 +209,10 @@ export default function AdminSettingsPage() {
                   required
                 />
                 {confirmPassword && newPassword === confirmPassword && (
-                  <CheckCircle size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500" />
+                  <CheckCircle
+                    size={15}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500"
+                  />
                 )}
               </div>
             </div>
@@ -161,7 +221,13 @@ export default function AdminSettingsPage() {
               disabled={savingPassword || !currentPassword || !newPassword || !confirmPassword}
               className="btn-primary gap-2 px-6 py-2.5"
             >
-              {savingPassword ? 'Updating...' : <><Save size={15} /> Update Password</>}
+              {savingPassword ? (
+                'Updating...'
+              ) : (
+                <>
+                  <Save size={15} /> Update Password
+                </>
+              )}
             </button>
           </form>
         </div>

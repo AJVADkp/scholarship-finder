@@ -22,7 +22,9 @@ export async function GET(_: NextRequest, { params }: Params) {
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('users')
-    .select('id, full_name, email, phone, avatar_url, dob, gender, academic_level, state, created_at')
+    .select(
+      'id, full_name, email, phone, avatar_url, dob, gender, academic_level, state, created_at'
+    )
     .eq('id', id)
     .maybeSingle()
 
@@ -58,8 +60,14 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
   // Only allow valid user fields to be updated
   const allowedFields = [
-    'full_name', 'email', 'phone', 'avatar_url', 'dob',
-    'gender', 'academic_level', 'state'
+    'full_name',
+    'email',
+    'phone',
+    'avatar_url',
+    'dob',
+    'gender',
+    'academic_level',
+    'state',
   ]
   const sanitized: Record<string, unknown> = {}
   for (const key of allowedFields) {

@@ -17,7 +17,9 @@ export function SaveButton({ scholarshipId }: SaveButtonProps) {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (user) {
         setUserId(user.id)
         const { data } = await supabase

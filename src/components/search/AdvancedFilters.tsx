@@ -3,10 +3,22 @@
 import { ChevronDown, ChevronUp, Info } from 'lucide-react'
 import { useState } from 'react'
 import {
-  CASTE_CATEGORIES, RELIGIONS, SPECIAL_BACKGROUNDS, ACADEMIC_PERFORMANCE_OPTIONS,
-  AWARD_AMOUNT_RANGES, APPLICATION_STATUSES, PORTAL_SOURCES, COURSE_SPECIALIZATIONS,
-  STUDY_MODES, GEOGRAPHIC_FOCUSES, INSTITUTION_TYPES, YEARS_OF_STUDY,
-  COLLEGE_PERFORMANCE_OPTIONS, APPLICATION_TYPES, FIRST_YEAR_ONLY, SCHOOL_LEVELS
+  CASTE_CATEGORIES,
+  RELIGIONS,
+  SPECIAL_BACKGROUNDS,
+  ACADEMIC_PERFORMANCE_OPTIONS,
+  AWARD_AMOUNT_RANGES,
+  APPLICATION_STATUSES,
+  PORTAL_SOURCES,
+  COURSE_SPECIALIZATIONS,
+  STUDY_MODES,
+  GEOGRAPHIC_FOCUSES,
+  INSTITUTION_TYPES,
+  YEARS_OF_STUDY,
+  COLLEGE_PERFORMANCE_OPTIONS,
+  APPLICATION_TYPES,
+  FIRST_YEAR_ONLY,
+  SCHOOL_LEVELS,
 } from '@/lib/search-constants'
 import type { BasicFilterState } from './BasicFilters'
 
@@ -54,7 +66,15 @@ interface AdvancedFiltersProps {
   onChange: (f: AdvancedFilterState) => void
 }
 
-function FilterGroup({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+function FilterGroup({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}) {
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div className="mb-5 border-b border-gray-100 pb-5 last:border-0 last:pb-0">
@@ -65,7 +85,11 @@ function FilterGroup({ title, children, defaultOpen = false }: { title: string; 
         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider group-hover:text-gray-700 transition-colors">
           {title}
         </h4>
-        {open ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+        {open ? (
+          <ChevronUp size={14} className="text-gray-400" />
+        ) : (
+          <ChevronDown size={14} className="text-gray-400" />
+        )}
       </button>
       {open && children}
     </div>
@@ -86,19 +110,29 @@ const CHIP_UNSELECTED = {
 }
 
 function ChipMultiSelect({
-  options, selected, onChange
-}: { options: string[]; selected: string[]; onChange: (v: string[]) => void }) {
+  options,
+  selected,
+  onChange,
+}: {
+  options: string[]
+  selected: string[]
+  onChange: (v: string[]) => void
+}) {
   const toggle = (v: string) =>
-    onChange(selected.includes(v) ? selected.filter(s => s !== v) : [...selected, v])
+    onChange(selected.includes(v) ? selected.filter((s) => s !== v) : [...selected, v])
   return (
     <div className="flex flex-wrap gap-1.5">
-      {options.map(opt => {
+      {options.map((opt) => {
         const isSelected = selected.includes(opt)
         return (
-          <button key={opt} onClick={() => toggle(opt)}
+          <button
+            key={opt}
+            onClick={() => toggle(opt)}
             style={isSelected ? CHIP_SELECTED : CHIP_UNSELECTED}
             className="px-2.5 py-1 rounded-full text-xs font-semibold border transition-all hover:opacity-90"
-          >{opt}</button>
+          >
+            {opt}
+          </button>
         )
       })}
     </div>
@@ -106,23 +140,32 @@ function ChipMultiSelect({
 }
 
 function SingleSelect({
-  options, selected, onChange
-}: { options: string[]; selected: string; onChange: (v: string) => void }) {
+  options,
+  selected,
+  onChange,
+}: {
+  options: string[]
+  selected: string
+  onChange: (v: string) => void
+}) {
   return (
     <div className="flex flex-wrap gap-1.5">
-      {options.map(opt => {
+      {options.map((opt) => {
         const isSelected = selected === opt
         return (
-          <button key={opt} onClick={() => onChange(isSelected ? '' : opt)}
+          <button
+            key={opt}
+            onClick={() => onChange(isSelected ? '' : opt)}
             style={isSelected ? CHIP_SELECTED : CHIP_UNSELECTED}
             className="px-2.5 py-1 rounded-full text-xs font-semibold border transition-all hover:opacity-90"
-          >{opt}</button>
+          >
+            {opt}
+          </button>
         )
       })}
     </div>
   )
 }
-
 
 function Tooltip({ text }: { text: string }) {
   const [show, setShow] = useState(false)
@@ -148,12 +191,13 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
     onChange({ ...filters, [key]: value })
 
   const isMale = basicFilters.gender === 'Male'
-  const isSchoolOnly = !!basicFilters.academicLevel && SCHOOL_LEVELS.includes(basicFilters.academicLevel)
+  const isSchoolOnly =
+    !!basicFilters.academicLevel && SCHOOL_LEVELS.includes(basicFilters.academicLevel)
   const showCollegePerf = !isSchoolOnly && !FIRST_YEAR_ONLY.includes(filters.yearOfStudy)
 
   // Dynamic course specializations based on selected streams
   const availableSpecializations = basicFilters.stream
-    ? (COURSE_SPECIALIZATIONS[basicFilters.stream as keyof typeof COURSE_SPECIALIZATIONS] || [])
+    ? COURSE_SPECIALIZATIONS[basicFilters.stream as keyof typeof COURSE_SPECIALIZATIONS] || []
     : []
 
   return (
@@ -161,7 +205,9 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
       <FilterGroup title="Caste / Community Category" defaultOpen>
         <div className="flex items-start gap-1 mb-3 text-[10px] text-gray-400">
           <Info size={11} className="mt-0.5 flex-shrink-0" />
-          <span>Your caste info is only used for scholarship matching and is never stored or shared.</span>
+          <span>
+            Your caste info is only used for scholarship matching and is never stored or shared.
+          </span>
         </div>
         <div className="space-y-1.5">
           {CASTE_CATEGORIES.map(({ value, label, tooltip }) => {
@@ -187,7 +233,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={RELIGIONS}
           selected={filters.religion}
-          onChange={v => set('religion', v)}
+          onChange={(v) => set('religion', v)}
         />
       </FilterGroup>
 
@@ -196,7 +242,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={['No disability', 'Person with Disability (PwD) — 40%+']}
           selected={filters.disabilityStatus}
-          onChange={v => set('disabilityStatus', v)}
+          onChange={(v) => set('disabilityStatus', v)}
         />
         <p className="text-xs text-gray-400 mt-1.5">
           PwD = Person with Disability with at least 40% certified disability
@@ -205,12 +251,16 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
 
       {/* 10. Girls-Only Toggle */}
       <FilterGroup title="Girls-Only Scholarships">
-        <div className={`flex items-center gap-3 ${isMale ? 'opacity-40 pointer-events-none' : ''}`}>
+        <div
+          className={`flex items-center gap-3 ${isMale ? 'opacity-40 pointer-events-none' : ''}`}
+        >
           <button
             onClick={() => set('girlsOnly', !filters.girlsOnly)}
             className={`w-10 h-6 rounded-full transition-all flex-shrink-0 ${filters.girlsOnly ? 'bg-pink-400' : 'bg-gray-200'}`}
           >
-            <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform mx-0.5 ${filters.girlsOnly ? 'translate-x-4' : 'translate-x-0'}`} />
+            <div
+              className={`w-5 h-5 bg-white rounded-full shadow transition-transform mx-0.5 ${filters.girlsOnly ? 'translate-x-4' : 'translate-x-0'}`}
+            />
           </button>
           <span className="text-xs font-medium text-gray-600">
             {filters.girlsOnly ? 'Show girls-only scholarships' : 'Include all'}
@@ -226,7 +276,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <ChipMultiSelect
           options={SPECIAL_BACKGROUNDS}
           selected={filters.specialBackgrounds}
-          onChange={v => set('specialBackgrounds', v)}
+          onChange={(v) => set('specialBackgrounds', v)}
         />
       </FilterGroup>
 
@@ -235,7 +285,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={ACADEMIC_PERFORMANCE_OPTIONS}
           selected={filters.minAcademicPerformance}
-          onChange={v => set('minAcademicPerformance', v)}
+          onChange={(v) => set('minAcademicPerformance', v)}
         />
       </FilterGroup>
 
@@ -244,7 +294,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={AWARD_AMOUNT_RANGES}
           selected={filters.awardAmountRange}
-          onChange={v => set('awardAmountRange', v)}
+          onChange={(v) => set('awardAmountRange', v)}
         />
       </FilterGroup>
 
@@ -253,7 +303,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={APPLICATION_STATUSES}
           selected={filters.applicationStatus}
-          onChange={v => set('applicationStatus', v)}
+          onChange={(v) => set('applicationStatus', v)}
         />
       </FilterGroup>
 
@@ -262,26 +312,28 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <ChipMultiSelect
           options={PORTAL_SOURCES}
           selected={filters.portalSources}
-          onChange={v => set('portalSources', v)}
+          onChange={(v) => set('portalSources', v)}
         />
       </FilterGroup>
 
       {/* 16. Course Specialization — dynamic based on stream */}
       <FilterGroup title="Course Specialization">
         {availableSpecializations.length === 0 ? (
-          <p className="text-xs text-gray-400 italic">Please select a stream first in Basic Filters ↑</p>
+          <p className="text-xs text-gray-400 italic">
+            Please select a stream first in Basic Filters ↑
+          </p>
         ) : (
           <SingleSelect
             options={availableSpecializations}
             selected={filters.courseSpecialization}
-            onChange={v => set('courseSpecialization', v)}
+            onChange={(v) => set('courseSpecialization', v)}
           />
         )}
       </FilterGroup>
 
       <FilterGroup title="Study Mode">
         <div className="space-y-1.5">
-          {STUDY_MODES.map(m => {
+          {STUDY_MODES.map((m) => {
             const isSelected = filters.studyMode === m.value
             return (
               <div key={m.value} className="flex items-center gap-2">
@@ -304,7 +356,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={GEOGRAPHIC_FOCUSES}
           selected={filters.geographicFocus}
-          onChange={v => set('geographicFocus', v)}
+          onChange={(v) => set('geographicFocus', v)}
         />
       </FilterGroup>
 
@@ -313,13 +365,13 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={INSTITUTION_TYPES}
           selected={filters.institutionType}
-          onChange={v => set('institutionType', v)}
+          onChange={(v) => set('institutionType', v)}
         />
       </FilterGroup>
 
       <FilterGroup title="Current Year of Study">
         <div className="space-y-1.5">
-          {YEARS_OF_STUDY.map(y => {
+          {YEARS_OF_STUDY.map((y) => {
             const isSelected = filters.yearOfStudy === y
             const isRenewalHint = y === '2nd year'
             return (
@@ -331,7 +383,9 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
                 >
                   {y}
                 </button>
-                {isRenewalHint && <Tooltip text="Most scholarships starting here are for existing students or renewals." />}
+                {isRenewalHint && (
+                  <Tooltip text="Most scholarships starting here are for existing students or renewals." />
+                )}
               </div>
             )
           })}
@@ -347,7 +401,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
           <SingleSelect
             options={COLLEGE_PERFORMANCE_OPTIONS}
             selected={filters.minCollegePerformance}
-            onChange={v => set('minCollegePerformance', v)}
+            onChange={(v) => set('minCollegePerformance', v)}
           />
         </FilterGroup>
       )}
@@ -357,7 +411,7 @@ export function AdvancedFilters({ filters, basicFilters, onChange }: AdvancedFil
         <SingleSelect
           options={APPLICATION_TYPES}
           selected={filters.applicationType}
-          onChange={v => set('applicationType', v)}
+          onChange={(v) => set('applicationType', v)}
         />
         <p className="text-xs text-gray-400 mt-1.5">
           Renewal = you are already receiving this scholarship and want to continue next year

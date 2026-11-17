@@ -61,7 +61,9 @@ export async function POST(request: NextRequest) {
           },
         }
       )
-      const { data: { user } } = await supabaseUser.auth.getUser()
+      const {
+        data: { user },
+      } = await supabaseUser.auth.getUser()
       if (user) {
         authenticatedUserId = user.id
       }

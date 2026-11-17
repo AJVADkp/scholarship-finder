@@ -9,8 +9,16 @@ import { ScholarshipCard } from '@/components/scholarship/ScholarshipCard'
 import { Footer } from '@/components/layout/Footer'
 import { SaveButton } from './SaveButton'
 import {
-  ExternalLink, MapPin, GraduationCap, Calendar, DollarSign,
-  Building, Tag, Info, CheckCircle, ArrowLeft
+  ExternalLink,
+  MapPin,
+  GraduationCap,
+  Calendar,
+  DollarSign,
+  Building,
+  Tag,
+  Info,
+  CheckCircle,
+  ArrowLeft,
 } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -32,10 +40,7 @@ export async function generateStaticParams() {
 
   try {
     const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
-    const { data } = await supabase
-      .from('scholarships')
-      .select('id')
-      .eq('is_active', true)
+    const { data } = await supabase.from('scholarships').select('id').eq('is_active', true)
 
     return (data || []).map((scholarship) => ({
       id: scholarship.id,
@@ -49,7 +54,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const supabase = await createClient()
-  const { data } = await supabase.from('scholarships').select('title, description, provider').eq('id', id).single()
+  const { data } = await supabase
+    .from('scholarships')
+    .select('title, description, provider')
+    .eq('id', id)
+    .single()
 
   return {
     title: data?.title || 'Scholarship Details',
@@ -94,7 +103,10 @@ export default async function ScholarshipDetailPage({ params }: Props) {
     <>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {/* Back */}
-        <Link href="/scholarships" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary mb-6 no-underline transition-colors">
+        <Link
+          href="/scholarships"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary mb-6 no-underline transition-colors"
+        >
           <ArrowLeft size={16} /> Back to Scholarships
         </Link>
 
@@ -107,18 +119,25 @@ export default async function ScholarshipDetailPage({ params }: Props) {
                   Sample Data
                 </span>
                 <p className="leading-relaxed">
-                  This scholarship is a demonstration entry generated for development and testing. Criteria and deadlines are simulated and do not represent active official requirements.
+                  This scholarship is a demonstration entry generated for development and testing.
+                  Criteria and deadlines are simulated and do not represent active official
+                  requirements.
                 </p>
               </div>
             )}
 
             {/* Header card */}
-            <div className="glass-card p-7" style={{ borderLeft: `5px solid ${catConfig?.color || '#4F8EF7'}` }}>
+            <div
+              className="glass-card p-7"
+              style={{ borderLeft: `5px solid ${catConfig?.color || '#4F8EF7'}` }}
+            >
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <CategoryBadge category={s.category} />
                 <DeadlineBadge deadline={s.deadline} />
                 {!s.is_active && (
-                  <span className="text-xs bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-semibold">Inactive</span>
+                  <span className="text-xs bg-gray-100 text-gray-400 px-3 py-1 rounded-full font-semibold">
+                    Inactive
+                  </span>
                 )}
               </div>
 
@@ -137,7 +156,9 @@ export default async function ScholarshipDetailPage({ params }: Props) {
                   <DollarSign size={15} className="text-emerald-500" />
                   <div>
                     <div className="text-xs text-gray-400 font-medium">Amount</div>
-                    <div className="font-bold text-gray-900">{formatAmount(s.amount, s.currency)}</div>
+                    <div className="font-bold text-gray-900">
+                      {formatAmount(s.amount, s.currency)}
+                    </div>
                   </div>
                 </div>
 
@@ -165,7 +186,8 @@ export default async function ScholarshipDetailPage({ params }: Props) {
                     <div>
                       <div className="text-xs text-gray-400 font-medium">Country</div>
                       <div className="font-bold text-gray-900">
-                        {s.state ? `${s.state}, ` : ''}{s.country}
+                        {s.state ? `${s.state}, ` : ''}
+                        {s.country}
                       </div>
                     </div>
                   </div>
@@ -217,7 +239,10 @@ export default async function ScholarshipDetailPage({ params }: Props) {
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {s.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1.5 bg-gray-50 border border-gray-100 text-gray-500 text-xs font-semibold rounded-full">
+                    <span
+                      key={tag}
+                      className="px-3 py-1.5 bg-gray-50 border border-gray-100 text-gray-500 text-xs font-semibold rounded-full"
+                    >
                       #{tag}
                     </span>
                   ))}
@@ -229,7 +254,10 @@ export default async function ScholarshipDetailPage({ params }: Props) {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-5">
             {/* Quick apply CTA */}
-            <div className="glass-card p-5 text-center" style={{ background: `${catConfig?.color || '#4F8EF7'}08` }}>
+            <div
+              className="glass-card p-5 text-center"
+              style={{ background: `${catConfig?.color || '#4F8EF7'}08` }}
+            >
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl"
                 style={{ background: `${catConfig?.color || '#4F8EF7'}15` }}

@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
   const range = request.nextUrl.searchParams.get('range') || '7d'
   const supabase = createAdminClient()
 
-  let query = supabase
-    .from('page_visits')
-    .select('*')
-    .order('created_at', { ascending: false })
+  let query = supabase.from('page_visits').select('*').order('created_at', { ascending: false })
 
   // Apply time filter
   if (range !== 'all') {

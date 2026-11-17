@@ -56,7 +56,9 @@ export function SearchSidebar({
       {sidebarOpen && (
         <div className="absolute inset-0 bg-black/20" onClick={() => setSidebarOpen(false)} />
       )}
-      <div className={`relative glass-card p-5 w-72 ${sidebarOpen ? 'ml-auto' : ''} lg:w-64 xl:w-72 flex-shrink-0`}>
+      <div
+        className={`relative glass-card p-5 w-72 ${sidebarOpen ? 'ml-auto' : ''} lg:w-64 xl:w-72 flex-shrink-0`}
+      >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -70,7 +72,10 @@ export function SearchSidebar({
           </div>
           <div className="flex items-center gap-2">
             {hasFilters && (
-              <button onClick={clearAll} className="text-xs text-primary hover:underline font-semibold">
+              <button
+                onClick={clearAll}
+                className="text-xs text-primary hover:underline font-semibold"
+              >
                 Reset all
               </button>
             )}
@@ -85,7 +90,7 @@ export function SearchSidebar({
           <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Sort By</h4>
           <select
             value={sortBy}
-            onChange={e => {
+            onChange={(e) => {
               setSortBy(e.target.value as typeof sortBy)
               setPage(1)
             }}
@@ -104,7 +109,9 @@ export function SearchSidebar({
           <button
             onClick={() => setActiveTab('basic')}
             className={`flex-1 text-xs font-bold py-1.5 rounded-lg transition-all ${
-              activeTab === 'basic' ? 'bg-white shadow-xs text-gray-900' : 'text-gray-500 hover:text-gray-700'
+              activeTab === 'basic'
+                ? 'bg-white shadow-xs text-gray-900'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             Basic
@@ -112,7 +119,9 @@ export function SearchSidebar({
           <button
             onClick={() => setActiveTab('advanced')}
             className={`flex-1 text-xs font-bold py-1.5 rounded-lg transition-all flex items-center justify-center gap-1 ${
-              activeTab === 'advanced' ? 'bg-white shadow-xs text-gray-900' : 'text-gray-500 hover:text-gray-700'
+              activeTab === 'advanced'
+                ? 'bg-white shadow-xs text-gray-900'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             Advanced
@@ -123,7 +132,7 @@ export function SearchSidebar({
         {activeTab === 'basic' ? (
           <BasicFilters
             filters={basicFilters}
-            onChange={f => {
+            onChange={(f) => {
               setBasicFilters(f)
               setPage(1)
             }}
@@ -134,7 +143,7 @@ export function SearchSidebar({
           <AdvancedFilters
             filters={advancedFilters}
             basicFilters={basicFilters}
-            onChange={f => {
+            onChange={(f) => {
               setAdvancedFilters(f)
               setPage(1)
             }}

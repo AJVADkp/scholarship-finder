@@ -2,10 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { RefreshCw } from 'lucide-react'
-import {
-  AnalyticsStatsOverview,
-  type AnalyticsItem,
-} from '@/components/admin/AnalyticsStats'
+import { AnalyticsStatsOverview, type AnalyticsItem } from '@/components/admin/AnalyticsStats'
 import {
   AnalyticsUserModal,
   type GroupedUser,
@@ -35,7 +32,7 @@ type TimeRange = '24h' | '7d' | '30d' | 'all'
 
 function countBy<T>(arr: T[], key: (item: T) => string | null): AnalyticsItem[] {
   const map: Record<string, number> = {}
-  arr.forEach(item => {
+  arr.forEach((item) => {
     const k = key(item) || 'Unknown'
     map[k] = (map[k] || 0) + 1
   })
@@ -71,7 +68,7 @@ export default function AdminAnalyticsPage() {
 
   // Group visits by unique IP + user identity
   const userMap = new Map<string, GroupedUser>()
-  visits.forEach(v => {
+  visits.forEach((v) => {
     const key = `${v.ip_address}__${v.user_id || 'anon'}`
     if (!userMap.has(key)) {
       userMap.set(key, {
@@ -120,10 +117,10 @@ export default function AdminAnalyticsPage() {
     }
   }
 
-  const topPages = countBy(visits, v => v.page)
-  const topCountries = countBy(visits, v => v.country)
-  const topDevices = countBy(visits, v => v.device)
-  const topBrowsers = countBy(visits, v => v.browser)
+  const topPages = countBy(visits, (v) => v.page)
+  const topCountries = countBy(visits, (v) => v.country)
+  const topDevices = countBy(visits, (v) => v.device)
+  const topBrowsers = countBy(visits, (v) => v.browser)
 
   return (
     <div className="p-6 lg:p-8">
@@ -134,7 +131,7 @@ export default function AdminAnalyticsPage() {
           <p className="text-sm text-gray-500">First-party privacy-respecting platform telemetry</p>
         </div>
         <div className="flex items-center gap-2">
-          {(['24h', '7d', '30d', 'all'] as TimeRange[]).map(r => (
+          {(['24h', '7d', '30d', 'all'] as TimeRange[]).map((r) => (
             <button
               key={r}
               onClick={() => setTimeRange(r)}
@@ -189,7 +186,7 @@ export default function AdminAnalyticsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {uniqueUsersList.map(u => (
+                  {uniqueUsersList.map((u) => (
                     <tr key={u.key} className="hover:bg-gray-50/60">
                       <td className="p-3">
                         <span className="font-semibold text-gray-900">
@@ -197,13 +194,18 @@ export default function AdminAnalyticsPage() {
                         </span>
                       </td>
                       <td className="p-3 font-mono text-gray-500">{u.ip}</td>
-                      <td className="p-3 text-gray-600">{u.city ? `${u.city}, ` : ''}{u.country || 'Unknown'}</td>
+                      <td className="p-3 text-gray-600">
+                        {u.city ? `${u.city}, ` : ''}
+                        {u.country || 'Unknown'}
+                      </td>
                       <td className="p-3">
                         <span className="font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
                           {u.pages.length}
                         </span>
                       </td>
-                      <td className="p-3 text-gray-400">{new Date(u.lastVisit).toLocaleString('en-IN')}</td>
+                      <td className="p-3 text-gray-400">
+                        {new Date(u.lastVisit).toLocaleString('en-IN')}
+                      </td>
                       <td className="p-3 text-right">
                         <button
                           onClick={() => openUserModal(u)}

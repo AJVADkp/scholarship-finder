@@ -47,7 +47,7 @@ export function ScholarshipTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {scholarships.map(s => (
+            {scholarships.map((s) => (
               <tr key={s.id} className="hover:bg-gray-50/60 transition-colors">
                 <td className="p-4">
                   <button onClick={() => toggleSelect(s.id)} className="text-gray-400">

@@ -17,7 +17,9 @@ export interface AdminSessionPayload extends JWTPayload {
 export function getAdminJwtSecret(): Uint8Array {
   const secret = process.env.ADMIN_JWT_SECRET
   if (!secret) {
-    throw new Error('ADMIN_JWT_SECRET environment variable is missing. Admin authentication cannot start.')
+    throw new Error(
+      'ADMIN_JWT_SECRET environment variable is missing. Admin authentication cannot start.'
+    )
   }
   if (secret.length < MIN_ADMIN_JWT_SECRET_LENGTH) {
     throw new Error(
@@ -61,7 +63,10 @@ export async function verifyAdminToken(): Promise<AdminSessionPayload | null> {
   try {
     secret = getAdminJwtSecret()
   } catch (err) {
-    console.error('[Admin Auth] Token verification rejected:', err instanceof Error ? err.message : err)
+    console.error(
+      '[Admin Auth] Token verification rejected:',
+      err instanceof Error ? err.message : err
+    )
     return null
   }
 

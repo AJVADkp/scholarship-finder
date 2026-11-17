@@ -53,7 +53,7 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
     }
 
     let completed = 0
-    fields.forEach(f => {
+    fields.forEach((f) => {
       const val = formData[f as keyof UserProfile]
       if (val !== null && val !== undefined && val !== '') completed++
     })
@@ -62,23 +62,35 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
   }, [formData])
 
   const setField = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
-    setFormData(prev => ({ ...prev, [key]: value }))
+    setFormData((prev) => ({ ...prev, [key]: value }))
   }
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      if (formData.class_10_percentage && (formData.class_10_percentage < 0 || formData.class_10_percentage > 100)) {
+      if (
+        formData.class_10_percentage &&
+        (formData.class_10_percentage < 0 || formData.class_10_percentage > 100)
+      ) {
         throw new Error('Class 10 percentage must be between 0 and 100')
       }
-      if (formData.class_12_percentage && (formData.class_12_percentage < 0 || formData.class_12_percentage > 100)) {
+      if (
+        formData.class_12_percentage &&
+        (formData.class_12_percentage < 0 || formData.class_12_percentage > 100)
+      ) {
         throw new Error('Class 12 percentage must be between 0 and 100')
       }
       if (formData.college_marks_value) {
-        if (formData.college_marks_type === 'CGPA' && (formData.college_marks_value < 0 || formData.college_marks_value > 10)) {
+        if (
+          formData.college_marks_type === 'CGPA' &&
+          (formData.college_marks_value < 0 || formData.college_marks_value > 10)
+        ) {
           throw new Error('CGPA must be between 0 and 10')
         }
-        if (formData.college_marks_type === 'Percentage' && (formData.college_marks_value < 0 || formData.college_marks_value > 100)) {
+        if (
+          formData.college_marks_type === 'Percentage' &&
+          (formData.college_marks_value < 0 || formData.college_marks_value > 100)
+        ) {
           throw new Error('College percentage must be between 0 and 100')
         }
       }
@@ -105,7 +117,9 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
       {/* Progress Bar */}
       <div className="glass-card p-6 mb-8 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 border-emerald-100/50 shadow-sm">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Profile Completion</h2>
+          <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wider">
+            Profile Completion
+          </h2>
           <span className="text-emerald-600 font-black text-lg">{completionPercentage}%</span>
         </div>
         <div className="w-full bg-gray-200/50 rounded-full h-3.5 mb-2 overflow-hidden backdrop-blur-sm border border-gray-100">

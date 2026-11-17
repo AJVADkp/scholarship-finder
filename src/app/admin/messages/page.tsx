@@ -28,19 +28,27 @@ export default async function AdminMessagesPage() {
         <div className="glass-card p-12 text-center">
           <Mail size={48} className="text-gray-300 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-700 mb-2">No messages yet</h3>
-          <p className="text-gray-400 text-sm">When users send a message via the contact form, it will appear here.</p>
+          <p className="text-gray-400 text-sm">
+            When users send a message via the contact form, it will appear here.
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
           {messages.map((msg) => (
-            <div key={msg.id} className="glass-card p-6 flex flex-col md:flex-row gap-6 items-start">
+            <div
+              key={msg.id}
+              className="glass-card p-6 flex flex-col md:flex-row gap-6 items-start"
+            >
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2">
                     <User size={16} className="text-primary" />
                     {msg.name}
                   </h3>
-                  <a href={`mailto:${msg.email}`} className="text-sm text-primary hover:underline bg-blue-50 px-2 py-0.5 rounded-md">
+                  <a
+                    href={`mailto:${msg.email}`}
+                    className="text-sm text-primary hover:underline bg-blue-50 px-2 py-0.5 rounded-md"
+                  >
                     {msg.email}
                   </a>
                   <span className="text-xs text-gray-400 flex items-center gap-1">

@@ -52,7 +52,7 @@ export function parseIncomeRange(rangeStr: string): { min: number; max: number }
     /\b\d+(\.\d+)?\s*l\b/i.test(cleaned) ||
     (cleaned.includes('₹') && (cleaned.includes('l') || cleaned.includes('lakh')))
 
-  const matches = [...cleaned.matchAll(/(\d+(\.\d+)?)/g)].map(m => parseFloat(m[1]))
+  const matches = [...cleaned.matchAll(/(\d+(\.\d+)?)/g)].map((m) => parseFloat(m[1]))
   if (matches.length === 0) return null
 
   const toRupees = (v: number) => (hasLakh && v < 1000 ? v * 100000 : v)
@@ -60,7 +60,11 @@ export function parseIncomeRange(rangeStr: string): { min: number; max: number }
   if (cleaned.includes('below') || cleaned.includes('less than') || cleaned.includes('up to')) {
     return { min: 0, max: toRupees(matches[0]) }
   }
-  if (cleaned.includes('above') || cleaned.includes('more than') || cleaned.includes('greater than')) {
+  if (
+    cleaned.includes('above') ||
+    cleaned.includes('more than') ||
+    cleaned.includes('greater than')
+  ) {
     return { min: toRupees(matches[0]), max: Infinity }
   }
   if (matches.length >= 2 && (cleaned.includes('to') || cleaned.includes('-'))) {
@@ -76,7 +80,10 @@ export function parseIncomeRange(rangeStr: string): { min: number; max: number }
   return { min: val, max: val }
 }
 
-export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRange: string | null): boolean {
+export function checkIncomeMatch(
+  userIncome: string | null,
+  scholarshipIncomeRange: string | null
+): boolean {
   if (!userIncome) return false
   if (!scholarshipIncomeRange || scholarshipIncomeRange === 'Not specified') return true
 

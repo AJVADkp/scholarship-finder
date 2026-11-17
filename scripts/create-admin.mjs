@@ -30,7 +30,10 @@ function loadEnvFile(fileName) {
     if (eqIdx === -1) continue
     const key = trimmed.slice(0, eqIdx).trim()
     let value = trimmed.slice(eqIdx + 1).trim()
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
       value = value.slice(1, -1)
     }
     if (!process.env[key]) {
@@ -65,7 +68,9 @@ async function main() {
 
   if (!supabaseUrl || !serviceRoleKey) {
     console.error('Error: Missing required environment variables.')
-    console.error('Please configure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local')
+    console.error(
+      'Please configure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local'
+    )
     process.exit(1)
   }
 
@@ -126,7 +131,7 @@ async function main() {
   console.log('======================================================\n')
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Unexpected error:', err)
   process.exit(1)
 })

@@ -57,7 +57,11 @@ export function Section({
           </div>
           <h3 className="font-bold text-gray-900">{title}</h3>
         </div>
-        {open ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+        {open ? (
+          <ChevronUp size={20} className="text-gray-400" />
+        ) : (
+          <ChevronDown size={20} className="text-gray-400" />
+        )}
       </button>
       {open && <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">{children}</div>}
     </div>
