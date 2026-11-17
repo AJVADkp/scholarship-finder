@@ -12,6 +12,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "admin:create": "node scripts/create-admin.mjs",
     "db:seed": "node scripts/seed-scholarships.mjs"
   },
   "dependencies": {

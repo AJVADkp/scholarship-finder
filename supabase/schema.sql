@@ -119,15 +119,8 @@ CREATE TABLE IF NOT EXISTS admin_credentials (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Seed default admin account (Username: admin / Password: change-me-in-production)
--- Pre-computed bcrypt hash ($2a$12$...)
-INSERT INTO admin_credentials (id, username, password_hash)
-VALUES (
-  1,
-  'admin',
-  '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYpfQNu.k9bZL9e'
-)
-ON CONFLICT (id) DO NOTHING;
+-- Note: Admin account must be seeded via scripts/create-admin.mjs
+-- Default seed hash removed for production security.
 
 -- ==============================================================================
 -- 6. TABLE: contact_messages
@@ -135,13 +128,52 @@ ON CONFLICT (id) DO NOTHING;
 CREATE TABLE IF NOT EXISTS contact_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  message TEXT NOT NULL,
+  name TEXT NOT NULL CHECK (char_length(name) <= 100),
+  email TEXT NOT NULL CHECK (char_length(email) <= 255),
+  message TEXT NOT NULL CHECK (char_length(message) <= 2000),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages (created_at DESC);
+
+-- ==============================================================================
+-- 6.1 TABLE: admin_audit_log (Admin Action Audit Trail)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS admin_audit_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_username TEXT NOT NULL,
+  action TEXT NOT NULL,
+  target_type TEXT,
+  target_id TEXT,
+  details JSONB,
+  ip_address TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_audit_log_created_at ON admin_audit_log (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_admin_audit_log_action ON admin_audit_log (action);
+
+-- ==============================================================================
+-- 6.2 TABLE: revoked_tokens (Revoked Admin JWT Sessions)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS revoked_tokens (
+  jti TEXT PRIMARY KEY,
+  revoked_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_revoked_tokens_expires_at ON revoked_tokens (expires_at);
+
+-- ==============================================================================
+-- 6.3 TABLE: rate_limit_counters (Postgres-backed Durable Rate Limiter)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS rate_limit_counters (
+  key TEXT PRIMARY KEY,
+  count INTEGER NOT NULL DEFAULT 1,
+  reset_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_rate_limit_counters_reset_at ON rate_limit_counters (reset_at);
 
 -- ==============================================================================
 -- 7. TABLE: page_visits (Privacy-first First-party Analytics)
@@ -243,6 +275,21 @@ CREATE POLICY "contact_messages_service_role" ON contact_messages
 -- 9.6 PAGE VISITS
 ALTER TABLE page_visits ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "page_visits_service_role" ON page_visits
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- 9.7 ADMIN AUDIT LOG
+ALTER TABLE admin_audit_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin_audit_log_service_role" ON admin_audit_log
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- 9.8 REVOKED TOKENS
+ALTER TABLE revoked_tokens ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "revoked_tokens_service_role" ON revoked_tokens
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- 9.9 RATE LIMIT COUNTERS
+ALTER TABLE rate_limit_counters ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "rate_limit_counters_service_role" ON rate_limit_counters
   FOR ALL USING (auth.role() = 'service_role');
 
 -- ==============================================================================

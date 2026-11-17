@@ -99,7 +99,18 @@ Fill in the required configuration parameters:
 
 1. Open your Supabase Dashboard and go to the **SQL Editor**.
 2. Run the SQL script located at `supabase/schema.sql` to initialize all tables, RLS policies, indexes, and storage buckets.
-3. (Optional) Run the database seed script to populate curated scholarships:
+3. Provision your administrator account securely (prompts for username and password, then hashes via bcrypt with cost factor 12):
+
+```bash
+npm run admin:create
+```
+
+Alternatively, pass credentials non-interactively:
+```bash
+node scripts/create-admin.mjs --username=admin --password=YourSecurePassword123!
+```
+
+4. (Optional) Run the database seed script to populate sample scholarships:
 
 ```bash
 npm run db:seed
@@ -121,7 +132,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `npm run build` — Compiles and optimizes the production build.
 - `npm run start` — Starts the Next.js production server.
 - `npm run lint` — Runs ESLint checks across all project source files.
+- `npm run test` — Runs the test suite via Vitest.
 - `npm run typecheck` — Runs TypeScript compiler checks without emitting files.
+- `npm run admin:create` — Securely provisions or updates the administrator account using bcrypt cost 12.
 - `npm run db:seed` — Seeds the database with curated scholarship records.
 
 ---
