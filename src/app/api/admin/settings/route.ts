@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { verifyAdminToken } from '@/lib/admin-auth'
 import bcrypt from 'bcryptjs'
+import { logAdminAudit } from '@/lib/audit'
+import { getClientIp } from '@/lib/request-utils'
 
 export async function PUT(request: NextRequest) {
   const admin = await verifyAdminToken()
@@ -16,6 +18,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
+  const clientIp = getClientIp(request)
   const supabase = createAdminClient()
 
   if (body.type === 'username') {
@@ -26,10 +29,21 @@ export async function PUT(request: NextRequest) {
 
     const { error } = await supabase
       .from('admin_credentials')
-      .update({ username: username.trim() })
+      .update({ username: username.trim(), updated_at: new Date().toISOString() })
       .eq('id', 1)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[Admin Settings] Database error updating username:', error.message)
+      return NextResponse.json({ error: 'Failed to update admin settings' }, { status: 500 })
+    }
+
+    await logAdminAudit({
+      adminUsername: admin.username,
+      action: 'admin_username_update',
+      details: { newUsername: username.trim() },
+      ipAddress: clientIp,
+    })
+
     return NextResponse.json({ success: true })
   }
 
@@ -45,26 +59,41 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verify current password
-    const { data: creds } = await supabase
+    const { data: creds, error: fetchErr } = await supabase
       .from('admin_credentials')
       .select('password_hash')
       .eq('id', 1)
-      .single()
+      .maybeSingle()
 
-    if (!creds) return NextResponse.json({ error: 'Credentials not found' }, { status: 404 })
+    if (fetchErr || !creds) {
+      console.error('[Admin Settings] Database error retrieving credentials:', fetchErr?.message)
+      return NextResponse.json({ error: 'Failed to verify admin credentials' }, { status: 500 })
+    }
 
     const valid = await bcrypt.compare(current_password, creds.password_hash)
-    if (!valid) return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 })
+    if (!valid) {
+      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 })
+    }
 
     const newHash = await bcrypt.hash(new_password, 12)
-    const { error } = await supabase
+    const { error: updateErr } = await supabase
       .from('admin_credentials')
-      .update({ password_hash: newHash })
+      .update({ password_hash: newHash, updated_at: new Date().toISOString() })
       .eq('id', 1)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (updateErr) {
+      console.error('[Admin Settings] Database error updating password:', updateErr.message)
+      return NextResponse.json({ error: 'Failed to update admin password' }, { status: 500 })
+    }
+
+    await logAdminAudit({
+      adminUsername: admin.username,
+      action: 'admin_password_update',
+      ipAddress: clientIp,
+    })
+
     return NextResponse.json({ success: true })
   }
 
-  return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
+  return NextResponse.json({ error: 'Invalid request type' }, { status: 400 })
 }

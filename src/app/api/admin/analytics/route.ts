@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
   }
 
   const range = request.nextUrl.searchParams.get('range') || '7d'
-
   const supabase = createAdminClient()
 
   let query = supabase
@@ -31,13 +30,14 @@ export async function GET(request: NextRequest) {
     query = query.gte('created_at', from.toISOString())
   }
 
-  // Limit to 5000 to avoid huge payloads
+  // Cap to 5000 to prevent payload exhaustion
   query = query.limit(5000)
 
   const { data, error } = await query
 
   if (error) {
-    return NextResponse.json({ visits: [], error: error.message }, { status: 500 })
+    console.error('[Admin Analytics GET] Database query error:', error.message)
+    return NextResponse.json({ visits: [], error: 'Failed to fetch analytics' }, { status: 500 })
   }
 
   return NextResponse.json({ visits: data })

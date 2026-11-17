@@ -14,6 +14,10 @@ export async function GET() {
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[Admin Users GET] Database error:', error.message)
+    return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 })
+  }
+
   return NextResponse.json({ users })
 }
