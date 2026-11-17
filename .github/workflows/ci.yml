@@ -6,9 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify:
-    name: Lint, Typecheck & Build
+  test-and-build:
+    name: Verify (Lint, Typecheck, Test, Build)
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +37,17 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Unit and Route Handler Tests
+        run: npm test
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.{ts,tsx}') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
       - name: Build application
         run: npm run build
         env:
@@ -37,3 +55,35 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'placeholder' }}
           ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'ci-build-mock-secret-for-jwt-signing-key-32b' }}
+
+  gitleaks:
+    name: Secret Leak Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  codeql:
+    name: CodeQL Static Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
