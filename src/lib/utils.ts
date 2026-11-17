@@ -44,57 +44,51 @@ export function debounce<T extends (...args: unknown[]) => unknown>(fn: T, delay
   }
 }
 
-export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRange: string | null): boolean {
-  if (!userIncome) return false;
-  if (!scholarshipIncomeRange || scholarshipIncomeRange === 'Not specified') return true;
+export function parseIncomeRange(rangeStr: string): { min: number; max: number } | null {
+  if (!rangeStr) return null
+  const cleaned = rangeStr.toLowerCase().replace(/,/g, '')
+  const hasLakh =
+    /\b(lakhs?)\b/i.test(cleaned) ||
+    /\b\d+(\.\d+)?\s*l\b/i.test(cleaned) ||
+    (cleaned.includes('₹') && (cleaned.includes('l') || cleaned.includes('lakh')))
 
-  // Exact string match (for predefined dropdown brackets)
-  if (userIncome === scholarshipIncomeRange) return true;
+  const matches = [...cleaned.matchAll(/(\d+(\.\d+)?)/g)].map(m => parseFloat(m[1]))
+  if (matches.length === 0) return null
 
-  // If user entered a custom numeric amount
-  const userIncomeNum = parseFloat(userIncome.replace(/[^0-9.]/g, ''));
-  if (isNaN(userIncomeNum)) return false;
+  const toRupees = (v: number) => (hasLakh && v < 1000 ? v * 100000 : v)
 
-  const rangeStr = scholarshipIncomeRange.toLowerCase();
-  const hasLakh = /\b(lakhs?)\b/i.test(rangeStr) || /\b\d+(\.\d+)?\s*l\b/i.test(rangeStr);
-  let max = Infinity;
-  let min = 0;
-
-  if (rangeStr.includes('below') || rangeStr.includes('less than') || rangeStr.includes('up to')) {
-    const match = rangeStr.match(/(\d+(\.\d+)?)/);
-    if (match) {
-      let val = parseFloat(match[1]);
-      if (hasLakh) val *= 100000;
-      max = val;
-    }
-  } else if (rangeStr.includes('above') || rangeStr.includes('more than')) {
-    const match = rangeStr.match(/(\d+(\.\d+)?)/);
-    if (match) {
-      let val = parseFloat(match[1]);
-      if (hasLakh) val *= 100000;
-      min = val;
-    }
-  } else if (rangeStr.includes('to') || rangeStr.includes('-')) {
-    const matches = [...rangeStr.matchAll(/(\d+(\.\d+)?)/g)];
-    if (matches.length >= 2) {
-      let val1 = parseFloat(matches[0][1]);
-      let val2 = parseFloat(matches[1][1]);
-      if (hasLakh) {
-        if (val1 < 100) val1 *= 100000;
-        if (val2 < 100) val2 *= 100000;
-      }
-      min = val1;
-      max = val2;
-    }
-  } else {
-    // If it's just a number, assume it's a maximum (common in India e.g. "2 Lakhs")
-    const match = rangeStr.match(/(\d+(\.\d+)?)/);
-    if (match) {
-      let val = parseFloat(match[1]);
-      if (hasLakh) val *= 100000;
-      max = val;
-    }
+  if (cleaned.includes('below') || cleaned.includes('less than') || cleaned.includes('up to')) {
+    return { min: 0, max: toRupees(matches[0]) }
+  }
+  if (cleaned.includes('above') || cleaned.includes('more than') || cleaned.includes('greater than')) {
+    return { min: toRupees(matches[0]), max: Infinity }
+  }
+  if (matches.length >= 2 && (cleaned.includes('to') || cleaned.includes('-'))) {
+    return { min: toRupees(matches[0]), max: toRupees(matches[1]) }
   }
 
-  return userIncomeNum >= min && userIncomeNum <= max;
+  // Single number: if qualified with "lakh", interpret as maximum ceiling e.g. "2 Lakhs" -> [0, 200000]
+  // If raw numeric amount entered by user without ceiling words, treat as exact value [val, val]
+  if (hasLakh) {
+    return { min: 0, max: toRupees(matches[0]) }
+  }
+  const val = matches[0]
+  return { min: val, max: val }
+}
+
+export function checkIncomeMatch(userIncome: string | null, scholarshipIncomeRange: string | null): boolean {
+  if (!userIncome) return false
+  if (!scholarshipIncomeRange || scholarshipIncomeRange === 'Not specified') return true
+
+  // Exact string match (for identical predefined dropdown selections)
+  if (userIncome === scholarshipIncomeRange) return true
+
+  const userParsed = parseIncomeRange(userIncome)
+  if (!userParsed) return false
+
+  const scholParsed = parseIncomeRange(scholarshipIncomeRange)
+  if (!scholParsed) return false
+
+  // Validate range overlap
+  return userParsed.min <= scholParsed.max && userParsed.max >= scholParsed.min
 }
