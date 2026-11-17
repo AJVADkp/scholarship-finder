@@ -1,0 +1,8 @@
+# Global code owners
+* @AJVADkp
+
+# Core infrastructure & configuration
+/.github/ @AJVADkp
+/supabase/ @AJVADkp
+/next.config.ts @AJVADkp
+/package.json @AJVADkp
