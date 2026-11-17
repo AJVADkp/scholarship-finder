@@ -1,88 +1,38 @@
+import { Database } from './database.types'
+
 export type Category = 'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International'
 
-export interface Scholarship {
-  id: string
-  title: string
-  provider: string | null
-  category: Category | null
-  country: string | null
-  state: string | null
-  min_marks_percentage: number | null
-  amount: number | null
-  currency: string
-  deadline: string | null
-  description: string | null
-  eligibility_criteria: string | null
-  application_link: string | null
-  tags: string[] | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
-  // Indian filter fields
-  academic_levels: string[] | null
-  streams: string[] | null
-  gender_eligibility: string | null
-  income_range: string | null
-  scholarship_type: string | null
-  caste_categories: string[] | null
-  religion: string | null
-  disability_required: boolean | null
-  girls_only: boolean | null
-  special_backgrounds: string[] | null
-  min_academic_performance: string | null
-  award_amount_range: string | null
-  application_status: string | null
-  portal_source: string[] | null
-  course_specializations: string[] | null
-  study_mode: string | null
-  geographic_focus: string | null
-  institution_types: string[] | null
-  year_of_study: string | null
-  min_college_performance: string | null
-  application_type: string | null
-}
+/**
+ * Core scholarship entity derived directly from generated Supabase database schema.
+ */
+export type Scholarship = Database['public']['Tables']['scholarships']['Row']
+export type ScholarshipInsert = Database['public']['Tables']['scholarships']['Insert']
+export type ScholarshipUpdate = Database['public']['Tables']['scholarships']['Update']
 
-export interface UserProfile {
-  id: string
-  full_name: string | null
-  email: string | null
-  phone: string | null
-  avatar_url: string | null
-  marks_percentage: number | null
-  marks_document_url: string | null
-  created_at: string
-  updated_at: string
-  // New profile fields
-  academic_level: string | null
-  stream: string | null
-  course_specialization: string | null
-  year_of_study: string | null
-  institution_type: string | null
-  study_mode: string | null
-  class_10_percentage: number | null
-  class_10_type: 'Percentage' | 'CGPA' | null
-  class_12_percentage: number | null
-  class_12_type: 'Percentage' | 'CGPA' | null
-  college_marks_type: 'CGPA' | 'Percentage' | null
-  college_marks_value: number | null
-  entrance_exam: string | null
-  gender: string | null
-  state: string | null
-  religion: string | null
-  caste_category: string | null
-  disability_status: string | null
-  annual_income: string | null
-  special_background: string | null
-  dob: string | null
+/**
+ * Student profile entity derived directly from generated Supabase database schema,
+ * with optional client UI form state properties.
+ */
+export type UserProfile = Database['public']['Tables']['users']['Row'] & {
+  class_10_type?: 'Percentage' | 'CGPA' | null
+  class_12_type?: 'Percentage' | 'CGPA' | null
 }
+export type UserProfileInsert = Database['public']['Tables']['users']['Insert']
+export type UserProfileUpdate = Database['public']['Tables']['users']['Update']
 
-export interface SavedScholarship {
-  id: string
-  user_id: string
-  scholarship_id: string
-  saved_at: string
+/**
+ * Saved scholarship / bookmark entity.
+ */
+export type SavedScholarship = Database['public']['Tables']['saved_scholarships']['Row'] & {
   scholarship?: Scholarship
 }
+
+/**
+ * Auxiliary database model types.
+ */
+export type AdminAuditLog = Database['public']['Tables']['admin_audit_log']['Row']
+export type ContactMessage = Database['public']['Tables']['contact_messages']['Row']
+export type PageVisit = Database['public']['Tables']['page_visits']['Row']
 
 export const CATEGORY_CONFIG: Record<Category, { color: string; emoji: string; bgClass: string; textClass: string }> = {
   Merit: { color: '#4F8EF7', emoji: '🏆', bgClass: 'category-merit', textClass: 'text-blue-700' },
