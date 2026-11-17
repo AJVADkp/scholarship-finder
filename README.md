@@ -12,7 +12,7 @@ ScholarSearch is an enterprise-grade Indian scholarship discovery, verification,
 
 ## Live Demo & Showcase
 
-- **Live URL**: [https://scholarsearch-demo.vercel.app](https://scholarsearch-demo.vercel.app) _(Coming Soon)_
+- **Live URL**: [https://scholarsearch-demo.vercel.app](https://scholarsearch-demo.vercel.app)
 - **Demo Admin Account**: Available on staging environments via `npm run admin:create`
 
 ---
