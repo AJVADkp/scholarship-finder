@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { jwtVerify } from 'jose'
+import { getAdminJwtSecret, isTokenRevoked } from '@/lib/admin-auth'
 
-export async function middleware(request: NextRequest) {
+/**
+ * Next.js 16 Proxy convention for request interception and route guarding.
+ */
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ============================================================
@@ -16,13 +20,18 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const jwtSecret = process.env.ADMIN_JWT_SECRET
-      if (!jwtSecret) {
-        console.error('[Middleware] ADMIN_JWT_SECRET is not set')
-        return NextResponse.redirect(new URL('/admin/login', request.url))
+      const secret = getAdminJwtSecret()
+      const { payload } = await jwtVerify(adminSession, secret)
+
+      if (payload.jti && typeof payload.jti === 'string') {
+        const revoked = await isTokenRevoked(payload.jti)
+        if (revoked) {
+          const response = NextResponse.redirect(new URL('/admin/login', request.url))
+          response.cookies.delete('admin_session')
+          return response
+        }
       }
-      const secret = new TextEncoder().encode(jwtSecret)
-      await jwtVerify(adminSession, secret)
+
       return NextResponse.next()
     } catch {
       const response = NextResponse.redirect(new URL('/admin/login', request.url))
@@ -69,6 +78,9 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next()
 }
+
+// Next 16 backward compatibility export
+export const middleware = proxy
 
 export const config = {
   matcher: ['/admin/:path*', '/dashboard/:path*'],
