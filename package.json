@@ -2,7 +2,7 @@
   "name": "scholarsearch",
   "version": "1.0.0",
   "description": "Intelligent Indian scholarship discovery and matching platform with multi-tier eligibility scoring.",
-  "author": "AJVAD K P <ajvadktpm@gmail.com>",
+  "author": "AJVAD KP",
   "license": "MIT",
   "private": true,
   "engines": {
