@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { GraduationCap, LayoutDashboard, LogOut, ChevronDown, Menu, X, Heart } from 'lucide-react'
@@ -79,8 +80,15 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 font-extrabold text-lg text-gray-900 no-underline">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center shadow-sm">
-              <GraduationCap size={18} className="text-white" />
+            <div className="w-8 h-8 rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-gradient-to-br from-primary to-blue-400">
+              <Image
+                src="/logo.webp"
+                alt="ScholarSearch"
+                width={32}
+                height={32}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
             <span className="hidden sm:block">ScholarSearch</span>
           </Link>
