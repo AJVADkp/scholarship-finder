@@ -83,7 +83,14 @@ export function ScholarshipCard({
       {/* Header */}
       <div className="p-5 pb-3">
         <div className="flex justify-between items-start gap-2 mb-3">
-          <CategoryBadge category={scholarship.category} />
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <CategoryBadge category={scholarship.category} />
+            {scholarship.is_sample && (
+              <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                Sample
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {qualifyBadge && (
               <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">

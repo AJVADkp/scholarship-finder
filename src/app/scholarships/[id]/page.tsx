@@ -101,6 +101,17 @@ export default async function ScholarshipDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-5">
+            {s.is_sample && (
+              <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 flex items-start gap-3 shadow-xs">
+                <span className="font-bold uppercase tracking-wider bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded text-[10px] mt-0.5 shrink-0">
+                  Sample Data
+                </span>
+                <p className="leading-relaxed">
+                  This scholarship is a demonstration entry generated for development and testing. Criteria and deadlines are simulated and do not represent active official requirements.
+                </p>
+              </div>
+            )}
+
             {/* Header card */}
             <div className="glass-card p-7" style={{ borderLeft: `5px solid ${catConfig?.color || '#4F8EF7'}` }}>
               <div className="flex flex-wrap items-center gap-2 mb-4">

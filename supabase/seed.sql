@@ -1,371 +1,75 @@
 -- ============================================================
--- SCHOLARSHIP FINDER — SEED DATA (20+ scholarships)
--- Run AFTER schema.sql
+-- SCHOLARSEARCH — DETERMINISTIC SAMPLE DATASET
+-- Auto-generated with is_sample = true for staging and dev
 -- ============================================================
 
-INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active)
-VALUES
-
--- MERIT scholarships
-(
-  'National Merit Scholarship 2025',
-  'Ministry of Education, India',
-  'Merit',
-  'India',
-  NULL,
-  75.00,
-  120000,
-  'INR',
-  '2025-06-30',
-  'A prestigious scholarship awarded to top-performing students across India based on academic excellence. Recipients receive annual financial support to pursue undergraduate education at any recognized Indian university.',
-  'Must have scored 75% or above in Class 12. Open to all streams (Science, Commerce, Arts). Indian citizenship required. Family annual income below ₹8 lakhs.',
-  'https://scholarships.gov.in',
-  ARRAY['undergraduate','merit','class-12','all-streams'],
-  true
-),
-(
-  'CBSE Merit Scholarship for Single Girl Child',
-  'Central Board of Secondary Education',
-  'Merit',
-  'India',
-  NULL,
-  70.00,
-  36000,
-  'INR',
-  '2025-07-15',
-  'Exclusively for single girl children who have passed Class X from CBSE schools with distinction. Supports continuation of education at Class XI and XII level.',
-  'Must be the only girl child of her parents. Scored 60% or above in CBSE Class X. Studying in Classes XI or XII in a CBSE-affiliated school.',
-  'https://cbse.gov.in/merit-scholarship',
-  ARRAY['female','single-girl','class-10','cbse','merit'],
-  true
-),
-(
-  'INSPIRE Scholarship for Higher Education',
-  'Department of Science & Technology, India',
-  'Research',
-  'India',
-  NULL,
-  80.00,
-  80000,
-  'INR',
-  '2025-08-31',
-  'INSPIRE (Innovation in Science Pursuit for Inspired Research) supports students pursuing natural and basic science at the BS, B.Sc., and integrated M.Sc./M.S. level. Encourages research careers.',
-  'Top 1% in Class XII board examinations. Enrolled in a natural science or basic science undergraduate program. Indian citizen.',
-  'https://online-inspire.gov.in',
-  ARRAY['science','research','undergraduate','bsc','msc'],
-  true
-),
-
--- NEED-BASED scholarships
-(
-  'Post-Matric Scholarship for SC/ST Students',
-  'Ministry of Social Justice & Empowerment',
-  'Need-based',
-  'India',
-  NULL,
-  40.00,
-  48000,
-  'INR',
-  '2025-09-30',
-  'Financial assistance to SC/ST students for pursuing post-matriculation studies. Covers tuition fees, maintenance allowance, and additional allowances for disabled students.',
-  'Belongs to SC/ST community. Family annual income below ₹2.5 lakhs. Enrolled in a recognized post-matriculation course. Passed 10th standard.',
-  'https://scholarships.gov.in/fresh/newstudentregistration',
-  ARRAY['sc','st','need-based','post-matric','government'],
-  true
-),
-(
-  'Begum Hazrat Mahal National Scholarship',
-  'Maulana Azad Education Foundation',
-  'Need-based',
-  'India',
-  NULL,
-  50.00,
-  12000,
-  'INR',
-  '2025-10-31',
-  'Scholarship for meritorious girls from minority communities (Muslim, Christian, Sikh, Buddhist, Jain, Zoroastrian) who have passed Class IX to XII.',
-  'Girl student from minority community. Passed Class IX/XI with minimum 50%. Family income below ₹2 lakhs per annum. Not availing any other scholarship.',
-  'https://maef.nic.in',
-  ARRAY['female','minority','need-based','class-9','class-11'],
-  true
-),
-(
-  'Vidyadhan Scholarship Program',
-  'Sarojini Damodaran Foundation',
-  'Need-based',
-  'India',
-  NULL,
-  55.00,
-  60000,
-  'INR',
-  '2025-07-31',
-  'Comprehensive scholarship program supporting meritorious students from low-income families. Provides financial support from Class 10 through graduation, along with mentoring and career guidance.',
-  'Minimum 55% in previous examination. Family annual income below ₹2 lakhs. Demonstrates academic potential. Age below 20 years.',
-  'https://vidyadhan.org',
-  ARRAY['undergraduate','need-based','mentoring','low-income'],
-  true
-),
-(
-  'Tata Capital Pankh Scholarship',
-  'Tata Capital Limited',
-  'Need-based',
-  'India',
-  NULL,
-  60.00,
-  50000,
-  'INR',
-  '2025-08-15',
-  'Empowers underprivileged students pursuing professional courses like engineering, medicine, law, and management. Provides financial support to bridge the education gap.',
-  'Enrolled in Class 11, 12, or undergraduate professional course. Minimum 60% in previous year. Family income below ₹4 lakhs. No other major scholarship.',
-  'https://tatacapital.com/pankh',
-  ARRAY['professional','engineering','medicine','need-based','undergraduate'],
-  true
-),
-
--- SPORTS scholarships
-(
-  'Sports Scholarship Scheme — MYAS',
-  'Ministry of Youth Affairs and Sports, India',
-  'Sports',
-  'India',
-  NULL,
-  50.00,
-  60000,
-  'INR',
-  '2025-11-30',
-  'Supports sportspersons who have represented India at international level or won medals at national level competitions. Provides financial assistance to continue training and education simultaneously.',
-  'Must have represented India internationally or won gold/silver at national level. Age between 12 and 25. Pursuing education at any recognized institution. Minimum 50% marks.',
-  'https://yas.nic.in',
-  ARRAY['sports','national-level','international','athlete'],
-  true
-),
-(
-  'Eklavya Sports Scholarship',
-  'Odisha Government',
-  'Sports',
-  'India',
-  'Odisha',
-  45.00,
-  48000,
-  'INR',
-  '2025-09-15',
-  'Odisha government scholarship for talented sportspersons enrolled in educational institutions. Aims to nurture sporting talent while ensuring educational continuity.',
-  'Resident of Odisha. Represented state/district in any recognized sport. Enrolled in Class 9 or above. Minimum 45% in last examination.',
-  'https://scholarships.odisha.gov.in',
-  ARRAY['sports','odisha','state-level','government'],
-  true
-),
-
--- RESEARCH scholarships
-(
-  'Prime Minister Research Fellowship (PMRF)',
-  'Ministry of Education',
-  'Research',
-  'India',
-  NULL,
-  85.00,
-  900000,
-  'INR',
-  '2025-12-31',
-  'Attracts the best talent into research by offering attractive fellowship at IITs and IISc. Provides ₹70,000-80,000 per month stipend plus research grant. Prestigious government-funded PhD fellowship.',
-  'B.Tech/BE/BS/M.Sc. from reputed institutions with CGPA ≥ 8.0 (equivalent to ~85% marks). Applying for PhD at IITs, IISc, IIITs, or NITs. Valid GATE score preferred.',
-  'https://pmrf.in',
-  ARRAY['phd','research','iit','iisc','fellowship','postgraduate'],
-  true
-),
-(
-  'CSIR Junior Research Fellowship',
-  'Council of Scientific & Industrial Research',
-  'Research',
-  'India',
-  NULL,
-  75.00,
-  360000,
-  'INR',
-  '2025-06-15',
-  'Provides opportunities to bright young students for training in methods and techniques of research in various fields of science and technology. Highly competitive national-level fellowship.',
-  'MSc/integrated BS-MS with minimum 55% marks. Age below 28 years. Valid CSIR-NET-JRF score. Indian citizen.',
-  'https://csirhrdg.res.in',
-  ARRAY['jrf','research','science','msc','postgraduate','csir'],
-  true
-),
-(
-  'DBT JRF Fellowship',
-  'Department of Biotechnology',
-  'Research',
-  'India',
-  NULL,
-  70.00,
-  384000,
-  'INR',
-  '2025-07-30',
-  'Junior Research Fellowship in Biotechnology and Life Sciences for pursuing research in biosciences. Provides monthly stipend and research opportunities at premier institutes.',
-  'MSc in Life Sciences/Biotechnology with 70% marks. Age below 28 years. Qualified DBT-JRF exam. Published work is advantageous.',
-  'https://dbtjrf.gov.in',
-  ARRAY['biotechnology','life-sciences','jrf','research','msc'],
-  true
-),
-
--- GOVERNMENT scholarships
-(
-  'Central Sector Scheme of Scholarships',
-  'Department of Higher Education',
-  'Government',
-  'India',
-  NULL,
-  80.00,
-  36000,
-  'INR',
-  '2025-10-31',
-  'Scholarships under CSS for College and University Students who have passed Class XII with marks above 80th percentile. Supports fresh undergraduates to continue higher studies.',
-  'Scored above 80th percentile in Class XII board exams. Enrolled in regular college/university degree. Family income below ₹4.5 lakhs. Not a distance learning student.',
-  'https://scholarships.gov.in',
-  ARRAY['undergraduate','government','class-12','central-scheme'],
-  true
-),
-(
-  'UP Scholarship for Pre & Post Matric',
-  'Uttar Pradesh Government',
-  'Government',
-  'India',
-  'Uttar Pradesh',
-  50.00,
-  24000,
-  'INR',
-  '2025-09-30',
-  'Scholarships provided by UP government for students of minority and backward communities studying in UP schools and colleges. Comprehensive scheme covering pre and post matric levels.',
-  'Domicile of Uttar Pradesh. Belongs to OBC/SC/ST/minority community. Enrolled in recognized institution in UP. Minimum 50% in previous exam.',
-  'https://scholarship.up.gov.in',
-  ARRAY['uttar-pradesh','government','obc','sc','st','minority'],
-  true
-),
-(
-  'Rajiv Gandhi National Fellowship',
-  'University Grants Commission',
-  'Government',
-  'India',
-  NULL,
-  55.00,
-  216000,
-  'INR',
-  '2025-08-31',
-  'Provides fellowships to SC/ST students for pursuing research leading to MPhil and PhD degrees in Indian universities. Enhances higher education and research among marginalized communities.',
-  'SC/ST candidates. NET qualified or pursuing MPhil/PhD. Indian citizen. Age below 35 years. Not in employment.',
-  'https://ugc.ac.in/rgf',
-  ARRAY['sc','st','phd','mphil','research','ugc','fellowship'],
-  true
-),
-
--- INTERNATIONAL scholarships
-(
-  'Chevening Scholarship',
-  'UK Government (FCDO)',
-  'International',
-  'United Kingdom',
-  NULL,
-  60.00,
-  4500000,
-  'INR',
-  '2025-11-04',
-  'UK government''s global scholarship programme for outstanding professionals from across the world. Fully funded one-year master''s degree at a UK university. Includes tuition, living allowance, travel.',
-  'At least 2 years of work experience. Bachelor''s degree with minimum 60%. Indian citizen. Commitment to returning to India after studies. Strong leadership potential.',
-  'https://chevening.org/scholarships/india',
-  ARRAY['uk','masters','fully-funded','leadership','international','postgraduate'],
-  true
-),
-(
-  'Commonwealth Scholarship & Fellowship Plan',
-  'Commonwealth Scholarship Commission',
-  'International',
-  'United Kingdom',
-  NULL,
-  65.00,
-  3600000,
-  'INR',
-  '2025-10-15',
-  'Fully funded scholarships for citizens of Commonwealth countries to pursue postgraduate study in the UK. Covers tuition, living expenses, return airfare, and thesis grant.',
-  'Citizen of Commonwealth country. Bachelor''s degree with minimum upper second class. Applying for Masters or PhD in UK. Not already having a Commonwealth scholarship.',
-  'https://cscuk.fcdo.gov.uk',
-  ARRAY['uk','commonwealth','masters','phd','fully-funded','international'],
-  true
-),
-(
-  'DAAD Scholarships for Germany',
-  'German Academic Exchange Service',
-  'International',
-  'Germany',
-  NULL,
-  65.00,
-  900000,
-  'INR',
-  '2025-10-31',
-  'Scholarships for international students to study at German universities. Covers monthly stipend, health insurance, travel subsidy, and language course. Wide range of fields available.',
-  'Bachelor''s degree with minimum 65% (or CGPA 6.5/10). Relevant professional experience preferred. Language proficiency (English or German based on program). Under 35 years for masters.',
-  'https://daad.de/en/study-and-research-in-germany',
-  ARRAY['germany','masters','phd','stipend','international','europe'],
-  true
-),
-(
-  'Fulbright-Nehru Master''s Fellowship',
-  'United States-India Educational Foundation',
-  'International',
-  'United States',
-  NULL,
-  65.00,
-  3200000,
-  'INR',
-  '2025-07-15',
-  'Provides opportunities for accomplished Indian professionals and academics to undertake master''s degree study at a US college or university. Fully funded. Covers tuition, living, travel.',
-  'Indian citizen. Bachelor''s degree with minimum 65% marks. Minimum 3 years of professional experience. Strong English language skills. Leadership record.',
-  'https://usief.org.in/Fellowships/Fulbright-Nehru-Masters-Fellowships.aspx',
-  ARRAY['usa','masters','fulbright','fully-funded','professional','international'],
-  true
-),
-(
-  'Australia Awards Scholarship',
-  'Australian Government (DFAT)',
-  'International',
-  'Australia',
-  NULL,
-  60.00,
-  4000000,
-  'INR',
-  '2025-04-30',
-  'Long-term development awards by Australian government. Enables scholars from developing countries to undertake full-time undergraduate or postgraduate study in Australia. Comprehensive award.',
-  'Citizen of eligible country (India included). Accepted by Australian institution. Minimum 60%. Not have studied in Australia previously. Return to home country after studies.',
-  'https://australiaawards.gov.au',
-  ARRAY['australia','masters','undergraduate','phd','fully-funded','international'],
-  true
-),
-(
-  'Inlaks Shivdasani Scholarships',
-  'Inlaks Foundation',
-  'International',
-  'United States',
-  NULL,
-  85.00,
-  6500000,
-  'INR',
-  '2025-03-31',
-  'Enables talented young Indians to broaden their perspectives at leading institutions abroad. Covers study at top US/UK/EU universities in any field. Highly competitive and prestigious.',
-  'Indian citizen. Bachelor''s degree with minimum 85% or equivalent. Age below 30. Accepted at top-ranking foreign university. Not currently abroad. Exceptional academic record.',
-  'https://inlaksfoundation.org/scholarships',
-  ARRAY['usa','uk','eu','masters','international','prestigious','any-field'],
-  true
-),
-(
-  'Aga Khan Foundation International Scholarship',
-  'Aga Khan Foundation',
-  'International',
-  'Multiple Countries',
-  NULL,
-  70.00,
-  2800000,
-  'INR',
-  '2025-03-31',
-  'Provides a limited number of scholarships each year for postgraduate studies to outstanding students from developing countries who have no other means of financing their studies abroad.',
-  'Citizen of developing country. Excellent academic record (70%+). Applying for postgraduate studies abroad. Demonstrated financial need. Under 30 years of age.',
-  'https://akdn.org/AKDN/International_Scholarship_Programme',
-  ARRAY['international','masters','phd','financial-need','postgraduate','developing-countries'],
-  true
-);
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Reliance Foundation Undergraduate Scholarships', 'National Aid Provider 1', 'Merit', 'India', 'National', 60, 20000, 'INR', '2026-06-30', 'Comprehensive academic support program under Reliance Foundation Undergraduate Scholarships. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Arts','Engineering'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('SBI Platinum Jubilee Asha Scholarship', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 61, 30000, 'INR', '2026-07-07', 'Comprehensive academic support program under SBI Platinum Jubilee Asha Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('HDFC Bank Parivartan''s ECSS Programme', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 62, 40000, 'INR', '2026-07-14', 'Comprehensive academic support program under HDFC Bank Parivartan''s ECSS Programme. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Keep India Smiling Foundational Scholarship', 'National Aid Provider 4', 'Research', 'India', 'National', 63, 50000, 'INR', '2026-07-21', 'Comprehensive academic support program under Keep India Smiling Foundational Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Arts','Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Kotak Kanya Scholarship', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 64, 60000, 'INR', '2026-07-28', 'Comprehensive academic support program under Kotak Kanya Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine','Engineering'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('L''Oréal India For Young Women In Science Scholarship', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 65, 70000, 'INR', '2026-08-04', 'Comprehensive academic support program under L''Oréal India For Young Women In Science Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('LIC Golden Jubilee Scholarship', 'National Aid Provider 7', 'Merit', 'India', 'National', 66, 80000, 'INR', '2026-08-11', 'Comprehensive academic support program under LIC Golden Jubilee Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Science','Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('ONGC Foundation Scholarship', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 67, 90000, 'INR', '2026-08-18', 'Comprehensive academic support program under ONGC Foundation Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Central Sector Scheme of Scholarship', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 68, 100000, 'INR', '2026-08-25', 'Comprehensive academic support program under Central Sector Scheme of Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Arts','Medicine'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Prime Minister''s Special Scholarship Scheme (PMSSS)', 'National Aid Provider 10', 'Research', 'India', 'National', 69, 110000, 'INR', '2026-09-01', 'Comprehensive academic support program under Prime Minister''s Special Scholarship Scheme (PMSSS). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Post Matric Scholarship for SC/ST/OBC (UG)', 'National Aid Provider 11', 'Government', 'India', 'Karnataka', 70, 120000, 'INR', '2026-09-08', 'Comprehensive academic support program under Post Matric Scholarship for SC/ST/OBC (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine','Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Ishan Uday Special Scholarship for NER', 'National Aid Provider 12', 'International', 'India', 'Karnataka', 71, 130000, 'INR', '2026-09-15', 'Comprehensive academic support program under Ishan Uday Special Scholarship for NER. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering','Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('AICTE Pragati Scholarship for Girls (UG)', 'National Aid Provider 1', 'Merit', 'India', 'National', 72, 140000, 'INR', '2026-09-22', 'Comprehensive academic support program under AICTE Pragati Scholarship for Girls (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Science'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('AICTE Saksham Scholarship (UG)', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 73, 150000, 'INR', '2026-09-29', 'Comprehensive academic support program under AICTE Saksham Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('AICTE Swanath Scholarship (UG)', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 74, 160000, 'INR', '2026-10-06', 'Comprehensive academic support program under AICTE Swanath Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Tata Trust Medical and Healthcare Scholarship', 'National Aid Provider 4', 'Research', 'India', 'National', 75, 170000, 'INR', '2026-10-13', 'Comprehensive academic support program under Tata Trust Medical and Healthcare Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Commerce','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Dr. Reddy''s Foundation Sashakt Scholarship', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 76, 180000, 'INR', '2026-10-20', 'Comprehensive academic support program under Dr. Reddy''s Foundation Sashakt Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Santoor Women''s Scholarship', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 77, 190000, 'INR', '2026-10-27', 'Comprehensive academic support program under Santoor Women''s Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Science','Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Vidyadhan Scholarship (UG)', 'National Aid Provider 7', 'Merit', 'India', 'National', 78, 200000, 'INR', '2026-11-03', 'Comprehensive academic support program under Vidyadhan Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Commerce','Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Fair and Lovely Foundation Scholarship', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 79, 210000, 'INR', '2026-11-10', 'Comprehensive academic support program under Fair and Lovely Foundation Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Panasonic Ratti Chhatr Scholarship', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 80, 20000, 'INR', '2026-11-17', 'Comprehensive academic support program under Panasonic Ratti Chhatr Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Commerce','Arts'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Legrand Scholarship (UG)', 'National Aid Provider 10', 'Research', 'India', 'National', 81, 30000, 'INR', '2026-11-24', 'Comprehensive academic support program under Legrand Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Rolls-Royce Unnati Scholarship', 'National Aid Provider 11', 'Government', 'India', 'Karnataka', 82, 40000, 'INR', '2026-12-01', 'Comprehensive academic support program under Rolls-Royce Unnati Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Science','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Siemens Scholarship (UG)', 'National Aid Provider 12', 'International', 'India', 'Karnataka', 83, 50000, 'INR', '2026-12-08', 'Comprehensive academic support program under Siemens Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('G.P. Birla Educational Foundation Scholarship', 'National Aid Provider 1', 'Merit', 'India', 'National', 84, 60000, 'INR', '2026-12-15', 'Comprehensive academic support program under G.P. Birla Educational Foundation Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Sitaram Jindal Foundation Scholarship (UG)', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 85, 70000, 'INR', '2026-12-22', 'Comprehensive academic support program under Sitaram Jindal Foundation Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Nirankari Rajmata Scholarship', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 86, 80000, 'INR', '2026-07-02', 'Comprehensive academic support program under Nirankari Rajmata Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Yashad-Sumedha Scholarship', 'National Aid Provider 4', 'Research', 'India', 'National', 87, 90000, 'INR', '2026-07-09', 'Comprehensive academic support program under Yashad-Sumedha Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Sensodyne IDA Shining Star Scholarship', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 88, 100000, 'INR', '2026-07-16', 'Comprehensive academic support program under Sensodyne IDA Shining Star Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering','Commerce'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Buddy4Study UG Scholarship', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 89, 110000, 'INR', '2026-07-23', 'Comprehensive academic support program under Buddy4Study UG Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('M-Scholarship by Magma Fincorp', 'National Aid Provider 7', 'Merit', 'India', 'National', 60, 120000, 'INR', '2026-07-30', 'Comprehensive academic support program under M-Scholarship by Magma Fincorp. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Malabar Charitable Trust Scholarship', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 61, 130000, 'INR', '2026-08-06', 'Comprehensive academic support program under Malabar Charitable Trust Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Arts','Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('NSDL Shiksha Sahyog Scholarship (UG)', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 62, 140000, 'INR', '2026-08-13', 'Comprehensive academic support program under NSDL Shiksha Sahyog Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Science','Commerce'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Federal Bank Harmis Memorial Foundation Scholarship', 'National Aid Provider 10', 'Research', 'India', 'National', 63, 150000, 'INR', '2026-08-20', 'Comprehensive academic support program under Federal Bank Harmis Memorial Foundation Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('South Indian Bank Scholarship Scheme', 'National Aid Provider 11', 'Government', 'India', 'Karnataka', 64, 160000, 'INR', '2026-08-27', 'Comprehensive academic support program under South Indian Bank Scholarship Scheme. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','government'], true, true, ARRAY['Undergraduate'], ARRAY['Medicine','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Muthoot M George Higher Education Scholarship', 'National Aid Provider 12', 'International', 'India', 'Karnataka', 65, 170000, 'INR', '2026-09-03', 'Comprehensive academic support program under Muthoot M George Higher Education Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','international'], true, true, ARRAY['Undergraduate'], ARRAY['Engineering','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Kind Circle Scholarship for Meritorious Students', 'National Aid Provider 1', 'Merit', 'India', 'National', 66, 180000, 'INR', '2026-09-10', 'Comprehensive academic support program under Kind Circle Scholarship for Meritorious Students. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','merit'], true, true, ARRAY['Undergraduate'], ARRAY['Science'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Colgate Keep India Smiling Foundational Scholarship (UG)', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 67, 190000, 'INR', '2026-09-17', 'Comprehensive academic support program under Colgate Keep India Smiling Foundational Scholarship (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','need-based'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Medhavi National Scholarship Scheme (UG)', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 68, 200000, 'INR', '2026-09-24', 'Comprehensive academic support program under Medhavi National Scholarship Scheme (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','sports'], true, true, ARRAY['Undergraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('NTPC Scholarship Scheme for Scheduled Castes/Tribes (UG)', 'National Aid Provider 4', 'Research', 'India', 'National', 69, 210000, 'INR', '2026-10-01', 'Comprehensive academic support program under NTPC Scholarship Scheme for Scheduled Castes/Tribes (UG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','undergraduate','research'], true, true, ARRAY['Undergraduate'], ARRAY['Arts','Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Tata Trusts Postgraduate Scholarship', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 70, 20000, 'INR', '2026-10-08', 'Comprehensive academic support program under Tata Trusts Postgraduate Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','government'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('ONGC Postgraduate Scholarship for SC/ST/OBC', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 71, 30000, 'INR', '2026-10-15', 'Comprehensive academic support program under ONGC Postgraduate Scholarship for SC/ST/OBC. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','international'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Indira Gandhi Single Girl Child Scholarship for PG', 'National Aid Provider 7', 'Merit', 'India', 'National', 72, 40000, 'INR', '2026-10-22', 'Comprehensive academic support program under Indira Gandhi Single Girl Child Scholarship for PG. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','merit'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('AICTE PG Scholarship for GATE/CEED Qualified', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 73, 50000, 'INR', '2026-10-29', 'Comprehensive academic support program under AICTE PG Scholarship for GATE/CEED Qualified. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','need-based'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('ICMR Post Graduate Biomedical Fellowship', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 74, 60000, 'INR', '2026-11-05', 'Comprehensive academic support program under ICMR Post Graduate Biomedical Fellowship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','sports'], true, true, ARRAY['Postgraduate'], ARRAY['Engineering'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('UGC Post-Graduate Merit Scholarship for University Rank Holders', 'National Aid Provider 10', 'Research', 'India', 'National', 75, 70000, 'INR', '2026-11-12', 'Comprehensive academic support program under UGC Post-Graduate Merit Scholarship for University Rank Holders. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','research'], true, true, ARRAY['Postgraduate'], ARRAY['Science','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('DBT Post Graduate Biotechnology Fellowship', 'National Aid Provider 11', 'Government', 'India', 'Karnataka', 76, 80000, 'INR', '2026-11-19', 'Comprehensive academic support program under DBT Post Graduate Biotechnology Fellowship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','government'], true, true, ARRAY['Postgraduate'], ARRAY['Science','Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('CSIR UGC NET Junior Research Fellowship (PG)', 'National Aid Provider 12', 'International', 'India', 'Karnataka', 77, 90000, 'INR', '2026-11-26', 'Comprehensive academic support program under CSIR UGC NET Junior Research Fellowship (PG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','international'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('SBI Youth for India Fellowship Grant', 'National Aid Provider 1', 'Merit', 'India', 'National', 78, 100000, 'INR', '2026-12-03', 'Comprehensive academic support program under SBI Youth for India Fellowship Grant. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','merit'], true, true, ARRAY['Postgraduate'], ARRAY['Arts'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Narotam Sekhsaria PG Scholarship', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 79, 110000, 'INR', '2026-12-10', 'Comprehensive academic support program under Narotam Sekhsaria PG Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','need-based'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('K.C. Mahindra Scholarships for Post-Graduate Studies', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 80, 120000, 'INR', '2026-12-17', 'Comprehensive academic support program under K.C. Mahindra Scholarships for Post-Graduate Studies. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','sports'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('J.N. Tata Endowment for Higher Education of Indians', 'National Aid Provider 4', 'Research', 'India', 'National', 81, 130000, 'INR', '2026-12-24', 'Comprehensive academic support program under J.N. Tata Endowment for Higher Education of Indians. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','research'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Aga Khan Foundation International Scholarship (PG)', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 82, 140000, 'INR', '2026-07-04', 'Comprehensive academic support program under Aga Khan Foundation International Scholarship (PG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','government'], true, true, ARRAY['Postgraduate'], ARRAY['Science'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Inlaks Shivdasani Foundation Scholarship', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 83, 150000, 'INR', '2026-07-11', 'Comprehensive academic support program under Inlaks Shivdasani Foundation Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','international'], true, true, ARRAY['Postgraduate'], ARRAY['Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Ratan Tata Trust PG Medical Fellowship', 'National Aid Provider 7', 'Merit', 'India', 'National', 84, 160000, 'INR', '2026-07-18', 'Comprehensive academic support program under Ratan Tata Trust PG Medical Fellowship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','merit'], true, true, ARRAY['Postgraduate'], ARRAY['Arts','Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Lady Meherbai D. Tata Education Trust Scholarship', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 85, 170000, 'INR', '2026-07-25', 'Comprehensive academic support program under Lady Meherbai D. Tata Education Trust Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','need-based'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Marubeni India Meritorious Scholarship (PG)', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 86, 180000, 'INR', '2026-08-01', 'Comprehensive academic support program under Marubeni India Meritorious Scholarship (PG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','sports'], true, true, ARRAY['Postgraduate'], ARRAY['Engineering','Arts'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Infosys Foundation STEM PG Scholarship', 'National Aid Provider 10', 'Research', 'India', 'National', 87, 190000, 'INR', '2026-08-08', 'Comprehensive academic support program under Infosys Foundation STEM PG Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','research'], true, true, ARRAY['Postgraduate'], ARRAY['Engineering'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Wipro Earthian PG Sustainability Grant', 'National Aid Provider 11', 'Government', 'India', 'Karnataka', 88, 200000, 'INR', '2026-08-15', 'Comprehensive academic support program under Wipro Earthian PG Sustainability Grant. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','government'], true, true, ARRAY['Postgraduate'], ARRAY['Arts','Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Aditya Birla Group Scholarship (PG Management/Law/Engineering)', 'National Aid Provider 12', 'International', 'India', 'Karnataka', 89, 210000, 'INR', '2026-08-22', 'Comprehensive academic support program under Aditya Birla Group Scholarship (PG Management/Law/Engineering). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','international'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Kishore Vaigyanik Protsahan Yojana (KVPY - PG)', 'National Aid Provider 1', 'Merit', 'India', 'National', 60, 20000, 'INR', '2026-08-29', 'Comprehensive academic support program under Kishore Vaigyanik Protsahan Yojana (KVPY - PG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','merit'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce','Medicine'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('National Fellowship for OBC Students (NFOBC - PG)', 'National Aid Provider 2', 'Need-based', 'India', 'Karnataka', 61, 30000, 'INR', '2026-09-05', 'Comprehensive academic support program under National Fellowship for OBC Students (NFOBC - PG). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','need-based'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Maulana Azad National Fellowship for Minorities (MANF)', 'National Aid Provider 3', 'Sports', 'India', 'Karnataka', 62, 40000, 'INR', '2026-09-12', 'Comprehensive academic support program under Maulana Azad National Fellowship for Minorities (MANF). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','sports'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('National Overseas Scholarship for SC Candidates', 'National Aid Provider 4', 'Research', 'India', 'National', 63, 50000, 'INR', '2026-09-19', 'Comprehensive academic support program under National Overseas Scholarship for SC Candidates. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','research'], true, true, ARRAY['Postgraduate'], ARRAY['Engineering','Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Fulbright-Nehru Master’s Fellowships (India-US)', 'National Aid Provider 5', 'Government', 'India', 'Karnataka', 64, 60000, 'INR', '2026-09-26', 'Comprehensive academic support program under Fulbright-Nehru Master’s Fellowships (India-US). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','government'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Commonwealth Scholarship for Master’s Studies', 'National Aid Provider 6', 'International', 'India', 'Karnataka', 65, 70000, 'INR', '2026-10-03', 'Comprehensive academic support program under Commonwealth Scholarship for Master’s Studies. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','international'], true, true, ARRAY['Postgraduate'], ARRAY['Arts'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('DAAD Master Studies Scholarship for Indians', 'National Aid Provider 7', 'Merit', 'India', 'National', 66, 80000, 'INR', '2026-10-10', 'Comprehensive academic support program under DAAD Master Studies Scholarship for Indians. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','merit'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Chevening India Master’s Scholarship', 'National Aid Provider 8', 'Need-based', 'India', 'Karnataka', 67, 90000, 'INR', '2026-10-17', 'Comprehensive academic support program under Chevening India Master’s Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','need-based'], true, true, ARRAY['Postgraduate'], ARRAY['Commerce'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Erasmus Mundus Joint Master Degree Scholarship', 'National Aid Provider 9', 'Sports', 'India', 'Karnataka', 68, 100000, 'INR', '2026-10-24', 'Comprehensive academic support program under Erasmus Mundus Joint Master Degree Scholarship. Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','sports'], true, true, ARRAY['Postgraduate'], ARRAY['Science','Medicine'], 'Female', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;
+INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES ('Rhodes Scholarship for India (PG Oxford)', 'National Aid Provider 10', 'Research', 'India', 'National', 69, 110000, 'INR', '2026-10-31', 'Comprehensive academic support program under Rhodes Scholarship for India (PG Oxford). Verified test sample.', 'Minimum 60% marks required. Family income below 8 Lakhs per annum.', 'https://scholarships.gov.in', ARRAY['sample-data','postgraduate','research'], true, true, ARRAY['Postgraduate'], ARRAY['Medicine','Science'], 'All', 'Below 8 Lakhs') ON CONFLICT (id) DO NOTHING;

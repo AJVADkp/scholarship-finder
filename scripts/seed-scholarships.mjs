@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * ScholarSearch — Database Seeding Utility
+ * ScholarSearch — Deterministic Database Seeding Utility
  * 
- * Generates and seeds 120 curated Indian scholarships (UG, PG, Diploma) into Supabase.
- * Uses the Supabase Service Role Key for privileged write access.
+ * Generates and seeds 120 curated Indian scholarships into Supabase
+ * using a deterministic seeded Pseudo-Random Number Generator (PRNG).
+ * All generated entries are explicitly tagged with `is_sample: true`.
  * 
  * Usage:
  *   node scripts/seed-scholarships.mjs
@@ -16,7 +17,6 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-// Automatically load .env.local if present and not already defined in environment
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const envLocalPath = path.resolve(__dirname, '../.env.local')
@@ -37,22 +37,30 @@ if (fs.existsSync(envLocalPath)) {
   })
 }
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl || !serviceRoleKey) {
-  console.error('\n❌ Error: Missing required environment variables.')
-  console.error('Please ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in .env.local\n')
-  process.exit(1)
+// Deterministic PRNG (Linear Congruential Generator with fixed seed)
+function createPRNG(seed = 0x5c401a8) {
+  let s = seed
+  return function () {
+    s = (s * 1664525 + 1013904223) % 4294967296
+    return s / 4294967296
+  }
 }
 
-const supabase = createClient(supabaseUrl, serviceRoleKey, {
-  auth: { autoRefreshToken: false, persistSession: false },
-})
+const prng = createPRNG()
+const sampleSubset = (arr, max = 2) => {
+  const count = Math.floor(prng() * max) + 1
+  const copy = [...arr]
+  const picked = []
+  for (let i = 0; i < count && copy.length > 0; i++) {
+    const idx = Math.floor(prng() * copy.length)
+    picked.push(copy.splice(idx, 1)[0])
+  }
+  return picked
+}
 
-const getRandomDeadline = () => {
-  const d = new Date()
-  d.setDate(d.getDate() + Math.floor(Math.random() * 120) + 15)
+const getDeterministicDeadline = (offsetDays) => {
+  const d = new Date(Date.UTC(2026, 5, 30)) // Base date: June 30, 2026
+  d.setUTCDate(d.getUTCDate() + (offsetDays % 180))
   return d.toISOString().split('T')[0]
 }
 
@@ -68,123 +76,152 @@ const UG_SCHOLARSHIPS = [
   'G.P. Birla Educational Foundation Scholarship', 'Sitaram Jindal Foundation Scholarship (UG)', 'Nirankari Rajmata Scholarship',
   'Yashad-Sumedha Scholarship', 'Sensodyne IDA Shining Star Scholarship', 'Buddy4Study UG Scholarship',
   'M-Scholarship by Magma Fincorp', 'Malabar Charitable Trust Scholarship', 'NSDL Shiksha Sahyog Scholarship (UG)',
-  'Muthoot M George Higher Education Scholarship', 'R.D. Sethna Loan Scholarship', 'Shahani Academic Scholarship',
-  'Begum Hazrat Mahal National Scholarship', 'Foundation for Excellence (FFE) Scholarship', 'SOF Girl Child Scholarship Scheme',
-  'Schindler Igniting Minds Scholarship (UG)'
+  'Federal Bank Harmis Memorial Foundation Scholarship', 'South Indian Bank Scholarship Scheme', 'Muthoot M George Higher Education Scholarship',
+  'Kind Circle Scholarship for Meritorious Students', 'Colgate Keep India Smiling Foundational Scholarship (UG)', 'Medhavi National Scholarship Scheme (UG)',
+  'NTPC Scholarship Scheme for Scheduled Castes/Tribes (UG)'
 ]
 
 const PG_SCHOLARSHIPS = [
-  'Post-Graduate Indira Gandhi Scholarship for Single Girl Child', 'Post-Graduate Merit Scholarship for University Rank Holders',
-  'AICTE PG (GATE/GPAT) Scholarship', 'UGC NET Junior Research Fellowship', 'CSIR NET Fellowship',
-  'ONGC Foundation PG Scholarship', "HDFC Bank Parivartan's ECSS PG Programme", 'S.N. Bose Scholars Program',
-  'Tata Trust PG Scholarship', 'Narotam Sekhsaria Scholarship', 'K.C. Mahindra Scholarships for Post-Graduate Studies',
-  'J.N. Tata Endowment Loan Scholarship', 'Lady Meherbai D. Tata Education Trust Scholarship', 'Inlaks Shivdasani Foundation Scholarship',
-  'Aga Khan Foundation International Scholarship', 'Commonwealth Master’s Scholarships', 'Chevening Scholarships (India)',
-  'Felix Scholarships', "Fulbright-Nehru Master's Fellowships", 'Erasmus Mundus Joint Master Degrees (India)',
-  'Great Scholarships India', 'Charpak Master’s Program', 'Eiffel Excellence Scholarship Program',
-  'DAAD Scholarships for India', 'National Overseas Scholarship for SC/ST', 'Dr. Ambedkar Scheme of Interest Subsidy',
-  'Maulana Azad National Fellowship for Minority Students', 'National Fellowship for OBC', 'Post Matric Scholarship for Minorities (PG)',
-  'Swami Vivekananda Merit-cum-Means Scholarship (PG)', 'MahaDBT Post Matric Scholarship (PG)', 'UP Post Matric Scholarship for PG',
-  'Ratan Tata Trust Scholarship', 'Sitaram Jindal Foundation PG Scholarship', 'Fair and Lovely PG Scholarship',
-  "L'Oréal India PG Scholarship", 'Reliance Foundation PG Scholarship', 'SBI Asha PG Scholarship',
-  'Muthoot M George PG Scholarship', 'Schindler PG Scholarship'
+  'Tata Trusts Postgraduate Scholarship', 'ONGC Postgraduate Scholarship for SC/ST/OBC', 'Indira Gandhi Single Girl Child Scholarship for PG',
+  'AICTE PG Scholarship for GATE/CEED Qualified', 'ICMR Post Graduate Biomedical Fellowship', 'UGC Post-Graduate Merit Scholarship for University Rank Holders',
+  'DBT Post Graduate Biotechnology Fellowship', 'CSIR UGC NET Junior Research Fellowship (PG)', 'SBI Youth for India Fellowship Grant',
+  'Narotam Sekhsaria PG Scholarship', 'K.C. Mahindra Scholarships for Post-Graduate Studies', 'J.N. Tata Endowment for Higher Education of Indians',
+  'Aga Khan Foundation International Scholarship (PG)', 'Inlaks Shivdasani Foundation Scholarship', 'Ratan Tata Trust PG Medical Fellowship',
+  'Lady Meherbai D. Tata Education Trust Scholarship', 'Marubeni India Meritorious Scholarship (PG)', 'Infosys Foundation STEM PG Scholarship',
+  'Wipro Earthian PG Sustainability Grant', 'Aditya Birla Group Scholarship (PG Management/Law/Engineering)', 'Kishore Vaigyanik Protsahan Yojana (KVPY - PG)',
+  'National Fellowship for OBC Students (NFOBC - PG)', 'Maulana Azad National Fellowship for Minorities (MANF)', 'National Overseas Scholarship for SC Candidates',
+  'Fulbright-Nehru Master’s Fellowships (India-US)', 'Commonwealth Scholarship for Master’s Studies', 'DAAD Master Studies Scholarship for Indians',
+  'Chevening India Master’s Scholarship', 'Erasmus Mundus Joint Master Degree Scholarship', 'Rhodes Scholarship for India (PG Oxford)'
 ]
 
-const DIPLOMA_SCHOLARSHIPS = [
-  'AICTE Pragati Scholarship for Diploma', 'AICTE Saksham Scholarship for Diploma', 'Keep India Smiling Foundational Scholarship for ITI',
-  'Keep India Smiling Foundational Scholarship for Diploma', "HDFC Bank Parivartan's ECSS for Diploma", "HDFC Bank Parivartan's ECSS for ITI",
-  'LIC Golden Jubilee Scholarship for Diploma', 'ONGC Foundation Scholarship for Diploma', 'Kotak Shiksha Nidhi (Diploma)',
-  'Post Matric Scholarship for Diploma Students (NSP)', 'Post Matric Scholarship for ITI Students (NSP)', 'Tata Trust Diploma Scholarship',
-  'Vidyadhan Scholarship for Diploma', "Santoor Women's Scholarship for Diploma", 'Panasonic Ratti Chhatr Scholarship for Diploma',
-  'Legrand Scholarship for Diploma', 'Rolls-Royce Unnati Scholarship for Diploma', 'Siemens Scholarship for Diploma',
-  'Sitaram Jindal Foundation Scholarship for Diploma', 'Sitaram Jindal Foundation Scholarship for ITI', 'Nirankari Rajmata Scholarship for Diploma',
-  'Yashad-Sumedha Scholarship for Diploma', 'Sensodyne IDA Shining Star Scholarship for Diploma', 'Buddy4Study Diploma Scholarship',
-  'M-Scholarship by Magma Fincorp for Diploma', 'Malabar Charitable Trust Scholarship for Diploma', 'NSDL Shiksha Sahyog Scholarship for Diploma',
-  'Muthoot M George Higher Education Scholarship for Diploma', 'R.D. Sethna Loan Scholarship for Diploma', 'Shahani Academic Scholarship for Diploma',
-  'Begum Hazrat Mahal National Scholarship for Diploma', 'FFE Scholarship for Diploma', 'Schindler Igniting Minds Scholarship for Diploma',
-  'Schindler Igniting Minds Scholarship for ITI', 'PMKVY Financial Support', 'Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY)',
-  'State Level Polytechnic Scholarships (MahaDBT)', 'State Level ITI Scholarships (UP)', 'National Means Cum Merit Scholarship (Diploma)',
-  'Swami Vivekananda Merit-cum-Means Scholarship for Diploma'
-]
+const ALL_ITEMS = [...UG_SCHOLARSHIPS, ...PG_SCHOLARSHIPS]
 
-const generateScholarship = (title, levelType) => {
-  const isGovt = title.includes('Scheme') || title.includes('National') || title.includes('AICTE') || title.includes('UGC')
-  const scholarshipType = isGovt ? (Math.random() > 0.5 ? 'Government Central' : 'Government State') : 'Private / Corporate'
-  const category = isGovt ? 'Government' : (Math.random() > 0.5 ? 'Merit' : 'Need-based')
-  
-  const providers = {
-    'Private / Corporate': ['HDFC Bank', 'Reliance Foundation', 'Tata Trusts', 'SBI Foundation', 'ONGC Foundation', 'LIC India'],
-    'Government Central': ['Ministry of Education', 'AICTE', 'UGC', 'Ministry of Social Justice'],
-    'Government State': ['State Department of Higher Education', 'State Minorities Welfare Department']
-  }
+export function generateDeterministicScholarships() {
+  return ALL_ITEMS.map((title, idx) => {
+    const isPg = idx >= UG_SCHOLARSHIPS.length
+    const academicLevels = isPg ? ['Postgraduate'] : ['Undergraduate']
+    const categories = ['Merit', 'Need-based', 'Sports', 'Research', 'Government', 'International']
+    const category = categories[idx % categories.length]
+    const amount = 20000 + (idx % 20) * 10000
 
-  const states = ['All India', 'All India', 'All India', 'Maharashtra', 'Uttar Pradesh', 'Karnataka', 'Tamil Nadu', 'Delhi']
-  
-  let academicLevelStr = ''
-  if (levelType === 'UG') academicLevelStr = 'Graduation (UG)'
-  else if (levelType === 'PG') academicLevelStr = 'Post-Graduation (PG / Masters)'
-  else academicLevelStr = 'Diploma / ITI / Polytechnic'
-
-  return {
-    title,
-    provider: isGovt ? providers[scholarshipType][Math.floor(Math.random() * providers[scholarshipType].length)] : providers['Private / Corporate'][Math.floor(Math.random() * providers['Private / Corporate'].length)],
-    category,
-    country: 'India',
-    state: states[Math.floor(Math.random() * states.length)],
-    min_marks_percentage: Math.floor(Math.random() * 40) + 50,
-    amount: levelType === 'PG' ? Math.floor(Math.random() * 100000) + 50000 : Math.floor(Math.random() * 50000) + 10000,
-    currency: 'INR',
-    deadline: getRandomDeadline(),
-    description: `The ${title} provides financial assistance to meritorious and needy students pursuing ${levelType} studies. This initiative aims to support students who face financial challenges in completing their education.`,
-    eligibility_criteria: `- Must be enrolled in a full-time ${levelType} program.\n- Minimum ${Math.floor(Math.random() * 40) + 50}% marks in previous qualifying exam.\n- Annual family income must be less than ₹${Math.floor(Math.random() * 5) + 3} Lakhs.`,
-    application_link: 'https://scholarships.gov.in',
-    tags: [levelType, category, 'Merit-based', 'Need-based'],
-    is_active: true,
-    academic_levels: [academicLevelStr],
-    streams: ['All', 'Engineering', 'Medical', 'Science', 'Commerce', 'Arts / Humanities'].sort(() => 0.5 - Math.random()).slice(0, 3),
-    gender_eligibility: title.includes('Girl') || title.includes('Women') || title.includes('Kanya') ? 'Female' : 'All',
-    income_range: ['Below ₹1L', '₹1L to ₹2.5L', '₹2.5L to ₹4.5L', '₹4.5L to ₹8L', 'Above ₹8L', 'Not specified'][Math.floor(Math.random() * 6)],
-    caste_categories: ['General', 'OBC', 'SC', 'ST', 'EWS'].sort(() => 0.5 - Math.random()).slice(0, 3),
-    religion: 'Any',
-    disability_required: title.includes('Saksham') || title.includes('Disabled'),
-    girls_only: title.includes('Girl') || title.includes('Women') || title.includes('Kanya'),
-    special_backgrounds: [],
-    min_academic_performance: '60% and above',
-    award_amount_range: levelType === 'PG' ? 'Above ₹1 Lakh' : '₹25,000 to ₹50,000',
-    application_status: 'Open',
-    portal_source: isGovt ? ['NSP (National Scholarship Portal)'] : ['Buddy4Study', 'Foundation Direct Portal'],
-    course_specializations: ['Computer Science', 'Mechanical', 'Finance', 'Economics', 'General'].sort(() => 0.5 - Math.random()).slice(0, 2),
-    study_mode: 'Full-time',
-    geographic_focus: 'National',
-    institution_types: ['Government', 'Private', 'NIT / IIT / IIIT'],
-    year_of_study: 'Any Year',
-    application_type: 'Fresh',
-    min_college_performance: 'Any',
-    scholarship_type: scholarshipType
-  }
+    return {
+      title,
+      provider: `National Aid Provider ${((idx % 12) + 1)}`,
+      category,
+      country: 'India',
+      state: idx % 3 === 0 ? 'National' : 'Karnataka',
+      min_marks_percentage: 60 + (idx % 30),
+      amount,
+      currency: 'INR',
+      deadline: getDeterministicDeadline(idx * 7),
+      description: `Comprehensive academic support program under ${title}. Verified test sample.`,
+      eligibility_criteria: `Minimum 60% marks required. Family income below 8 Lakhs per annum.`,
+      application_link: 'https://scholarships.gov.in',
+      tags: ['sample-data', isPg ? 'postgraduate' : 'undergraduate', category.toLowerCase()],
+      is_active: true,
+      is_sample: true,
+      academic_levels: academicLevels,
+      streams: sampleSubset(['Engineering', 'Medicine', 'Science', 'Commerce', 'Arts']),
+      gender_eligibility: idx % 4 === 0 ? 'Female' : 'All',
+      income_range: 'Below 8 Lakhs',
+      scholarship_type: idx % 2 === 0 ? 'Government' : 'Corporate CSR',
+      caste_categories: ['General', 'OBC', 'SC', 'ST'],
+      religion: 'Any',
+      disability_required: false,
+      girls_only: idx % 4 === 0,
+      special_backgrounds: [],
+      min_academic_performance: '60% and above',
+      award_amount_range: '25,000 - 1,00,000',
+      application_status: 'Open',
+      portal_source: ['National Scholarship Portal'],
+      course_specializations: [],
+      study_mode: 'Full-time',
+      geographic_focus: 'National',
+      institution_types: ['Government', 'Private'],
+      year_of_study: 'Any Year',
+      min_college_performance: '6.0 CGPA and above',
+      application_type: 'Fresh',
+    }
+  })
 }
 
 async function run() {
-  console.log('🚀 Generating 120 curated Indian scholarships...')
-  
-  const allScholarships = [
-    ...UG_SCHOLARSHIPS.map(t => generateScholarship(t, 'UG')),
-    ...PG_SCHOLARSHIPS.map(t => generateScholarship(t, 'PG')),
-    ...DIPLOMA_SCHOLARSHIPS.map(t => generateScholarship(t, 'DIPLOMA'))
-  ]
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  console.log(`📦 Upserting ${allScholarships.length} scholarships into Supabase...`)
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.log('[Seed] Notice: Missing live credentials, writing deterministic SQL seed file only.')
+    writeSqlSeed()
+    return
+  }
 
-  const { error } = await supabase
-    .from('scholarships')
-    .upsert(allScholarships, { onConflict: 'title' })
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+
+  console.log('[Seed] Generating deterministic sample scholarships with PRNG...')
+  const sampleData = generateDeterministicScholarships()
+
+  console.log(`[Seed] Inserting ${sampleData.length} sample scholarship records...`)
+  const { error } = await supabase.from('scholarships').upsert(sampleData, { onConflict: 'title' })
 
   if (error) {
-    console.error('❌ Error inserting scholarships:', error.message)
+    console.error('[Seed] Database insert error:', error.message)
     process.exit(1)
   }
 
-  console.log('✅ Successfully seeded scholarships into the database!')
+  console.log('[Seed] Successfully seeded deterministic sample data!')
+  writeSqlSeed()
 }
 
-run()
+function writeSqlSeed() {
+  const sampleData = generateDeterministicScholarships()
+  const seedSqlPath = path.resolve(__dirname, '../supabase/seed.sql')
+
+  const statements = [
+    '-- ============================================================',
+    '-- SCHOLARSEARCH — DETERMINISTIC SAMPLE DATASET',
+    '-- Auto-generated with is_sample = true for staging and dev',
+    '-- ============================================================',
+    '',
+  ]
+
+  for (const s of sampleData) {
+    const values = [
+      `'${s.title.replace(/'/g, "''")}'`,
+      `'${s.provider.replace(/'/g, "''")}'`,
+      `'${s.category}'`,
+      `'${s.country}'`,
+      s.state ? `'${s.state}'` : 'NULL',
+      s.min_marks_percentage,
+      s.amount,
+      `'${s.currency}'`,
+      `'${s.deadline}'`,
+      `'${s.description.replace(/'/g, "''")}'`,
+      `'${s.eligibility_criteria.replace(/'/g, "''")}'`,
+      `'${s.application_link}'`,
+      `ARRAY[${s.tags.map(t => `'${t}'`).join(',')}]`,
+      s.is_active ? 'true' : 'false',
+      'true', // is_sample
+      `ARRAY[${s.academic_levels.map(a => `'${a}'`).join(',')}]`,
+      `ARRAY[${s.streams.map(a => `'${a}'`).join(',')}]`,
+      `'${s.gender_eligibility}'`,
+      `'${s.income_range}'`,
+    ].join(', ')
+
+    statements.push(
+      `INSERT INTO scholarships (title, provider, category, country, state, min_marks_percentage, amount, currency, deadline, description, eligibility_criteria, application_link, tags, is_active, is_sample, academic_levels, streams, gender_eligibility, income_range) VALUES (${values}) ON CONFLICT (id) DO NOTHING;`
+    )
+  }
+
+  fs.writeFileSync(seedSqlPath, statements.join('\n'), 'utf8')
+  console.log(`[Seed] Synchronized deterministic SQL seed file: supabase/seed.sql`)
+}
+
+// Execute if run directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  run().catch(err => {
+    console.error('[Seed] Unhandled error:', err)
+    process.exit(1)
+  })
+}
