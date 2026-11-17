@@ -85,13 +85,13 @@ cp .env.example .env.local
 
 Fill in the required configuration parameters:
 
-| Variable | Description | Scope |
-| :--- | :--- | :--- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL | Client & Server |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Supabase Anon API key | Client & Server |
-| `SUPABASE_SERVICE_ROLE_KEY` | Privileged Supabase Service Role key | Server-Side Only |
-| `ADMIN_JWT_SECRET` | 32+ character secret for admin JWT sessions | Server-Side Only |
-| `NEXT_PUBLIC_SITE_URL` | Application root URL (`http://localhost:3000` locally) | Client & Server |
+| Variable                        | Description                                            | Scope            |
+| :------------------------------ | :----------------------------------------------------- | :--------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Your Supabase Project URL                              | Client & Server  |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Supabase Anon API key                           | Client & Server  |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Privileged Supabase Service Role key                   | Server-Side Only |
+| `ADMIN_JWT_SECRET`              | 32+ character secret for admin JWT sessions            | Server-Side Only |
+| `NEXT_PUBLIC_SITE_URL`          | Application root URL (`http://localhost:3000` locally) | Client & Server  |
 
 > **Security Note**: Never commit `.env.local` or expose `SUPABASE_SERVICE_ROLE_KEY` on the client. The service role key bypasses Row Level Security and must only be used in authenticated server contexts.
 
@@ -106,6 +106,7 @@ npm run admin:create
 ```
 
 Alternatively, pass credentials non-interactively:
+
 ```bash
 node scripts/create-admin.mjs --username=admin --password=YourSecurePassword123!
 ```

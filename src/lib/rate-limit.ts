@@ -10,7 +10,11 @@ export interface RateLimitResult {
 // In-memory fallback / cache to reduce DB load
 const memoryFallback = new Map<string, { count: number; resetAt: number }>()
 
-function checkMemoryRateLimit(key: string, maxRequests: number, windowSeconds: number): RateLimitResult {
+function checkMemoryRateLimit(
+  key: string,
+  maxRequests: number,
+  windowSeconds: number
+): RateLimitResult {
   const now = Date.now()
   const entry = memoryFallback.get(key)
 
@@ -25,7 +29,12 @@ function checkMemoryRateLimit(key: string, maxRequests: number, windowSeconds: n
   }
 
   entry.count++
-  return { success: true, limit: maxRequests, remaining: maxRequests - entry.count, reset: entry.resetAt }
+  return {
+    success: true,
+    limit: maxRequests,
+    remaining: maxRequests - entry.count,
+    reset: entry.resetAt,
+  }
 }
 
 /**
@@ -87,9 +96,7 @@ export async function checkRateLimit(
     }
 
     if (!data || new Date(data.reset_at).getTime() < now) {
-      await supabase
-        .from('rate_limit_counters')
-        .upsert({ key, count: 1, reset_at: resetTime })
+      await supabase.from('rate_limit_counters').upsert({ key, count: 1, reset_at: resetTime })
       return {
         success: true,
         limit: maxRequests,
@@ -108,10 +115,7 @@ export async function checkRateLimit(
     }
 
     const nextCount = data.count + 1
-    await supabase
-      .from('rate_limit_counters')
-      .update({ count: nextCount })
-      .eq('key', key)
+    await supabase.from('rate_limit_counters').update({ count: nextCount }).eq('key', key)
 
     return {
       success: true,

@@ -1,8 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { GET as healthHandler } from '@/app/api/health/route'
-import { GET as adminScholarshipsGet, POST as adminScholarshipsPost } from '@/app/api/admin/scholarships/route'
-import { PUT as adminScholarshipPut, DELETE as adminScholarshipDelete } from '@/app/api/admin/scholarships/[id]/route'
+import {
+  GET as adminScholarshipsGet,
+  POST as adminScholarshipsPost,
+} from '@/app/api/admin/scholarships/route'
+import {
+  PUT as adminScholarshipPut,
+  DELETE as adminScholarshipDelete,
+} from '@/app/api/admin/scholarships/[id]/route'
 import { POST as adminLogoutPost } from '@/app/api/admin/logout/route'
 import { GET as adminUsersGet } from '@/app/api/admin/users/route'
 import { GET as adminAnalyticsGet } from '@/app/api/admin/analytics/route'
@@ -16,18 +22,24 @@ vi.mock('@/lib/supabase/admin', () => ({
       if (table === 'scholarships') {
         return {
           select: vi.fn(() => ({
-            order: vi.fn(() => Promise.resolve({ data: [{ id: '1', title: 'Test' }], error: null })),
+            order: vi.fn(() =>
+              Promise.resolve({ data: [{ id: '1', title: 'Test' }], error: null })
+            ),
             limit: vi.fn(() => Promise.resolve({ data: [{ id: '1' }], error: null })),
           })),
           insert: vi.fn((payload) => ({
             select: vi.fn(() => ({
-              single: vi.fn(() => Promise.resolve({ data: { id: 'new-id', ...payload }, error: null })),
+              single: vi.fn(() =>
+                Promise.resolve({ data: { id: 'new-id', ...payload }, error: null })
+              ),
             })),
           })),
           update: vi.fn((payload) => ({
             eq: vi.fn(() => ({
               select: vi.fn(() => ({
-                single: vi.fn(() => Promise.resolve({ data: { id: 'upd-id', ...payload }, error: null })),
+                single: vi.fn(() =>
+                  Promise.resolve({ data: { id: 'upd-id', ...payload }, error: null })
+                ),
               })),
             })),
           })),
@@ -64,7 +76,9 @@ vi.mock('@/lib/admin-auth', () => ({
 
 // Mock rate limiting to always pass in test suite
 vi.mock('@/lib/rate-limit', () => ({
-  checkRateLimit: vi.fn(() => Promise.resolve({ success: true, limit: 100, remaining: 99, reset: Date.now() + 60000 })),
+  checkRateLimit: vi.fn(() =>
+    Promise.resolve({ success: true, limit: 100, remaining: 99, reset: Date.now() + 60000 })
+  ),
 }))
 
 describe('/api/health route handler', () => {
@@ -152,7 +166,9 @@ describe('/api/admin/scholarships/[id] route handler', () => {
 
   it('deletes scholarship when authenticated', async () => {
     mockVerifyAdminToken.mockResolvedValueOnce({ username: 'admin', role: 'admin' })
-    const req = new NextRequest('http://localhost:3000/api/admin/scholarships/123', { method: 'DELETE' })
+    const req = new NextRequest('http://localhost:3000/api/admin/scholarships/123', {
+      method: 'DELETE',
+    })
     const res = await adminScholarshipDelete(req, { params: Promise.resolve({ id: '123' }) })
     expect(res.status).toBe(200)
     const json = await res.json()
@@ -162,7 +178,11 @@ describe('/api/admin/scholarships/[id] route handler', () => {
 
 describe('/api/admin/logout route handler', () => {
   it('clears session cookie on logout', async () => {
-    mockVerifyAdminToken.mockResolvedValueOnce({ username: 'admin', jti: 'test-jti', exp: Date.now() / 1000 + 3600 })
+    mockVerifyAdminToken.mockResolvedValueOnce({
+      username: 'admin',
+      jti: 'test-jti',
+      exp: Date.now() / 1000 + 3600,
+    })
     const req = new NextRequest('http://localhost:3000/api/admin/logout', { method: 'POST' })
     const res = await adminLogoutPost(req)
     expect(res.status).toBe(200)

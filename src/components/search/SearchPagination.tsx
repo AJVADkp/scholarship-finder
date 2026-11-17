@@ -25,13 +25,16 @@ export function SearchPagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10 pt-6 border-t border-gray-100">
       <p className="text-sm text-gray-500">
-        Showing <span className="font-semibold text-gray-700">{from}–{to}</span> of{' '}
-        <span className="font-semibold text-gray-700">{totalCount}</span> scholarships
+        Showing{' '}
+        <span className="font-semibold text-gray-700">
+          {from}–{to}
+        </span>{' '}
+        of <span className="font-semibold text-gray-700">{totalCount}</span> scholarships
       </p>
 
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setPage(p => Math.max(1, p - 1))}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
           className="btn-ghost p-2 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Previous page"
@@ -41,7 +44,7 @@ export function SearchPagination({
 
         <div className="flex items-center gap-1">
           {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+            .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
             .reduce<(number | string)[]>((acc, p, idx, arr) => {
               if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('...')
               acc.push(p)
@@ -69,7 +72,7 @@ export function SearchPagination({
         </div>
 
         <button
-          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
           className="btn-ghost p-2 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Next page"

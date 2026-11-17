@@ -21,7 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
-    { url: `${baseUrl}/scholarships`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    {
+      url: `${baseUrl}/scholarships`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
     ...categories.map((cat) => ({
       url: `${baseUrl}/scholarships/category/${cat}`,
       lastModified: new Date(),

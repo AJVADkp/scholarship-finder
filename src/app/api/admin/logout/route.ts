@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
   if (admin && admin.jti) {
     try {
       const supabase = createAdminClient()
-      const expiry = admin.exp ? new Date(admin.exp * 1000).toISOString() : new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString()
+      const expiry = admin.exp
+        ? new Date(admin.exp * 1000).toISOString()
+        : new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString()
 
       await supabase.from('revoked_tokens').upsert({
         jti: admin.jti,

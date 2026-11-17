@@ -32,7 +32,9 @@ async function main() {
         stdio: ['pipe', 'pipe', 'pipe'],
       })
     } catch {
-      console.warn('[db:types] Remote typegen unavailable, falling back to repository baseline definition.')
+      console.warn(
+        '[db:types] Remote typegen unavailable, falling back to repository baseline definition.'
+      )
     }
   }
 
@@ -83,7 +85,7 @@ async function main() {
   console.log('[db:types] Verification passed: all schema tables and fields are present.')
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('[db:types] Unexpected error:', err)
   process.exit(1)
 })

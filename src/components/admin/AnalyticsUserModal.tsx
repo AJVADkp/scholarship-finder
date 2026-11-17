@@ -85,7 +85,9 @@ export function AnalyticsUserModal({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Academic Level:</span>
-                  <span className="font-semibold text-gray-800">{profile.academic_level || '—'}</span>
+                  <span className="font-semibold text-gray-800">
+                    {profile.academic_level || '—'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">State:</span>
@@ -102,11 +104,16 @@ export function AnalyticsUserModal({
         <div className="space-y-2 mb-5 text-xs text-gray-600">
           <div className="flex justify-between py-1 border-b border-gray-100">
             <span className="text-gray-400">Location</span>
-            <span className="font-medium">{user.city ? `${user.city}, ` : ''}{user.country || 'Unknown'}</span>
+            <span className="font-medium">
+              {user.city ? `${user.city}, ` : ''}
+              {user.country || 'Unknown'}
+            </span>
           </div>
           <div className="flex justify-between py-1 border-b border-gray-100">
             <span className="text-gray-400">Device / OS</span>
-            <span className="font-medium">{user.device || 'Unknown'} · {user.os || 'Unknown'}</span>
+            <span className="font-medium">
+              {user.device || 'Unknown'} · {user.os || 'Unknown'}
+            </span>
           </div>
           <div className="flex justify-between py-1 border-b border-gray-100">
             <span className="text-gray-400">Browser</span>
@@ -121,10 +128,16 @@ export function AnalyticsUserModal({
           </h4>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {user.pages.map((p, i) => (
-              <div key={i} className="flex items-center justify-between text-xs py-1.5 px-3 bg-gray-50 rounded-lg">
+              <div
+                key={i}
+                className="flex items-center justify-between text-xs py-1.5 px-3 bg-gray-50 rounded-lg"
+              >
                 <span className="font-mono text-gray-700 truncate max-w-64">{p.page}</span>
                 <span className="text-gray-400 text-[10px]">
-                  {new Date(p.time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(p.time).toLocaleTimeString('en-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </span>
               </div>
             ))}

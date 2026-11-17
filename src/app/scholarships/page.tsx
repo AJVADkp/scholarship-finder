@@ -57,9 +57,14 @@ function ScholarshipsContent() {
         <div className="mb-6">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Browse Scholarships</h1>
           <p className="text-gray-500 text-sm">
-            {loading ? 'Searching...' : `${totalCount} scholarship${totalCount !== 1 ? 's' : ''} found`}
+            {loading
+              ? 'Searching...'
+              : `${totalCount} scholarship${totalCount !== 1 ? 's' : ''} found`}
             {hasFilters && !loading && (
-              <button onClick={clearAll} className="ml-3 text-primary hover:underline font-semibold text-xs">
+              <button
+                onClick={clearAll}
+                className="ml-3 text-primary hover:underline font-semibold text-xs"
+              >
                 Clear all filters
               </button>
             )}
@@ -74,7 +79,7 @@ function ScholarshipsContent() {
               type="text"
               placeholder="Search by name, provider, or keyword..."
               value={searchQuery}
-              onChange={e => {
+              onChange={(e) => {
                 setSearchQuery(e.target.value)
                 setShowSuggestions(true)
               }}
@@ -84,14 +89,17 @@ function ScholarshipsContent() {
               id="scholarship-search"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="text-gray-300 hover:text-gray-500">
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-gray-300 hover:text-gray-500"
+              >
                 <X size={18} />
               </button>
             )}
           </div>
           {showSuggestions && suggestions.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-2 glass-card p-2 z-20 animate-scale-in shadow-xl">
-              {suggestions.map(s => (
+              {suggestions.map((s) => (
                 <button
                   key={s}
                   className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-3"
@@ -167,7 +175,8 @@ function ScholarshipsContent() {
                 </div>
                 <h3 className="font-bold text-gray-800 text-lg mb-1">No scholarships found</h3>
                 <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">
-                  We couldn&apos;t find any scholarships matching your active criteria. Try broadening your filters.
+                  We couldn&apos;t find any scholarships matching your active criteria. Try
+                  broadening your filters.
                 </p>
                 <button onClick={clearAll} className="btn-primary">
                   Clear All Filters
@@ -176,14 +185,14 @@ function ScholarshipsContent() {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {scholarships.map(s => (
+                  {scholarships.map((s) => (
                     <ScholarshipCard
                       key={s.id}
                       scholarship={s}
                       isSaved={savedIds.has(s.id)}
                       userId={user?.id}
                       onSaveToggle={(id, saved) => {
-                        setSavedIds(prev => {
+                        setSavedIds((prev) => {
                           const next = new Set(prev)
                           if (saved) next.add(id)
                           else next.delete(id)

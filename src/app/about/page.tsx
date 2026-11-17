@@ -4,10 +4,12 @@ import { AboutClientContent } from './AboutClientContent'
 
 export const metadata: Metadata = {
   title: 'About Us — ScholarSearch',
-  description: 'Learn about the team behind ScholarSearch — five first-year engineering students from Christ College of Engineering, Irinjalakuda, building tools to democratize access to education.',
+  description:
+    'Learn about the team behind ScholarSearch — five first-year engineering students from Christ College of Engineering, Irinjalakuda, building tools to democratize access to education.',
   openGraph: {
     title: 'About Us — ScholarSearch',
-    description: 'Five first-year students. One mission: make scholarships accessible to every student.',
+    description:
+      'Five first-year students. One mission: make scholarships accessible to every student.',
   },
 }
 

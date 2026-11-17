@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const cspHeader = `
   default-src 'self';
@@ -11,7 +11,9 @@ const cspHeader = `
   form-action 'self';
   base-uri 'self';
   object-src 'none';
-`.replace(/\s{2,}/g, ' ').trim();
+`
+  .replace(/\s{2,}/g, ' ')
+  .trim()
 
 const nextConfig: NextConfig = {
   // Remove X-Powered-By header for security
@@ -60,8 +62,8 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

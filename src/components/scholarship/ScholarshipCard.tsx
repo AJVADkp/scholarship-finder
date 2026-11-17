@@ -75,8 +75,8 @@ export function ScholarshipCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="scholarship-card"
       style={{ borderLeft: `4px solid ${borderColor}` }}
     >
@@ -110,7 +110,10 @@ export function ScholarshipCard({
         </p>
 
         {/* Amount */}
-        <div className="text-2xl font-extrabold mb-1 flex items-baseline gap-1.5" style={{ color: borderColor }}>
+        <div
+          className="text-2xl font-extrabold mb-1 flex items-baseline gap-1.5"
+          style={{ color: borderColor }}
+        >
           <span>{formatAmount(scholarship.amount, scholarship.currency)}</span>
           {scholarship.amount !== null && (
             <span className="text-sm font-medium text-gray-500">
@@ -118,7 +121,8 @@ export function ScholarshipCard({
                 const t = (scholarship.title || '').toLowerCase()
                 const r = (scholarship.award_amount_range || '').toLowerCase()
                 if (r.includes('month') || t.includes('month')) return '/ month'
-                if (r.includes('year') || r.includes('annual') || t.includes('year')) return '/ year'
+                if (r.includes('year') || r.includes('annual') || t.includes('year'))
+                  return '/ year'
                 if (t.includes('jrf') || t.includes('fellowship') || t.includes('phd')) {
                   if (scholarship.amount >= 10000 && scholarship.amount <= 80000) return '/ month'
                 }
@@ -133,21 +137,21 @@ export function ScholarshipCard({
         {scholarship.country && (
           <div className="flex items-center gap-1 text-xs text-gray-400 mb-3">
             <MapPin size={11} />
-            {scholarship.state ? `${scholarship.state}, ` : ''}{scholarship.country}
+            {scholarship.state ? `${scholarship.state}, ` : ''}
+            {scholarship.country}
           </div>
         )}
 
         {/* Description */}
-        <p className="text-sm text-gray-500 line-clamp-2 mb-4">
-          {scholarship.description}
-        </p>
+        <p className="text-sm text-gray-500 line-clamp-2 mb-4">{scholarship.description}</p>
 
         {/* Marks required */}
         {scholarship.min_marks_percentage !== null && (
           <div className="flex items-center gap-1.5 mb-3">
             <GraduationCap size={14} className="text-gray-400" />
             <span className="text-xs text-gray-500">
-              Min. <strong className="text-gray-700">{scholarship.min_marks_percentage}%</strong> marks required
+              Min. <strong className="text-gray-700">{scholarship.min_marks_percentage}%</strong>{' '}
+              marks required
             </span>
           </div>
         )}
@@ -156,7 +160,8 @@ export function ScholarshipCard({
       {/* Footer */}
       <div className="px-5 pb-5 flex items-center justify-between gap-3">
         <div className="text-xs text-gray-400">
-          Deadline: <span className="text-gray-600 font-medium">{formatDeadline(scholarship.deadline)}</span>
+          Deadline:{' '}
+          <span className="text-gray-600 font-medium">{formatDeadline(scholarship.deadline)}</span>
         </div>
 
         <div className="flex items-center gap-2">

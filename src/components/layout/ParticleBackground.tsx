@@ -26,7 +26,7 @@ export function ParticleBackground() {
           fullScreen: { enable: false, zIndex: -1 },
           background: {
             color: {
-              value: "transparent",
+              value: 'transparent',
             },
           },
           fpsLimit: 60,
@@ -34,7 +34,7 @@ export function ParticleBackground() {
             events: {
               onHover: {
                 enable: true,
-                mode: "grab",
+                mode: 'grab',
               },
             },
             modes: {
@@ -48,10 +48,10 @@ export function ParticleBackground() {
           },
           particles: {
             color: {
-              value: ["#4F8EF7", "#34C48B", "#8B5CF6", "#06B6D4"],
+              value: ['#4F8EF7', '#34C48B', '#8B5CF6', '#06B6D4'],
             },
             links: {
-              color: "#4F8EF7",
+              color: '#4F8EF7',
               distance: 150,
               enable: true,
               opacity: 0.15,
@@ -60,18 +60,18 @@ export function ParticleBackground() {
             move: {
               enable: true,
               speed: 0.8,
-              direction: "none",
+              direction: 'none',
               random: true,
               straight: false,
               outModes: {
-                default: "out",
+                default: 'out',
               },
             },
             number: {
               density: {
                 enable: true,
                 width: 800,
-                height: 800
+                height: 800,
               },
               value: 35,
             },
@@ -79,7 +79,7 @@ export function ParticleBackground() {
               value: 0.3,
             },
             shape: {
-              type: "circle",
+              type: 'circle',
             },
             size: {
               value: { min: 1, max: 3 },

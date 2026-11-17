@@ -31,7 +31,11 @@ export function calculateEligibilityScore(
   // 2. Stream (Weight: 20)
   if (user.stream) {
     totalPossible += 20
-    if (!scholarship.streams || scholarship.streams.length === 0 || scholarship.streams.includes('All')) {
+    if (
+      !scholarship.streams ||
+      scholarship.streams.length === 0 ||
+      scholarship.streams.includes('All')
+    ) {
       score += 10
     } else if (scholarship.streams.includes(user.stream)) {
       score += 20
@@ -76,7 +80,11 @@ export function calculateEligibilityScore(
   // 5. State (Weight: 15)
   if (user.state) {
     totalPossible += 15
-    if (!scholarship.state || scholarship.state === 'All India' || scholarship.state === 'National') {
+    if (
+      !scholarship.state ||
+      scholarship.state === 'All India' ||
+      scholarship.state === 'National'
+    ) {
       score += 8
     } else if (scholarship.state.toLowerCase().includes(user.state.toLowerCase())) {
       score += 15
@@ -145,7 +153,10 @@ export function isScholarshipEligible(user: UserProfile, scholarship: Scholarshi
   }
 
   // Male users: exclude girls-only opportunities
-  if (user.gender === 'Male' && (scholarship.girls_only || scholarship.gender_eligibility === 'Female')) {
+  if (
+    user.gender === 'Male' &&
+    (scholarship.girls_only || scholarship.gender_eligibility === 'Female')
+  ) {
     return false
   }
 
@@ -166,7 +177,11 @@ export function isScholarshipEligible(user: UserProfile, scholarship: Scholarshi
   }
 
   // Caste constraint
-  if (user.caste_category && scholarship.caste_categories && scholarship.caste_categories.length > 0) {
+  if (
+    user.caste_category &&
+    scholarship.caste_categories &&
+    scholarship.caste_categories.length > 0
+  ) {
     if (
       !scholarship.caste_categories.includes(user.caste_category) &&
       !scholarship.caste_categories.includes('General')
@@ -197,7 +212,7 @@ export function rankScholarshipsForUser(
   user: UserProfile,
   scholarships: Scholarship[]
 ): ScoredScholarship[] {
-  const scored = scholarships.map(s => {
+  const scored = scholarships.map((s) => {
     const { score, totalPossible, isPerfect } = calculateEligibilityScore(user, s)
     return {
       ...s,
@@ -207,7 +222,7 @@ export function rankScholarshipsForUser(
     }
   })
 
-  const eligible = scored.filter(s => isScholarshipEligible(user, s))
+  const eligible = scored.filter((s) => isScholarshipEligible(user, s))
 
   return eligible.sort((a, b) => {
     if (b._score !== a._score) return b._score - a._score

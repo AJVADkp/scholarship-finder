@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
   public: {
@@ -14,7 +8,8 @@ export interface Database {
           id: string
           title: string
           provider: string | null
-          category: 'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
+          category:
+            'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
           country: string | null
           state: string | null
           min_marks_percentage: number | null
@@ -55,7 +50,8 @@ export interface Database {
           id?: string
           title: string
           provider?: string | null
-          category?: 'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
+          category?:
+            'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
           country?: string | null
           state?: string | null
           min_marks_percentage?: number | null
@@ -96,7 +92,8 @@ export interface Database {
           id?: string
           title?: string
           provider?: string | null
-          category?: 'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
+          category?:
+            'Merit' | 'Need-based' | 'Sports' | 'Research' | 'Government' | 'International' | null
           country?: string | null
           state?: string | null
           min_marks_percentage?: number | null

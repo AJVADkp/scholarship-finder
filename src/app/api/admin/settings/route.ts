@@ -55,7 +55,10 @@ export async function PUT(request: NextRequest) {
     }
 
     if (new_password.length < 8) {
-      return NextResponse.json({ error: 'New password must be at least 8 characters' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'New password must be at least 8 characters' },
+        { status: 400 }
+      )
     }
 
     // Verify current password

@@ -12,7 +12,8 @@ import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'ScholarSearch — Find Your Perfect Scholarship',
-  description: 'Discover thousands of scholarships tailored to your academic profile. Search and filter by category, marks, deadline, and country.',
+  description:
+    'Discover thousands of scholarships tailored to your academic profile. Search and filter by category, marks, deadline, and country.',
 }
 
 export const revalidate = 60 // Refresh stats every 60 seconds
@@ -26,7 +27,10 @@ async function StatsRow() {
     const adminSupabase = createAdminClient()
 
     const [scholarshipsRes, usersRes] = await Promise.allSettled([
-      supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
+      supabase
+        .from('scholarships')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true),
       adminSupabase.from('users').select('*', { count: 'exact', head: true }),
     ])
 
@@ -43,7 +47,12 @@ async function StatsRow() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
       {[
-        { icon: BookOpen, value: totalCount || '20+', label: 'Active Scholarships', color: '#4F8EF7' },
+        {
+          icon: BookOpen,
+          value: totalCount || '20+',
+          label: 'Active Scholarships',
+          color: '#4F8EF7',
+        },
         { icon: Sparkles, value: '15+', label: 'Smart Filters', color: '#34C48B' },
         { icon: Users, value: totalUsers || '10+', label: 'Registered Students', color: '#8B5CF6' },
       ].map((stat) => (
@@ -82,13 +91,15 @@ async function FeaturedScholarships({ category }: { category?: string }) {
 
   // Sort: active (future deadline) first, expired last
   const scholarships = rawScholarships
-    ? [...rawScholarships].sort((a, b) => {
-        const aExpired = a.deadline && a.deadline < today
-        const bExpired = b.deadline && b.deadline < today
-        if (aExpired && !bExpired) return 1
-        if (!aExpired && bExpired) return -1
-        return 0
-      }).slice(0, 6)
+    ? [...rawScholarships]
+        .sort((a, b) => {
+          const aExpired = a.deadline && a.deadline < today
+          const bExpired = b.deadline && b.deadline < today
+          if (aExpired && !bExpired) return 1
+          if (!aExpired && bExpired) return -1
+          return 0
+        })
+        .slice(0, 6)
     : null
 
   if (error || !scholarships) {
@@ -156,8 +167,8 @@ export default async function HomePage({
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Discover merit, need-based, sports, research, government, and international scholarships.
-            Filter by marks, deadline, and country — all in one place.
+            Discover merit, need-based, sports, research, government, and international
+            scholarships. Filter by marks, deadline, and country — all in one place.
           </p>
 
           {/* Search Bar */}
@@ -188,7 +199,9 @@ export default async function HomePage({
           <Suspense
             fallback={
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12">
-                {[1, 2, 3].map((i) => <SkeletonStatCard key={i} />)}
+                {[1, 2, 3].map((i) => (
+                  <SkeletonStatCard key={i} />
+                ))}
               </div>
             }
           >
@@ -204,7 +217,9 @@ export default async function HomePage({
         {/* Section header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-1">Featured Scholarships</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-1">
+              Featured Scholarships
+            </h2>
             <p className="text-gray-500 text-sm">Sorted by nearest deadline first</p>
           </div>
           <Link href="/scholarships" className="btn-primary text-sm px-4 py-2">
@@ -213,7 +228,10 @@ export default async function HomePage({
         </div>
 
         {/* Category filter pills */}
-        <div className="flex gap-2 overflow-x-auto pb-3 mb-8 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+        <div
+          className="flex gap-2 overflow-x-auto pb-3 mb-8 scrollbar-hide"
+          style={{ scrollbarWidth: 'none' }}
+        >
           {['All', ...ALL_CATEGORIES].map((cat) => (
             <Link
               key={cat}
@@ -225,7 +243,8 @@ export default async function HomePage({
                   : 'glass-card text-gray-600 hover:text-primary hover:border-primary/30'
               }`}
             >
-              {cat !== 'All' && CATEGORY_CONFIG[cat as Category]?.emoji + ' '}{cat}
+              {cat !== 'All' && CATEGORY_CONFIG[cat as Category]?.emoji + ' '}
+              {cat}
             </Link>
           ))}
         </div>
@@ -258,8 +277,12 @@ export default async function HomePage({
       ======================================================== */}
       <section className="py-16 bg-white/30 backdrop-blur-sm border-y border-white/40">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">How ScholarSearch Works</h2>
-          <p className="text-gray-500 mb-12 max-w-xl mx-auto">Three simple steps to find and apply for your scholarship</p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+            How ScholarSearch Works
+          </h2>
+          <p className="text-gray-500 mb-12 max-w-xl mx-auto">
+            Three simple steps to find and apply for your scholarship
+          </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[

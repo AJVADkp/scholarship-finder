@@ -1,6 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @config "../../tailwind.config.ts";
-
 
 /* ============================================================
    CSS CUSTOM PROPERTIES — DESIGN TOKENS
@@ -14,27 +13,29 @@
   --radius-pill: 999px;
 
   /* Color palette */
-  --color-primary: #4F8EF7;
+  --color-primary: #4f8ef7;
   --color-primary-dark: #3a7ae0;
-  --color-success: #34C48B;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-purple: #8B5CF6;
-  --color-cyan: #06B6D4;
+  --color-success: #34c48b;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-purple: #8b5cf6;
+  --color-cyan: #06b6d4;
 
   /* Category colors */
-  --cat-merit: #4F8EF7;
-  --cat-need-based: #34C48B;
-  --cat-sports: #F59E0B;
-  --cat-research: #8B5CF6;
-  --cat-government: #EF4444;
-  --cat-international: #06B6D4;
+  --cat-merit: #4f8ef7;
+  --cat-need-based: #34c48b;
+  --cat-sports: #f59e0b;
+  --cat-research: #8b5cf6;
+  --cat-government: #ef4444;
+  --cat-international: #06b6d4;
 }
 
 /* ============================================================
    GLOBAL RESET & BASE
    ============================================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -43,7 +44,12 @@ html {
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Plus Jakarta Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   color: #1e293b;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -89,7 +95,9 @@ body {
 .fade-in-up {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
 }
 
 .fade-in-up.visible {
@@ -101,8 +109,12 @@ body {
    SKELETON LOADER
    ============================================================ */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton {
@@ -132,7 +144,10 @@ body {
   border-radius: var(--radius-pill);
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
   text-decoration: none;
 }
@@ -174,7 +189,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #FEF2F2;
+  background: #fef2f2;
   color: var(--color-danger);
   font-weight: 600;
   font-size: 0.85rem;
@@ -186,7 +201,7 @@ body {
 }
 
 .btn-danger:hover {
-  background: #FEE2E2;
+  background: #fee2e2;
   border-color: var(--color-danger);
 }
 
@@ -224,12 +239,30 @@ body {
   border-radius: var(--radius-pill);
 }
 
-.category-merit { background: rgba(79, 142, 247, 0.12); color: #3a7ae0; }
-.category-need-based { background: rgba(52, 196, 139, 0.12); color: #1a9e6d; }
-.category-sports { background: rgba(245, 158, 11, 0.12); color: #d97706; }
-.category-research { background: rgba(139, 92, 246, 0.12); color: #7c3aed; }
-.category-government { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
-.category-international { background: rgba(6, 182, 212, 0.12); color: #0891b2; }
+.category-merit {
+  background: rgba(79, 142, 247, 0.12);
+  color: #3a7ae0;
+}
+.category-need-based {
+  background: rgba(52, 196, 139, 0.12);
+  color: #1a9e6d;
+}
+.category-sports {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+.category-research {
+  background: rgba(139, 92, 246, 0.12);
+  color: #7c3aed;
+}
+.category-government {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+.category-international {
+  background: rgba(6, 182, 212, 0.12);
+  color: #0891b2;
+}
 
 /* ============================================================
    DEADLINE BADGE
@@ -262,7 +295,9 @@ body {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-card);
   box-shadow: var(--glass-shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
   overflow: hidden;
   position: relative;
 }
@@ -283,7 +318,9 @@ body {
   font-family: inherit;
   font-size: 0.9rem;
   color: #1e293b;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   outline: none;
   width: 100%;
 }
@@ -344,23 +381,45 @@ body {
    ANIMATIONS
    ============================================================ */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.animate-fade-in { animation: fadeIn 0.3s ease forwards; }
-.animate-slide-up { animation: slideUp 0.35s ease forwards; }
-.animate-scale-in { animation: scaleIn 0.25s ease forwards; }
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+.animate-slide-up {
+  animation: slideUp 0.35s ease forwards;
+}
+.animate-scale-in {
+  animation: scaleIn 0.25s ease forwards;
+}
 
 /* ============================================================
    MODAL OVERLAY
@@ -392,7 +451,7 @@ body {
   gap: 10px;
   padding: 10px 16px;
   border-radius: 10px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.2s ease;
@@ -400,7 +459,7 @@ body {
 }
 
 .admin-nav-item:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
 }
 

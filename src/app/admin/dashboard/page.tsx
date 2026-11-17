@@ -19,16 +19,51 @@ export default async function AdminDashboardPage() {
     supabase.from('scholarships').select('*', { count: 'exact', head: true }),
     supabase.from('scholarships').select('*', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('users').select('*', { count: 'exact', head: true }),
-    supabase.from('users').select('*', { count: 'exact', head: true }).not('academic_level', 'is', null),
-    supabase.from('users').select('full_name, email, created_at, avatar_url').order('created_at', { ascending: false }).limit(5),
-    supabase.from('scholarships').select('id, title, category, created_at').order('created_at', { ascending: false }).limit(5),
+    supabase
+      .from('users')
+      .select('*', { count: 'exact', head: true })
+      .not('academic_level', 'is', null),
+    supabase
+      .from('users')
+      .select('full_name, email, created_at, avatar_url')
+      .order('created_at', { ascending: false })
+      .limit(5),
+    supabase
+      .from('scholarships')
+      .select('id, title, category, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5),
   ])
 
   const stats = [
-    { label: 'Total Scholarships', value: totalScholarships || 0, icon: BookOpen, color: '#4F8EF7', href: '/admin/scholarships' },
-    { label: 'Active Scholarships', value: activeScholarships || 0, icon: CheckCircle, color: '#34C48B', href: '/admin/scholarships' },
-    { label: 'Total Users', value: totalUsers || 0, icon: Users, color: '#8B5CF6', href: '/admin/users' },
-    { label: 'Completed Profiles', value: completedProfiles || 0, icon: BarChart3, color: '#F59E0B', href: '/admin/users' },
+    {
+      label: 'Total Scholarships',
+      value: totalScholarships || 0,
+      icon: BookOpen,
+      color: '#4F8EF7',
+      href: '/admin/scholarships',
+    },
+    {
+      label: 'Active Scholarships',
+      value: activeScholarships || 0,
+      icon: CheckCircle,
+      color: '#34C48B',
+      href: '/admin/scholarships',
+    },
+    {
+      label: 'Total Users',
+      value: totalUsers || 0,
+      icon: Users,
+      color: '#8B5CF6',
+      href: '/admin/users',
+    },
+    {
+      label: 'Completed Profiles',
+      value: completedProfiles || 0,
+      icon: BarChart3,
+      color: '#F59E0B',
+      href: '/admin/users',
+    },
   ]
 
   return (
@@ -56,7 +91,10 @@ export default async function AdminDashboardPage() {
               <div className="text-2xl font-extrabold text-gray-900">{stat.value}</div>
               <div className="text-xs text-gray-500 font-medium">{stat.label}</div>
             </div>
-            <ArrowRight size={14} className="ml-auto text-gray-300 group-hover:text-gray-500 transition-colors" />
+            <ArrowRight
+              size={14}
+              className="ml-auto text-gray-300 group-hover:text-gray-500 transition-colors"
+            />
           </Link>
         ))}
       </div>
@@ -69,29 +107,49 @@ export default async function AdminDashboardPage() {
             <h2 className="font-bold text-gray-900 flex items-center gap-2">
               <Users size={16} className="text-purple-500" /> Recent Users
             </h2>
-            <Link href="/admin/users" className="text-xs text-primary hover:underline font-semibold">View all</Link>
+            <Link
+              href="/admin/users"
+              className="text-xs text-primary hover:underline font-semibold"
+            >
+              View all
+            </Link>
           </div>
           <div className="space-y-3">
-            {recentUsers && recentUsers.length > 0 ? recentUsers.map((u: { email: string | null; full_name: string | null; avatar_url: string | null; created_at: string }) => (
-              <div key={u.email || u.created_at} className="flex items-center gap-3">
-                {u.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={u.avatar_url} alt={u.full_name || 'User'} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                    {(u.full_name || u.email || 'U')[0].toUpperCase()}
+            {recentUsers && recentUsers.length > 0 ? (
+              recentUsers.map(
+                (u: {
+                  email: string | null
+                  full_name: string | null
+                  avatar_url: string | null
+                  created_at: string
+                }) => (
+                  <div key={u.email || u.created_at} className="flex items-center gap-3">
+                    {u.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={u.avatar_url}
+                        alt={u.full_name || 'User'}
+                        className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                        {(u.full_name || u.email || 'U')[0].toUpperCase()}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 truncate">
+                        {u.full_name || 'N/A'}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate">{u.email}</p>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-400 flex-shrink-0">
+                      <Clock size={11} />
+                      {new Date(u.created_at).toLocaleDateString()}
+                    </div>
                   </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{u.full_name || 'N/A'}</p>
-                  <p className="text-xs text-gray-400 truncate">{u.email}</p>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-gray-400 flex-shrink-0">
-                  <Clock size={11} />
-                  {new Date(u.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            )) : (
+                )
+              )
+            ) : (
               <p className="text-sm text-gray-400">No users yet</p>
             )}
           </div>
@@ -103,24 +161,33 @@ export default async function AdminDashboardPage() {
             <h2 className="font-bold text-gray-900 flex items-center gap-2">
               <BookOpen size={16} className="text-blue-500" /> Recent Scholarships
             </h2>
-            <Link href="/admin/scholarships" className="text-xs text-primary hover:underline font-semibold">View all</Link>
+            <Link
+              href="/admin/scholarships"
+              className="text-xs text-primary hover:underline font-semibold"
+            >
+              View all
+            </Link>
           </div>
           <div className="space-y-3">
-            {recentScholarships && recentScholarships.length > 0 ? recentScholarships.map((s: { id: string; title: string; category: string | null; created_at: string }) => (
-              <div key={s.id} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                  <BookOpen size={14} className="text-blue-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{s.title}</p>
-                  <p className="text-xs text-gray-400">{s.category}</p>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-gray-400 flex-shrink-0">
-                  <Clock size={11} />
-                  {new Date(s.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            )) : (
+            {recentScholarships && recentScholarships.length > 0 ? (
+              recentScholarships.map(
+                (s: { id: string; title: string; category: string | null; created_at: string }) => (
+                  <div key={s.id} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      <BookOpen size={14} className="text-blue-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 truncate">{s.title}</p>
+                      <p className="text-xs text-gray-400">{s.category}</p>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-400 flex-shrink-0">
+                      <Clock size={11} />
+                      {new Date(s.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                )
+              )
+            ) : (
               <p className="text-sm text-gray-400">No scholarships yet</p>
             )}
           </div>

@@ -5,7 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { type Scholarship } from '@/lib/types'
 import { EMPTY_BASIC_FILTERS, type BasicFilterState } from '@/components/search/BasicFilters'
-import { EMPTY_ADVANCED_FILTERS, type AdvancedFilterState } from '@/components/search/AdvancedFilters'
+import {
+  EMPTY_ADVANCED_FILTERS,
+  type AdvancedFilterState,
+} from '@/components/search/AdvancedFilters'
 import type { User } from '@supabase/supabase-js'
 
 export const ITEMS_PER_PAGE = 12
@@ -61,10 +64,13 @@ export function useScholarshipSearch() {
   const [showSuggestions, setShowSuggestions] = useState(false)
 
   const [basicFilters, setBasicFilters] = useState<BasicFilterState>(EMPTY_BASIC_FILTERS)
-  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilterState>(EMPTY_ADVANCED_FILTERS)
+  const [advancedFilters, setAdvancedFilters] =
+    useState<AdvancedFilterState>(EMPTY_ADVANCED_FILTERS)
   const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [sortBy, setSortBy] = useState<'deadline' | 'amount_desc' | 'amount_asc' | 'newest'>('deadline')
+  const [sortBy, setSortBy] = useState<'deadline' | 'amount_desc' | 'amount_asc' | 'newest'>(
+    'deadline'
+  )
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -77,7 +83,7 @@ export function useScholarshipSearch() {
           .select('scholarship_id')
           .eq('user_id', user.id)
           .then(({ data }) => {
-            if (data) setSavedIds(new Set(data.map(d => d.scholarship_id)))
+            if (data) setSavedIds(new Set(data.map((d) => d.scholarship_id)))
           })
       }
     })
@@ -112,7 +118,7 @@ export function useScholarshipSearch() {
       .select('title')
       .ilike('title', `%${searchQuery}%`)
       .limit(5)
-      .then(({ data }) => setSuggestions(data?.map(d => d.title) || []))
+      .then(({ data }) => setSuggestions(data?.map((d) => d.title) || []))
   }, [searchQuery])
 
   const fetchScholarships = useCallback(async () => {
@@ -120,10 +126,15 @@ export function useScholarshipSearch() {
     setError(null)
 
     try {
-      let query = supabase.from('scholarships').select('*', { count: 'exact' }).eq('is_active', true)
+      let query = supabase
+        .from('scholarships')
+        .select('*', { count: 'exact' })
+        .eq('is_active', true)
 
       if (debouncedQuery) {
-        query = query.or(`title.ilike.%${debouncedQuery}%,provider.ilike.%${debouncedQuery}%,description.ilike.%${debouncedQuery}%`)
+        query = query.or(
+          `title.ilike.%${debouncedQuery}%,provider.ilike.%${debouncedQuery}%,description.ilike.%${debouncedQuery}%`
+        )
       }
 
       if (basicFilters.academicLevel) {

@@ -34,10 +34,7 @@ export default function ErrorBoundary({
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={() => reset()}
-            className="btn-primary gap-2 py-2.5 px-5 justify-center"
-          >
+          <button onClick={() => reset()} className="btn-primary gap-2 py-2.5 px-5 justify-center">
             <RefreshCw size={15} /> Try again
           </button>
           <Link
